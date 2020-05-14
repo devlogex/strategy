@@ -84,7 +84,7 @@ public class VisionHandlerBuz {
             visionComponent.setFiles(request.getFiles());
         }
         if(request.getSummary() != null) {
-            visionComponent.setDescription(request.getSummary());
+            visionComponent.setSummary(request.getSummary());
         }
         if(request.getColor() != null) {
             visionComponent.setColor(request.getColor());
