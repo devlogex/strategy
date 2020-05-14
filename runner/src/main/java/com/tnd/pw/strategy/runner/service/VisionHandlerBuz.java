@@ -66,7 +66,7 @@ public class VisionHandlerBuz {
             return RepresentationBuilder.buildVisionRepresentation(vision, visionComponents);
         } catch (VisionComponentNotFoundException e) {
             LOGGER.error("[VisionHandlerBuz] VisionComponentNotFoundException with vision_id: {}", vision.getId());
-            return null;
+            return RepresentationBuilder.buildVisionRepresentation(vision, null);
         } catch (VisionNotFoundException e) {
             LOGGER.error("[VisionHandlerBuz] VisionNotFoundException with request: {}", GsonUtils.convertToString(request));
             return null;

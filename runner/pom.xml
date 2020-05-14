@@ -61,7 +61,7 @@
                     <descriptorRefs>
                         <descriptorRef>jar-with-dependencies</descriptorRef>
                     </descriptorRefs>
-                    <finalName>strategy</finalName>
+                    <finalName>strategy-runner</finalName>
                 </configuration>
             </plugin>
 

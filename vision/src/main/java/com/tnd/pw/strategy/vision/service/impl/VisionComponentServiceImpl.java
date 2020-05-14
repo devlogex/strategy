@@ -44,7 +44,7 @@ public class VisionComponentServiceImpl implements VisionComponentService {
     @Override
     public List<VisionComponent> getByVisionId(Long visionId) throws DBServiceException, IOException, VisionComponentNotFoundException {
         VisionComponent entity = new VisionComponent();
-        entity.setId(visionId);
+        entity.setVisionId(visionId);
         return visionComponentDao.get(entity);
     }
 }
