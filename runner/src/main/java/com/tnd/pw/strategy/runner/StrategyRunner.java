@@ -1,0 +1,30 @@
+package com.tnd.pw.strategy.runner;
+
+import com.tnd.com.ioc.SpringApplicationContext;
+import com.tnd.common.api.server.CommonServer;
+import com.tnd.pw.strategy.runner.config.RunnerConfig;
+import com.tnd.pw.strategy.runner.handler.VisionHandler;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+
+public class StrategyRunner {
+    public static void main(String args[]) throws Exception {
+        AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
+        context.register(RunnerConfig.class);
+        context.refresh();
+        SpringApplicationContext.setShareApplicationContext(context);
+
+        CommonServer commonServer = new CommonServer();
+        commonServer.register(SpringApplicationContext.getBean(VisionHandler.class));
+
+        String port = System.getenv("PORT");
+        if(port == null) {
+            commonServer.initServlet(8002);
+        }
+        else {
+            commonServer.initServlet(Integer.parseInt(port));
+        }
+        commonServer.startServer();
+    }
+}

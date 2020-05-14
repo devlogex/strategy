@@ -1,0 +1,1 @@
+web: java -cp runner/target/strategy-runner-jar-with-dependencies.jar com.tnd.pw.strategy.runner.StrategyRunner
