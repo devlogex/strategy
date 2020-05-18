@@ -4,8 +4,6 @@ import com.tnd.pw.strategy.dbservice.DBServiceApiClient;
 import com.tnd.pw.strategy.dbservice.DataHelper;
 import com.tnd.pw.strategy.runner.handler.VisionHandler;
 import com.tnd.pw.strategy.runner.service.VisionHandlerBuz;
-import com.tnd.pw.strategy.vision.buz.VisionBuz;
-import com.tnd.pw.strategy.vision.buz.impl.VisionBuzImpl;
 import com.tnd.pw.strategy.vision.dao.VisionComponentDao;
 import com.tnd.pw.strategy.vision.dao.VisionDao;
 import com.tnd.pw.strategy.vision.dao.impl.VisionComponentDaoImpl;
@@ -53,11 +51,6 @@ public class RunnerConfig {
     @Bean
     public VisionComponentService visionComponentService() {
         return new VisionComponentServiceImpl();
-    }
-
-    @Bean
-    public VisionBuz visionBuz() {
-        return new VisionBuzImpl();
     }
 
     @Bean

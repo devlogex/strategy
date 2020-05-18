@@ -15,9 +15,9 @@ public class VisionServiceImpl implements VisionService {
 
 
     @Override
-    public Vision create(Long id, Long workspaceId) throws IOException, DBServiceException {
+    public Vision create( Long workspaceId) throws IOException, DBServiceException {
         Vision entity = new Vision();
-        entity.setId(id);
+        entity.setId(System.currentTimeMillis());
         entity.setWorkspaceId(workspaceId);
         entity.setFiles("");
         visionDao.create(entity);

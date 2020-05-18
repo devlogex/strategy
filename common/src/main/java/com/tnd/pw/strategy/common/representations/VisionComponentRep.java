@@ -11,6 +11,8 @@ public class VisionComponentRep implements Serializable {
     private Long id;
     @SerializedName("vision_id")
     private Long visionId;
+    @SerializedName("name")
+    private String name;
     @SerializedName("summary")
     private String summary;
     @SerializedName("color")
@@ -24,6 +26,14 @@ public class VisionComponentRep implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public Long getVisionId() {

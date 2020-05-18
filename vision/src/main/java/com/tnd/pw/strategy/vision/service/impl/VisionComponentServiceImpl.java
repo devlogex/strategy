@@ -16,14 +16,15 @@ public class VisionComponentServiceImpl implements VisionComponentService {
     private VisionComponentDao visionComponentDao;
 
     @Override
-    public VisionComponent create(Long id, Long visionId) throws IOException, DBServiceException {
+    public VisionComponent create(Long visionId, String name, String summary, String color, String description, String files) throws IOException, DBServiceException {
         VisionComponent entity = new VisionComponent();
-        entity.setId(id);
+        entity.setId(System.currentTimeMillis());
+        entity.setName(name);
         entity.setVisionId(visionId);
-        entity.setSummary("");
-        entity.setColor("#df2222");
-        entity.setDescription("");
-        entity.setFiles("");
+        entity.setSummary(summary);
+        entity.setColor(color);
+        entity.setDescription(description);
+        entity.setFiles(files);
         visionComponentDao.create(entity);
         return entity;
     }

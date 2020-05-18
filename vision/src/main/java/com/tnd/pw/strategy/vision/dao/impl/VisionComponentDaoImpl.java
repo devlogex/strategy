@@ -15,21 +15,21 @@ public class VisionComponentDaoImpl implements VisionComponentDao {
     @Autowired
     private DataHelper dataHelper;
 
-    private static final String SQL_CREATE = "INSERT INTO component_vision(id, vision_id, summary, color, description, files) values(%d, %d, '%s', '%s', '%s', '%s')";
-    private static final String SQL_UPDATE = "UPDATE component_vision SET summary = '%s', color = '%s', description = '%s', files = '%s' WHERE id = '%s'";
+    private static final String SQL_CREATE = "INSERT INTO component_vision(id, vision_id, name, summary, color, description, files) values(%d, %d, '%s', '%s', '%s', '%s', '%s')";
+    private static final String SQL_UPDATE = "UPDATE component_vision SET name = '%s', summary = '%s', color = '%s', description = '%s', files = '%s' WHERE id = '%s'";
     private static final String SQL_SELECT_BY_ID = "SELECT * FROM component_vision where id = %d";
     private static final String SQL_SELECT_BY_VISION_ID = "SELECT * FROM component_vision where vision_id = %d";
 
 
     @Override
     public void create(VisionComponent entity) throws IOException, DBServiceException {
-        String query = String.format(SQL_CREATE, entity.getId(), entity.getVisionId(), entity.getSummary(), entity.getColor(), entity.getDescription(), entity.getFiles());
+        String query = String.format(SQL_CREATE, entity.getId(), entity.getVisionId(), entity.getName(), entity.getSummary(), entity.getColor(), entity.getDescription(), entity.getFiles());
         dataHelper.executeSQL(query);
     }
 
     @Override
     public void update(VisionComponent entity) throws IOException, DBServiceException {
-        String query = String.format(SQL_UPDATE, entity.getSummary(), entity.getColor(), entity.getDescription(), entity.getFiles(), entity.getId());
+        String query = String.format(SQL_UPDATE, entity.getName(), entity.getSummary(), entity.getColor(), entity.getDescription(), entity.getFiles(), entity.getId());
         dataHelper.executeSQL(query);
     }
 

@@ -21,9 +21,5 @@
             <groupId>com.tnd.dbservice</groupId>
             <artifactId>common</artifactId>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>com.tnd.pw.strategy</groupId>-->
-<!--            <artifactId>common</artifactId>-->
-<!--        </dependency>-->
     </dependencies>
 </project>

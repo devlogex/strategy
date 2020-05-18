@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.util.List;
 
 public interface VisionComponentService {
-    VisionComponent create(Long id, Long visionId) throws IOException, DBServiceException;
+    VisionComponent create(Long visionId, String name, String summary, String color, String description, String files) throws IOException, DBServiceException;
     VisionComponent update(VisionComponent entity) throws IOException, DBServiceException;
     VisionComponent getById(Long id) throws IOException, DBServiceException, VisionComponentNotFoundException;
     List<VisionComponent> getByVisionId(Long visionId) throws DBServiceException, IOException, VisionComponentNotFoundException;

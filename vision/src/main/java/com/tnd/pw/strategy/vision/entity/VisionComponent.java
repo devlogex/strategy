@@ -4,6 +4,8 @@ import com.google.gson.annotations.SerializedName;
 
 public class VisionComponent extends BaseEntity {
 
+    @SerializedName("name")
+    private String name;
     @SerializedName("vision_id")
     private Long visionId;
     @SerializedName("summary")
@@ -12,6 +14,14 @@ public class VisionComponent extends BaseEntity {
     private String color;
     @SerializedName("description")
     private String description;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 
     public Long getVisionId() {
         return visionId;

@@ -27,6 +27,7 @@ public class RepresentationBuilder {
     public static VisionComponentRep buildVisionComponentRep(VisionComponent visionComponent) {
         VisionComponentRep visionComponentRep = new VisionComponentRep();
         visionComponentRep.setId(visionComponent.getId());
+        visionComponentRep.setName(visionComponent.getName());
         visionComponentRep.setColor(visionComponent.getColor());
         visionComponentRep.setDescription(visionComponent.getDescription());
         visionComponentRep.setSummary(visionComponent.getSummary());

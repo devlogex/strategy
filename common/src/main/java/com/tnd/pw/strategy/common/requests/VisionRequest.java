@@ -8,14 +8,16 @@ public class VisionRequest implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @SerializedName("vision_id")
-    private String visionId;
+    private Long visionId;
     @SerializedName("workspace_id")
-    private String workspaceId;
+    private Long workspaceId;
     @SerializedName("files")
     private String files;
 
     @SerializedName("component_id")
-    private String componentId;
+    private Long componentId;
+    @SerializedName("name")
+    private String componentName;
     @SerializedName("summary")
     private String summary;
     @SerializedName("color")
@@ -23,19 +25,27 @@ public class VisionRequest implements Serializable {
     @SerializedName("description")
     private String description;
 
-    public String getVisionId() {
+    public Long getVisionId() {
         return visionId;
     }
 
-    public void setVisionId(String visionId) {
+    public void setVisionId(Long visionId) {
         this.visionId = visionId;
     }
 
-    public String getWorkspaceId() {
+    public String getComponentName() {
+        return componentName;
+    }
+
+    public void setComponentName(String componentName) {
+        this.componentName = componentName;
+    }
+
+    public Long getWorkspaceId() {
         return workspaceId;
     }
 
-    public void setWorkspaceId(String workspaceId) {
+    public void setWorkspaceId(Long workspaceId) {
         this.workspaceId = workspaceId;
     }
 
@@ -47,11 +57,11 @@ public class VisionRequest implements Serializable {
         this.files = files;
     }
 
-    public String getComponentId() {
+    public Long getComponentId() {
         return componentId;
     }
 
-    public void setComponentId(String componentId) {
+    public void setComponentId(Long componentId) {
         this.componentId = componentId;
     }
 
