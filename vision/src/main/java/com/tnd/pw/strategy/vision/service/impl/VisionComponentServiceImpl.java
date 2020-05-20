@@ -19,10 +19,10 @@ public class VisionComponentServiceImpl implements VisionComponentService {
     public VisionComponent create(Long visionId, String name, String summary, String color, String description, String files) throws IOException, DBServiceException {
         VisionComponent entity = new VisionComponent();
         entity.setId(System.currentTimeMillis());
-        entity.setName(name);
+        entity.setName(name == null ? "Strategy..." : name);
         entity.setVisionId(visionId);
-        entity.setSummary(summary);
-        entity.setColor(color);
+        entity.setSummary(summary == null ? "Summary..." : summary);
+        entity.setColor(color == null ? "#F5F6FA" : color);
         entity.setDescription(description);
         entity.setFiles(files);
         visionComponentDao.create(entity);
