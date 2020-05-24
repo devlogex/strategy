@@ -15,10 +15,10 @@ public class VisionComponentDaoImpl implements VisionComponentDao {
     @Autowired
     private DataHelper dataHelper;
 
-    private static final String SQL_CREATE = "INSERT INTO component_vision(id, vision_id, name, summary, color, description, files) values(%d, %d, '%s', '%s', '%s', '%s', '%s')";
-    private static final String SQL_UPDATE = "UPDATE component_vision SET name = '%s', summary = '%s', color = '%s', description = '%s', files = '%s' WHERE id = '%s'";
-    private static final String SQL_SELECT_BY_ID = "SELECT * FROM component_vision where id = %d";
-    private static final String SQL_SELECT_BY_VISION_ID = "SELECT * FROM component_vision where vision_id = %d";
+    private static final String SQL_CREATE = "INSERT INTO vision_component(id, vision_id, name, summary, color, description, files) values(%d, %d, '%s', '%s', '%s', '%s', '%s')";
+    private static final String SQL_UPDATE = "UPDATE vision_component SET name = '%s', summary = '%s', color = '%s', description = '%s', files = '%s' WHERE id = '%s'";
+    private static final String SQL_SELECT_BY_ID = "SELECT * FROM vision_component where id = %d";
+    private static final String SQL_SELECT_BY_VISION_ID = "SELECT * FROM vision_component where vision_id = %d";
 
 
     @Override

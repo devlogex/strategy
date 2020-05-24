@@ -12,6 +12,8 @@ public class VisionRepresentation implements Serializable {
     private Long id;
     @SerializedName("workspace_id")
     private Long workspaceId;
+    @SerializedName("description")
+    private String description;
     @SerializedName("files")
     private String files;
     @SerializedName("list_component")
@@ -31,6 +33,14 @@ public class VisionRepresentation implements Serializable {
 
     public void setWorkspaceId(Long workspaceId) {
         this.workspaceId = workspaceId;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public String getFiles() {

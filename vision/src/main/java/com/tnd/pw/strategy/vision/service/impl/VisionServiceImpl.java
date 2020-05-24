@@ -20,6 +20,7 @@ public class VisionServiceImpl implements VisionService {
         entity.setId(System.currentTimeMillis());
         entity.setWorkspaceId(workspaceId);
         entity.setFiles("");
+        entity.setDescription("");
         visionDao.create(entity);
         return entity;
     }

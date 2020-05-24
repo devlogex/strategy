@@ -12,8 +12,6 @@ public class VisionComponent extends BaseEntity {
     private String summary;
     @SerializedName("color")
     private String color;
-    @SerializedName("description")
-    private String description;
 
     public String getName() {
         return name;
@@ -45,13 +43,5 @@ public class VisionComponent extends BaseEntity {
 
     public void setColor(String color) {
         this.color = color;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
     }
 }

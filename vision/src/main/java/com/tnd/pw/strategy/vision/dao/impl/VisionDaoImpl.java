@@ -15,21 +15,21 @@ public class VisionDaoImpl implements VisionDao {
     @Autowired
     private DataHelper dataHelper;
 
-    private static final String SQL_CREATE = "INSERT INTO vision(id, workspace_id, files) values(%d, %d, '%s')";
-    private static final String SQL_UPDATE = "UPDATE vision SET files = '%s' WHERE id = '%s'";
+    private static final String SQL_CREATE = "INSERT INTO vision(id, workspace_id, description, files) values(%d, %d, '%s', '%s')";
+    private static final String SQL_UPDATE = "UPDATE vision SET description = '%s', files = '%s' WHERE id = '%s'";
     private static final String SQL_SELECT_BY_ID = "SELECT * FROM vision where id = %d";
     private static final String SQL_SELECT_BY_WORKSPACE_ID = "SELECT * FROM vision where workspace_id = %d";
 
 
     @Override
     public void create(Vision entity) throws IOException, DBServiceException {
-        String query = String.format(SQL_CREATE, entity.getId(), entity.getWorkspaceId(), entity.getFiles());
+        String query = String.format(SQL_CREATE, entity.getId(), entity.getWorkspaceId(), entity.getDescription(), entity.getFiles());
         dataHelper.executeSQL(query);
     }
 
     @Override
     public void update(Vision entity) throws IOException, DBServiceException {
-        String query = String.format(SQL_UPDATE, entity.getFiles(), entity.getId());
+        String query = String.format(SQL_UPDATE, entity.getDescription(), entity.getFiles(), entity.getId());
         dataHelper.executeSQL(query);
     }
 

@@ -14,6 +14,7 @@ public class RepresentationBuilder {
         visionRepresentation.setId(vision.getId());
         visionRepresentation.setWorkspaceId(vision.getWorkspaceId());
         visionRepresentation.setFiles(vision.getFiles());
+        visionRepresentation.setDescription(vision.getDescription());
         List<VisionComponentRep> list = new ArrayList<>();
         if(listComponent != null) {
             for (VisionComponent visionComponent : listComponent) {

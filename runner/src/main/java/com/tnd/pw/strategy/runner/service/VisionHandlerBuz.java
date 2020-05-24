@@ -41,8 +41,11 @@ public class VisionHandlerBuz {
         if(request.getFiles() != null) {
             vision.setFiles(request.getFiles());
         }
+        if(request.getDescription() != null) {
+            vision.setDescription(request.getDescription());
+        }
         Vision newVision = visionService.update(vision);
-        List<VisionComponent> visionComponents = null;
+        List<VisionComponent> visionComponents;
         try {
             visionComponents = visionComponentService.getByVisionId(newVision.getId());
         } catch (VisionComponentNotFoundException e) {
