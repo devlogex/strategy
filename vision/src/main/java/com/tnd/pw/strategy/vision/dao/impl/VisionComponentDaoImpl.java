@@ -19,7 +19,7 @@ public class VisionComponentDaoImpl implements VisionComponentDao {
     private static final String SQL_UPDATE = "UPDATE vision_component SET name = '%s', summary = '%s', color = '%s', description = '%s', files = '%s' WHERE id = '%s'";
     private static final String SQL_SELECT_BY_ID = "SELECT * FROM vision_component where id = %d";
     private static final String SQL_SELECT_BY_VISION_ID = "SELECT * FROM vision_component where vision_id = %d";
-
+    private static final String SQL_DELETE = "DELETE FROM vision_component WHERE id = %d";
 
     @Override
     public void create(VisionComponent entity) throws IOException, DBServiceException {
@@ -47,5 +47,11 @@ public class VisionComponentDaoImpl implements VisionComponentDao {
             throw new VisionComponentNotFoundException();
         }
         return entities;
+    }
+
+    @Override
+    public void remove(VisionComponent entity) throws IOException, DBServiceException {
+        String query = String.format(SQL_DELETE, entity.getId());
+        dataHelper.executeSQL(query);
     }
 }

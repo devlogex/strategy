@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 
-public class VisionRequest implements Serializable {
+public class StrategyRequest implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @SerializedName("vision_id")
@@ -24,6 +24,11 @@ public class VisionRequest implements Serializable {
     private String color;
     @SerializedName("description")
     private String description;
+
+    @SerializedName("layout")
+    private String layout;
+    @SerializedName("layout_type")
+    private String layoutType;
 
     public Long getVisionId() {
         return visionId;
@@ -87,5 +92,21 @@ public class VisionRequest implements Serializable {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getLayout() {
+        return layout;
+    }
+
+    public void setLayout(String layout) {
+        this.layout = layout;
+    }
+
+    public String getLayoutType() {
+        return layoutType;
+    }
+
+    public void setLayoutType(String layoutType) {
+        this.layoutType = layoutType;
     }
 }

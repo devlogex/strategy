@@ -2,8 +2,14 @@ package com.tnd.pw.strategy.runner.config;
 
 import com.tnd.pw.strategy.dbservice.DBServiceApiClient;
 import com.tnd.pw.strategy.dbservice.DataHelper;
+import com.tnd.pw.strategy.layout.dao.LayoutDao;
+import com.tnd.pw.strategy.layout.dao.impl.LayoutDaoImpl;
+import com.tnd.pw.strategy.layout.service.LayoutService;
+import com.tnd.pw.strategy.layout.service.impl.LayoutServiceImpl;
+import com.tnd.pw.strategy.runner.handler.LayoutHandler;
 import com.tnd.pw.strategy.runner.handler.VisionHandler;
-import com.tnd.pw.strategy.runner.service.VisionHandlerBuz;
+import com.tnd.pw.strategy.runner.service.impl.LayoutServiceHandlerImpl;
+import com.tnd.pw.strategy.runner.service.impl.VisionServiceHandlerImpl;
 import com.tnd.pw.strategy.vision.dao.VisionComponentDao;
 import com.tnd.pw.strategy.vision.dao.VisionDao;
 import com.tnd.pw.strategy.vision.dao.impl.VisionComponentDaoImpl;
@@ -44,6 +50,16 @@ public class RunnerConfig {
     }
 
     @Bean
+    public LayoutDao layoutDao() {
+        return new LayoutDaoImpl();
+    }
+
+    @Bean
+    public LayoutService layoutService() {
+        return new LayoutServiceImpl();
+    }
+
+    @Bean
     public VisionService visionService() {
         return new VisionServiceImpl();
     }
@@ -54,12 +70,23 @@ public class RunnerConfig {
     }
 
     @Bean
-    public VisionHandlerBuz visionHandlerBuz() {
-        return new VisionHandlerBuz();
+    public VisionServiceHandlerImpl visionServiceHandler() {
+        return new VisionServiceHandlerImpl();
     }
 
     @Bean
     public VisionHandler visionHandler() {
         return new VisionHandler();
     }
+
+    @Bean
+    public LayoutHandler layoutHandler() {
+        return new LayoutHandler();
+    }
+
+    @Bean
+    LayoutServiceHandlerImpl layoutServiceHandler() {
+        return new LayoutServiceHandlerImpl();
+    }
+
 }

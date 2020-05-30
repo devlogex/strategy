@@ -9,9 +9,10 @@ import com.tnd.dbservice.common.exception.DBServiceException;
 import com.tnd.pw.strategy.common.representations.ListVisionComponentRep;
 import com.tnd.pw.strategy.common.representations.VisionComponentRep;
 import com.tnd.pw.strategy.common.representations.VisionRepresentation;
-import com.tnd.pw.strategy.common.requests.VisionRequest;
+import com.tnd.pw.strategy.common.requests.StrategyRequest;
 import com.tnd.pw.strategy.common.utils.GsonUtils;
-import com.tnd.pw.strategy.runner.service.VisionHandlerBuz;
+import com.tnd.pw.strategy.layout.exception.LayoutNotFoundException;
+import com.tnd.pw.strategy.runner.service.impl.VisionServiceHandlerImpl;
 import com.tnd.pw.strategy.vision.exception.VisionComponentNotFoundException;
 import com.tnd.pw.strategy.vision.exception.VisionNotFoundException;
 import org.slf4j.Logger;
@@ -24,59 +25,68 @@ import java.io.IOException;
 public class VisionHandler implements BaseHandler {
     private static final Logger LOGGER = LoggerFactory.getLogger(VisionHandler.class);
     @Autowired
-    private VisionHandlerBuz visionHandlerBuz;
+    private VisionServiceHandlerImpl visionServiceHandlerImpl;
 
     @HandlerService(path = "/strategy/vision/add", protocol = "POST",
-            dataRequestType = "com.tnd.pw.strategy.common.requests.VisionRequest")
-    public BaseResponse<VisionRepresentation> addVision(BaseRequest<VisionRequest> request) throws IOException, DBServiceException {
+            dataRequestType = "com.tnd.pw.strategy.common.requests.StrategyRequest")
+    public BaseResponse<VisionRepresentation> addVision(BaseRequest<StrategyRequest> request) throws IOException, DBServiceException {
         LOGGER.info("[VisionHandler] addVision() - request: {}", GsonUtils.convertToString(request));
-        VisionRepresentation response = visionHandlerBuz.addVision(request.getData());
+        VisionRepresentation response = visionServiceHandlerImpl.addVision(request.getData());
         LOGGER.info("[VisionHandler] addVision() - response: {}", GsonUtils.convertToString(response));
         return new BaseResponse<>(response);
     }
 
     @HandlerService(path = "/strategy/vision/update", protocol = "POST",
-            dataRequestType = "com.tnd.pw.strategy.common.requests.VisionRequest")
-    public BaseResponse<VisionRepresentation> updateVision(BaseRequest<VisionRequest> request) throws DBServiceException, VisionNotFoundException, IOException {
+            dataRequestType = "com.tnd.pw.strategy.common.requests.StrategyRequest")
+    public BaseResponse<VisionRepresentation> updateVision(BaseRequest<StrategyRequest> request) throws DBServiceException, VisionNotFoundException, IOException {
         LOGGER.info("[VisionHandler] updateVision() - request: {}", GsonUtils.convertToString(request));
-        VisionRepresentation response = visionHandlerBuz.updateVision(request.getData());
+        VisionRepresentation response = visionServiceHandlerImpl.updateVision(request.getData());
         LOGGER.info("[VisionHandler] updateVision() - response: {}", GsonUtils.convertToString(response));
         return new BaseResponse<>(response);
     }
 
     @HandlerService(path = "/strategy/vision", protocol = "GET",
-            dataRequestType = "com.tnd.pw.strategy.common.requests.VisionRequest")
-    public BaseResponse<VisionRepresentation> getVision(BaseRequest<VisionRequest> request) throws DBServiceException, IOException {
+            dataRequestType = "com.tnd.pw.strategy.common.requests.StrategyRequest")
+    public BaseResponse<VisionRepresentation> getVision(BaseRequest<StrategyRequest> request) throws DBServiceException, IOException {
         LOGGER.info("[VisionHandler] getVision() - request: {}", GsonUtils.convertToString(request));
-        VisionRepresentation response = visionHandlerBuz.getVision(request.getData());
+        VisionRepresentation response = visionServiceHandlerImpl.getVision(request.getData());
         LOGGER.info("[VisionHandler] getVision() - response: {}", GsonUtils.convertToString(response));
         return new BaseResponse<>(response);
     }
 
     @HandlerService(path = "/strategy/vision_component/add", protocol = "POST",
-            dataRequestType = "com.tnd.pw.strategy.common.requests.VisionRequest")
-    public BaseResponse<VisionComponentRep> addVisionComponent(BaseRequest<VisionRequest> request) throws IOException, DBServiceException {
+            dataRequestType = "com.tnd.pw.strategy.common.requests.StrategyRequest")
+    public BaseResponse<ListVisionComponentRep> addVisionComponent(BaseRequest<StrategyRequest> request) throws IOException, DBServiceException, VisionNotFoundException, LayoutNotFoundException, VisionComponentNotFoundException {
         LOGGER.info("[VisionHandler] addVisionComponent() - request: {}", GsonUtils.convertToString(request));
-        VisionComponentRep response = visionHandlerBuz.addVisionComponent(request.getData());
+        ListVisionComponentRep response = visionServiceHandlerImpl.addVisionComponent(request.getData());
         LOGGER.info("[VisionHandler] addVisionComponent() - response: {}", GsonUtils.convertToString(response));
         return new BaseResponse<>(response);
     }
 
     @HandlerService(path = "/strategy/vision_component/update", protocol = "POST",
-            dataRequestType = "com.tnd.pw.strategy.common.requests.VisionRequest")
-    public BaseResponse<VisionComponentRep> updateVisionComponent(BaseRequest<VisionRequest> request) throws DBServiceException, IOException, VisionComponentNotFoundException {
+            dataRequestType = "com.tnd.pw.strategy.common.requests.StrategyRequest")
+    public BaseResponse<VisionComponentRep> updateVisionComponent(BaseRequest<StrategyRequest> request) throws DBServiceException, IOException, VisionComponentNotFoundException {
         LOGGER.info("[VisionHandler] updateVisionComponent() - request: {}", GsonUtils.convertToString(request));
-        VisionComponentRep response = visionHandlerBuz.updateVisionComponent(request.getData());
+        VisionComponentRep response = visionServiceHandlerImpl.updateVisionComponent(request.getData());
         LOGGER.info("[VisionHandler] updateVisionComponent() - response: {}", GsonUtils.convertToString(response));
         return new BaseResponse<>(response);
     }
 
     @HandlerService(path = "/strategy/vision_component", protocol = "GET",
-            dataRequestType = "com.tnd.pw.strategy.common.requests.VisionRequest")
-    public BaseResponse<ListVisionComponentRep> getVisionComponent(BaseRequest<VisionRequest> request) throws DBServiceException, IOException {
+            dataRequestType = "com.tnd.pw.strategy.common.requests.StrategyRequest")
+    public BaseResponse<ListVisionComponentRep> getVisionComponent(BaseRequest<StrategyRequest> request) throws DBServiceException, IOException {
         LOGGER.info("[VisionHandler] getVisionComponent() - request: {}", GsonUtils.convertToString(request));
-        ListVisionComponentRep response = visionHandlerBuz.getVisionComponent(request.getData());
+        ListVisionComponentRep response = visionServiceHandlerImpl.getVisionComponent(request.getData());
         LOGGER.info("[VisionHandler] getVisionComponent() - response: {}", GsonUtils.convertToString(response));
+        return new BaseResponse<>(response);
+    }
+
+    @HandlerService(path = "/strategy/vision_component/delete", protocol = "POST",
+            dataRequestType = "com.tnd.pw.strategy.common.requests.StrategyRequest")
+    public BaseResponse<ListVisionComponentRep> removeVisionComponent(BaseRequest<StrategyRequest> request) throws DBServiceException, IOException, VisionComponentNotFoundException {
+        LOGGER.info("[VisionHandler] removeVisionComponent() - request: {}", GsonUtils.convertToString(request));
+        ListVisionComponentRep response = visionServiceHandlerImpl.removeVisionComponent(request.getData());
+        LOGGER.info("[VisionHandler] removeVisionComponent() - response: {}", GsonUtils.convertToString(response));
         return new BaseResponse<>(response);
     }
 }

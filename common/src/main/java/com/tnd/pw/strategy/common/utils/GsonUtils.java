@@ -17,6 +17,9 @@ public class GsonUtils {
     public static <T> List<T> toListObject(String json, Class<T> type) {
         return gson.fromJson(json, new ListOf<>(type));
     }
+    public static <T> T toObject(String json, Class<T> type) {
+        return gson.fromJson(json, type);
+    }
 
     static class ListOf<T> implements ParameterizedType {
         private final Class<T> type;
@@ -36,5 +39,8 @@ public class GsonUtils {
         public Type getOwnerType() {
             return null;
         }
+    }
+    public static Gson getGson() {
+        return gson;
     }
 }

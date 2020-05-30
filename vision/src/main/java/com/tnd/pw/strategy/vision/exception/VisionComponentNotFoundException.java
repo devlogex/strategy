@@ -1,4 +1,4 @@
 package com.tnd.pw.strategy.vision.exception;
 
-public class VisionComponentNotFoundException extends Throwable {
+public class VisionComponentNotFoundException extends Exception {
 }

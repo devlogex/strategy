@@ -13,6 +13,7 @@
         <module>runner</module>
         <module>vision</module>
         <module>dbservice</module>
+        <module>layout</module>
     </modules>
 
     <properties>

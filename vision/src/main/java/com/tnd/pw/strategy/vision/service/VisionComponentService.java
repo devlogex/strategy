@@ -12,4 +12,5 @@ public interface VisionComponentService {
     VisionComponent update(VisionComponent entity) throws IOException, DBServiceException;
     VisionComponent getById(Long id) throws IOException, DBServiceException, VisionComponentNotFoundException;
     List<VisionComponent> getByVisionId(Long visionId) throws DBServiceException, IOException, VisionComponentNotFoundException;
+    void remove(Long id) throws IOException, DBServiceException;
 }

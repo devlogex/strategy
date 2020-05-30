@@ -23,8 +23,8 @@ public class VisionComponentServiceImpl implements VisionComponentService {
         entity.setVisionId(visionId);
         entity.setSummary(summary == null ? "Summary..." : summary);
         entity.setColor(color == null ? "#F5F6FA" : color);
-        entity.setDescription(description);
-        entity.setFiles(files);
+        entity.setDescription(description == null ? "" : description);
+        entity.setFiles(files == null ? "" : files);
         visionComponentDao.create(entity);
         return entity;
     }
@@ -47,5 +47,12 @@ public class VisionComponentServiceImpl implements VisionComponentService {
         VisionComponent entity = new VisionComponent();
         entity.setVisionId(visionId);
         return visionComponentDao.get(entity);
+    }
+
+    @Override
+    public void remove(Long id) throws IOException, DBServiceException {
+        VisionComponent entity = new VisionComponent();
+        entity.setId(id);
+        visionComponentDao.remove(entity);
     }
 }
