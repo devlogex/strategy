@@ -15,10 +15,14 @@ public class VisionDaoImpl implements VisionDao {
     @Autowired
     private DataHelper dataHelper;
 
-    private static final String SQL_CREATE = "INSERT INTO vision(id, workspace_id, description, files) values(%d, %d, '%s', '%s')";
-    private static final String SQL_UPDATE = "UPDATE vision SET description = '%s', files = '%s' WHERE id = '%s'";
-    private static final String SQL_SELECT_BY_ID = "SELECT * FROM vision where id = %d";
-    private static final String SQL_SELECT_BY_WORKSPACE_ID = "SELECT * FROM vision where workspace_id = %d";
+    private static final String SQL_CREATE =
+            "INSERT INTO vision(id, workspace_id, description, files) values(%d, %d, '%s', '%s')";
+    private static final String SQL_UPDATE =
+            "UPDATE vision SET description = '%s', files = '%s' WHERE id = %d";
+    private static final String SQL_SELECT_BY_ID =
+            "SELECT * FROM vision where id = %d";
+    private static final String SQL_SELECT_BY_WORKSPACE_ID =
+            "SELECT * FROM vision where workspace_id = %d";
 
 
     @Override

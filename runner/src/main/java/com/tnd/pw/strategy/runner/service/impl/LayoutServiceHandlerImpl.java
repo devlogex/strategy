@@ -1,5 +1,6 @@
 package com.tnd.pw.strategy.runner.service.impl;
 
+import com.google.common.reflect.TypeToken;
 import com.tnd.com.ioc.SpringApplicationContext;
 import com.tnd.pw.strategy.common.enums.LayoutType;
 import com.tnd.pw.strategy.common.representations.LayoutRepresentation;
@@ -17,6 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 
 public class LayoutServiceHandlerImpl implements LayoutServiceHandler {
@@ -26,8 +28,8 @@ public class LayoutServiceHandlerImpl implements LayoutServiceHandler {
 
     public LayoutResponse updateLayout(StrategyRequest request) throws Exception {
         Layout layout = layoutService.get(request.getWorkspaceId(), request.getLayoutType());
-        LayoutRepresentation<Long> layoutRep = GsonUtils.toObject(layout.getLayout(), LayoutRepresentation.class);
-        LayoutRepresentation<Long> newLayoutRep = GsonUtils.toObject(request.getLayout(), LayoutRepresentation.class);
+        ArrayList<ArrayList<ArrayList<Long>>> layoutRep = GsonUtils.getGson().fromJson(layout.getLayout(), new TypeToken<ArrayList<ArrayList<ArrayList<Long>>>>(){}.getType());
+        ArrayList<ArrayList<ArrayList<Long>>> newLayoutRep = GsonUtils.getGson().fromJson(request.getLayout(), new TypeToken<ArrayList<ArrayList<ArrayList<Long>>>>(){}.getType());
         if(!checkLayout(layoutRep, newLayoutRep)) {
             LOGGER.error("[LayoutHandlerBuz] updateLayout() - Invalid data request \n layoutEntity: {} \n newLayout: {}", layoutRep, newLayoutRep);
             throw new InvalidDataRequestException("New layout not right !");
@@ -49,9 +51,9 @@ public class LayoutServiceHandlerImpl implements LayoutServiceHandler {
         }
     }
 
-    private boolean checkLayout(LayoutRepresentation<Long> layout, LayoutRepresentation<Long> newLayout) {
+    private boolean checkLayout(ArrayList<ArrayList<ArrayList<Long>>> layout, ArrayList<ArrayList<ArrayList<Long>>> newLayout) {
         HashSet set = new HashSet();
-        for(int i = 0; i < layout.getSize(); i++) {
+        for(int i = 0; i < layout.size(); i++) {
             for(int j = 0; j < layout.get(i).size(); j++) {
                 for(int k = 0; k < layout.get(i).get(j).size(); k++) {
                     set.add(layout.get(i).get(j).get(k));
@@ -59,7 +61,7 @@ public class LayoutServiceHandlerImpl implements LayoutServiceHandler {
             }
         }
         int size = set.size();
-        for(int i = 0; i < newLayout.getSize(); i++) {
+        for(int i = 0; i < newLayout.size(); i++) {
             for(int j = 0; j < newLayout.get(i).size(); j++) {
                 for(int k = 0; k < newLayout.get(i).get(j).size(); k++) {
                     set.add(newLayout.get(i).get(j).get(k));
