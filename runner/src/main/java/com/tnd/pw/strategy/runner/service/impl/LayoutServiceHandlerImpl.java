@@ -4,7 +4,6 @@ import com.google.common.reflect.TypeToken;
 import com.tnd.com.ioc.SpringApplicationContext;
 import com.tnd.pw.strategy.common.enums.LayoutType;
 import com.tnd.pw.strategy.common.representations.LayoutRepresentation;
-import com.tnd.pw.strategy.common.representations.LayoutResponse;
 import com.tnd.pw.strategy.common.requests.StrategyRequest;
 import com.tnd.pw.strategy.common.utils.GsonUtils;
 import com.tnd.pw.strategy.layout.entity.Layout;
@@ -26,8 +25,8 @@ public class LayoutServiceHandlerImpl implements LayoutServiceHandler {
     @Autowired
     private LayoutService layoutService;
 
-    public LayoutResponse updateLayout(StrategyRequest request) throws Exception {
-        Layout layout = layoutService.get(request.getWorkspaceId(), request.getLayoutType());
+    public LayoutRepresentation updateLayout(StrategyRequest request) throws Exception {
+        Layout layout = layoutService.get(request.getLayoutParent(), request.getLayoutType());
         ArrayList<ArrayList<ArrayList<Long>>> layoutRep = GsonUtils.getGson().fromJson(layout.getLayout(), new TypeToken<ArrayList<ArrayList<ArrayList<Long>>>>(){}.getType());
         ArrayList<ArrayList<ArrayList<Long>>> newLayoutRep = GsonUtils.getGson().fromJson(request.getLayout(), new TypeToken<ArrayList<ArrayList<ArrayList<Long>>>>(){}.getType());
         if(!checkLayout(layoutRep, newLayoutRep)) {
@@ -38,7 +37,7 @@ public class LayoutServiceHandlerImpl implements LayoutServiceHandler {
         layoutService.update(layout);
 
         ServiceHandler serviceHandler = getServiceHandler(request.getLayoutType());
-        return serviceHandler.getLayoutInstance(request.getWorkspaceId(), request.getLayoutType());
+        return serviceHandler.getLayoutInstance(request.getLayoutParent(), request.getLayoutType());
     }
 
     private ServiceHandler getServiceHandler(String layoutType) {

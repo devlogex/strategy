@@ -8,17 +8,16 @@ import com.tnd.pw.strategy.layout.service.LayoutService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.IOException;
-import java.util.List;
 
 public class LayoutServiceImpl implements LayoutService {
     @Autowired
     private LayoutDao layoutDao;
 
     @Override
-    public Layout create(Long workspaceId, String type, String layout) throws IOException, DBServiceException {
+    public Layout create(Long parentId, String type, String layout) throws IOException, DBServiceException {
         Layout entity = new Layout();
         entity.setId(System.currentTimeMillis());
-        entity.setWorkspaceId(workspaceId);
+        entity.setParentId(parentId);
         entity.setLayout(layout);
         entity.setType(type);
         layoutDao.create(entity);
@@ -32,9 +31,9 @@ public class LayoutServiceImpl implements LayoutService {
     }
 
     @Override
-    public Layout get(Long workspaceId, String type) throws IOException, DBServiceException, LayoutNotFoundException {
+    public Layout get(Long parentId, String type) throws IOException, DBServiceException, LayoutNotFoundException {
         Layout entity = new Layout();
-        entity.setWorkspaceId(workspaceId);
+        entity.setParentId(parentId);
         entity.setType(type);
         return layoutDao.get(entity);
     }

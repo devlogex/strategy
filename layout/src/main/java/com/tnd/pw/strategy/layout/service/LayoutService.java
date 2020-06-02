@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.util.List;
 
 public interface LayoutService {
-    Layout create(Long workspaceId, String type, String layout) throws IOException, DBServiceException;
+    Layout create(Long parentId, String type, String layout) throws IOException, DBServiceException;
     Layout update(Layout entity) throws IOException, DBServiceException;
-    Layout get(Long workspaceId, String type) throws IOException, DBServiceException, LayoutNotFoundException;
+    Layout get(Long parentId, String type) throws IOException, DBServiceException, LayoutNotFoundException;
 }

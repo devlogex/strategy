@@ -11,4 +11,6 @@ public interface ModelDao {
     void create(Model entity) throws IOException, DBServiceException;
     void update(Model entity) throws IOException, DBServiceException;
     List<Model> get(Model entity) throws IOException, DBServiceException, ModelNotFoundException;
+
+    void remove(Long modelId) throws IOException, DBServiceException;
 }

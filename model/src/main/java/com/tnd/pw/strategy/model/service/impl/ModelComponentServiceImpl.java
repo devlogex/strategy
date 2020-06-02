@@ -15,14 +15,14 @@ public class ModelComponentServiceImpl implements ModelComponentService {
     private ModelComponentDao modelComponentDao;
 
     @Override
-    public ModelComponent create(Long modelId) throws IOException, DBServiceException {
+    public ModelComponent create(Long modelId, String name, String color, String description, String files) throws IOException, DBServiceException {
         ModelComponent entity = new ModelComponent();
         entity.setId(System.currentTimeMillis());
         entity.setModelId(modelId);
-        entity.setColor("#F5F6FA");
-        entity.setDescription("");
-        entity.setName("Model Component Name");
-        entity.setFiles("");
+        entity.setColor(color==null ? "#F5F6FA" : color);
+        entity.setDescription(description==null ? "" : description);
+        entity.setName(name == null ? "Model Component Name" : name);
+        entity.setFiles(files == null ? "" : files);
         modelComponentDao.create(entity);
         return entity;
     }

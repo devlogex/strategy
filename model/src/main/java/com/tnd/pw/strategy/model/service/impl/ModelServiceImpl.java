@@ -42,4 +42,9 @@ public class ModelServiceImpl implements ModelService {
         entity.setTimeFrame(timeFrame);
         return modelDao.get(entity);
     }
+
+    @Override
+    public void remove(Long modelId) throws IOException, DBServiceException {
+        modelDao.remove(modelId);
+    }
 }

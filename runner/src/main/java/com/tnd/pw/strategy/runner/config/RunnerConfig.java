@@ -6,9 +6,20 @@ import com.tnd.pw.strategy.layout.dao.LayoutDao;
 import com.tnd.pw.strategy.layout.dao.impl.LayoutDaoImpl;
 import com.tnd.pw.strategy.layout.service.LayoutService;
 import com.tnd.pw.strategy.layout.service.impl.LayoutServiceImpl;
+import com.tnd.pw.strategy.model.dao.ModelComponentDao;
+import com.tnd.pw.strategy.model.dao.ModelDao;
+import com.tnd.pw.strategy.model.dao.impl.ModelComponentDaoImpl;
+import com.tnd.pw.strategy.model.dao.impl.ModelDaoImpl;
+import com.tnd.pw.strategy.model.service.ModelComponentService;
+import com.tnd.pw.strategy.model.service.ModelService;
+import com.tnd.pw.strategy.model.service.impl.ModelComponentServiceImpl;
+import com.tnd.pw.strategy.model.service.impl.ModelServiceImpl;
 import com.tnd.pw.strategy.runner.handler.LayoutHandler;
+import com.tnd.pw.strategy.runner.handler.ModelHandler;
 import com.tnd.pw.strategy.runner.handler.VisionHandler;
+import com.tnd.pw.strategy.runner.service.ModelServiceHandler;
 import com.tnd.pw.strategy.runner.service.impl.LayoutServiceHandlerImpl;
+import com.tnd.pw.strategy.runner.service.impl.ModelServiceHandlerImpl;
 import com.tnd.pw.strategy.runner.service.impl.VisionServiceHandlerImpl;
 import com.tnd.pw.strategy.vision.dao.VisionComponentDao;
 import com.tnd.pw.strategy.vision.dao.VisionDao;
@@ -89,4 +100,33 @@ public class RunnerConfig {
         return new LayoutServiceHandlerImpl();
     }
 
+    @Bean
+    public ModelDao modelDao(){
+        return new ModelDaoImpl();
+    }
+
+    @Bean
+    public ModelComponentDao modelComponentDao() {
+        return new ModelComponentDaoImpl();
+    }
+
+    @Bean
+    public ModelService modelService() {
+        return new ModelServiceImpl();
+    }
+
+    @Bean
+    public ModelComponentService modelComponentService() {
+        return new ModelComponentServiceImpl();
+    }
+
+    @Bean
+    public ModelServiceHandler modelServiceHandler() {
+        return new ModelServiceHandlerImpl();
+    }
+
+    @Bean
+    public ModelHandler modelHandler() {
+        return new ModelHandler();
+    }
 }

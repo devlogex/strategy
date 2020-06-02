@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.util.List;
 
 public interface ModelComponentService {
-    ModelComponent create(Long modelId) throws IOException, DBServiceException;
+    ModelComponent create(Long modelId, String name, String color, String description, String files) throws IOException, DBServiceException;
     void update(ModelComponent entity) throws IOException, DBServiceException;
     List<ModelComponent> get(Long id, Long modelId) throws IOException, DBServiceException, ModelComponentNotFoundException;
 }

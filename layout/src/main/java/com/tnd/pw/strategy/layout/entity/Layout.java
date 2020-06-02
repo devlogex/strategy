@@ -9,8 +9,8 @@ public class Layout implements Serializable {
 
     @SerializedName("id")
     private Long id;
-    @SerializedName("workspace_id")
-    private Long workspaceId;
+    @SerializedName("parent_id")
+    private Long parentId;
     @SerializedName("type")
     private String type;
     @SerializedName("layout")
@@ -24,12 +24,12 @@ public class Layout implements Serializable {
         this.id = id;
     }
 
-    public Long getWorkspaceId() {
-        return workspaceId;
+    public Long getParentId() {
+        return parentId;
     }
 
-    public void setWorkspaceId(Long workspaceId) {
-        this.workspaceId = workspaceId;
+    public void setParentId(Long parentId) {
+        this.parentId = parentId;
     }
 
     public String getType() {

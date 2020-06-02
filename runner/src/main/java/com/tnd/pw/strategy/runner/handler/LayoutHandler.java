@@ -5,18 +5,12 @@ import com.tnd.common.api.common.base.BaseResponse;
 import com.tnd.common.api.server.BaseHandler;
 import com.tnd.common.api.server.service.annotation.HandlerService;
 import com.tnd.common.api.server.service.annotation.HandlerServiceClass;
-import com.tnd.dbservice.common.exception.DBServiceException;
-import com.tnd.pw.strategy.common.representations.LayoutRepresentation;
-import com.tnd.pw.strategy.common.representations.LayoutResponse;
 import com.tnd.pw.strategy.common.requests.StrategyRequest;
 import com.tnd.pw.strategy.common.utils.GsonUtils;
-import com.tnd.pw.strategy.layout.exception.LayoutNotFoundException;
 import com.tnd.pw.strategy.runner.service.impl.LayoutServiceHandlerImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import java.io.IOException;
 
 @HandlerServiceClass
 public class LayoutHandler implements BaseHandler {

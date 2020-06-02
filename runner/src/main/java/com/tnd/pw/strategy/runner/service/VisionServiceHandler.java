@@ -28,5 +28,5 @@ public interface VisionServiceHandler extends ServiceHandler{
     ListVisionComponentRep addVisionComponent(StrategyRequest request) throws IOException, DBServiceException, VisionNotFoundException, LayoutNotFoundException, VisionComponentNotFoundException;
     VisionComponentRep updateVisionComponent(StrategyRequest request) throws DBServiceException, IOException, VisionComponentNotFoundException;
     ListVisionComponentRep getVisionComponent(StrategyRequest request) throws DBServiceException, IOException;
-    ListVisionComponentRep removeVisionComponent(StrategyRequest data) throws IOException, DBServiceException, VisionComponentNotFoundException;
+    ListVisionComponentRep removeVisionComponent(StrategyRequest data) throws IOException, DBServiceException, VisionComponentNotFoundException, LayoutNotFoundException;
 }

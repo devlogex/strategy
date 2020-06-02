@@ -30,6 +30,8 @@ public class ModelDaoImpl implements ModelDao {
             "SELECT * FROM model WHERE workspace_id = %d AND time_frame = '%s'";
     private static final String SQL_SELECT_BY_WORKSPACE_ID_TYPE_TIME_FRAME =
             "SELECT * FROM model WHERE workspace_id = %d AND type = %d AND time_frame = '%s'";
+    private static final String SQL_DELETE =
+            "DELETE FROM model WHERE id = %d";
 
     @Override
     public void create(Model entity) throws IOException, DBServiceException {
@@ -72,5 +74,11 @@ public class ModelDaoImpl implements ModelDao {
             throw new ModelNotFoundException();
         }
         return entities;
+    }
+
+    @Override
+    public void remove(Long modelId) throws IOException, DBServiceException {
+        String query = String.format(SQL_DELETE, modelId);
+        dataHelper.executeSQL(query);
     }
 }

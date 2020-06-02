@@ -15,13 +15,13 @@ public class LayoutDaoImpl implements LayoutDao {
     @Autowired
     private DataHelper dataHelper;
 
-    private static final String SQL_CREATE = "INSERT INTO layout(id, workspace_id, type, layout) values(%d, %d, '%s', '%s')";
+    private static final String SQL_CREATE = "INSERT INTO layout(id, parent_id, type, layout) values(%d, %d, '%s', '%s')";
     private static final String SQL_UPDATE = "UPDATE layout SET layout = '%s' WHERE id = %d";
-    private static final String SQL_SELECT = "SELECT * FROM layout where workspace_id = %d AND type = '%s'";
+    private static final String SQL_SELECT = "SELECT * FROM layout where parent_id = %d AND type = '%s'";
 
     @Override
     public void create(Layout entity) throws IOException, DBServiceException {
-        String query = String.format(SQL_CREATE, entity.getId(), entity.getWorkspaceId(), entity.getType(), entity.getLayout());
+        String query = String.format(SQL_CREATE, entity.getId(), entity.getParentId(), entity.getType(), entity.getLayout());
         dataHelper.executeSQL(query);
     }
 
@@ -33,7 +33,7 @@ public class LayoutDaoImpl implements LayoutDao {
 
     @Override
     public Layout get(Layout entity) throws IOException, DBServiceException, LayoutNotFoundException {
-        String query = String.format(SQL_SELECT, entity.getWorkspaceId(), entity.getType());
+        String query = String.format(SQL_SELECT, entity.getParentId(), entity.getType());
         List<Layout> entities = dataHelper.querySQL(query, Layout.class);
         if(CollectionUtils.isEmpty(entities)) {
             throw new LayoutNotFoundException();
