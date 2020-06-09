@@ -37,4 +37,12 @@ public class LayoutServiceImpl implements LayoutService {
         entity.setType(type);
         return layoutDao.get(entity);
     }
+
+    @Override
+    public void remove(Long parentId, String type) throws IOException, DBServiceException {
+        Layout entity = new Layout();
+        entity.setParentId(parentId);
+        entity.setType(type);
+        layoutDao.remove(entity);
+    }
 }

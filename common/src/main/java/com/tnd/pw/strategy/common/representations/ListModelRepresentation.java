@@ -10,10 +10,13 @@ public class ListModelRepresentation implements Serializable {
 
     @SerializedName("list_model")
     private ArrayList<ModelRepresentation> listModel;
-    @SerializedName("new_list_component")
+    @SerializedName("list_component")
     private Object listComponent;
 
     public ArrayList<ModelRepresentation> getListModel() {
+        if(listModel == null) {
+            listModel = new ArrayList<>();
+        }
         return listModel;
     }
 
@@ -22,6 +25,9 @@ public class ListModelRepresentation implements Serializable {
     }
 
     public Object getListComponent() {
+        if(listComponent == null) {
+            listComponent = new ArrayList<>();
+        }
         return listComponent;
     }
 

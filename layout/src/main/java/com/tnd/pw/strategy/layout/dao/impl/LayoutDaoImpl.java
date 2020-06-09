@@ -15,9 +15,15 @@ public class LayoutDaoImpl implements LayoutDao {
     @Autowired
     private DataHelper dataHelper;
 
-    private static final String SQL_CREATE = "INSERT INTO layout(id, parent_id, type, layout) values(%d, %d, '%s', '%s')";
-    private static final String SQL_UPDATE = "UPDATE layout SET layout = '%s' WHERE id = %d";
-    private static final String SQL_SELECT = "SELECT * FROM layout where parent_id = %d AND type = '%s'";
+    private static final String SQL_CREATE =
+            "INSERT INTO layout(id, parent_id, type, layout) " +
+                    "values(%d, %d, '%s', '%s')";
+    private static final String SQL_UPDATE =
+            "UPDATE layout SET layout = '%s' WHERE id = %d";
+    private static final String SQL_SELECT =
+            "SELECT * FROM layout where parent_id = %d AND type = '%s'";
+    private static final String SQL_DELETE =
+            "DELETE FROM layout WHERE parent_id = %d AND type = '%s'";
 
     @Override
     public void create(Layout entity) throws IOException, DBServiceException {
@@ -39,5 +45,11 @@ public class LayoutDaoImpl implements LayoutDao {
             throw new LayoutNotFoundException();
         }
         return entities.get(0);
+    }
+
+    @Override
+    public void remove(Layout entity) throws IOException, DBServiceException {
+        String query = String.format(SQL_DELETE, entity.getParentId(), entity.getType());
+        dataHelper.executeSQL(query);
     }
 }

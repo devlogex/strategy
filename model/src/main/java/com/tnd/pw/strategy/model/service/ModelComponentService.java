@@ -11,4 +11,5 @@ public interface ModelComponentService {
     ModelComponent create(Long modelId, String name, String color, String description, String files) throws IOException, DBServiceException;
     void update(ModelComponent entity) throws IOException, DBServiceException;
     List<ModelComponent> get(Long id, Long modelId) throws IOException, DBServiceException, ModelComponentNotFoundException;
+    void remove(Long id, Long modelId) throws IOException, DBServiceException;
 }

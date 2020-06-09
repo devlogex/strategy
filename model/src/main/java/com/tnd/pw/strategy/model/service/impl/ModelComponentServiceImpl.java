@@ -39,4 +39,12 @@ public class ModelComponentServiceImpl implements ModelComponentService {
         entity.setModelId(modelId);
         return modelComponentDao.get(entity);
     }
+
+    @Override
+    public void remove(Long id, Long modelId) throws IOException, DBServiceException {
+        ModelComponent entity = new ModelComponent();
+        entity.setId(id);
+        entity.setModelId(modelId);
+        modelComponentDao.remove(entity);
+    }
 }

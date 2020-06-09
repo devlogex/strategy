@@ -11,4 +11,5 @@ public interface ModelComponentDao {
     void create(ModelComponent entity) throws IOException, DBServiceException;
     void update(ModelComponent entity) throws IOException, DBServiceException;
     List<ModelComponent> get(ModelComponent entity) throws IOException, DBServiceException, ModelComponentNotFoundException;
+    void remove(ModelComponent entity) throws IOException, DBServiceException;
 }

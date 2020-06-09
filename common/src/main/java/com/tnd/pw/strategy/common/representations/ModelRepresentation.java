@@ -25,7 +25,7 @@ public class ModelRepresentation implements Serializable {
     public ModelRepresentation() {
     }
 
-    public ModelRepresentation(Long id, String name, Long workspaceId, Integer type, String timeFrame, String files, String description) {
+    public ModelRepresentation(Long id, String name, Long workspaceId, String type, String timeFrame, String files, String description) {
         this.id = id;
         this.name = name;
         this.workspaceId = workspaceId;

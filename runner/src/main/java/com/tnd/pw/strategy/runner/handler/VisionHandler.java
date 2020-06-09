@@ -83,7 +83,7 @@ public class VisionHandler implements BaseHandler {
 
     @HandlerService(path = "/strategy/vision_component/delete", protocol = "POST",
             dataRequestType = "com.tnd.pw.strategy.common.requests.StrategyRequest")
-    public BaseResponse<ListVisionComponentRep> removeVisionComponent(BaseRequest<StrategyRequest> request) throws DBServiceException, IOException, VisionComponentNotFoundException {
+    public BaseResponse<ListVisionComponentRep> removeVisionComponent(BaseRequest<StrategyRequest> request) throws DBServiceException, IOException, VisionComponentNotFoundException, LayoutNotFoundException {
         LOGGER.info("[VisionHandler] removeVisionComponent() - request: {}", GsonUtils.convertToString(request));
         ListVisionComponentRep response = visionServiceHandler.removeVisionComponent(request.getData());
         LOGGER.info("[VisionHandler] removeVisionComponent() - response: {}", GsonUtils.convertToString(response));

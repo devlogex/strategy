@@ -11,6 +11,7 @@ import com.tnd.pw.strategy.layout.service.LayoutService;
 import com.tnd.pw.strategy.runner.exception.InvalidDataRequestException;
 ;
 import com.tnd.pw.strategy.runner.service.LayoutServiceHandler;
+import com.tnd.pw.strategy.runner.service.ModelServiceHandler;
 import com.tnd.pw.strategy.runner.service.ServiceHandler;
 import com.tnd.pw.strategy.runner.service.VisionServiceHandler;
 import org.slf4j.Logger;
@@ -41,10 +42,12 @@ public class LayoutServiceHandlerImpl implements LayoutServiceHandler {
     }
 
     private ServiceHandler getServiceHandler(String layoutType) {
-        String visionComponent = LayoutType.VISION_COMPONENT.name();
-        switch (layoutType) {
-            case "VISION_COMPONENT":
+        LayoutType type = LayoutType.valueOf(layoutType);
+        switch (type) {
+            case VISION_COMPONENT:
                 return SpringApplicationContext.getBean(VisionServiceHandler.class);
+            case MODEL:case MODEL_COMPONENT:
+                return SpringApplicationContext.getBean(ModelServiceHandler.class);
             default:
                 throw new IllegalStateException("Unexpected value: " + layoutType);
         }

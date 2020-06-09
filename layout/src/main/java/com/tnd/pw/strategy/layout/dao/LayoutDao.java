@@ -11,4 +11,5 @@ public interface LayoutDao {
     void create(Layout entity) throws IOException, DBServiceException;
     void update(Layout entity) throws IOException, DBServiceException;
     Layout get(Layout entity) throws IOException, DBServiceException, LayoutNotFoundException;
+    void remove(Layout entity) throws IOException, DBServiceException;
 }

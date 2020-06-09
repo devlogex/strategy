@@ -54,7 +54,7 @@ public class RepresentationBuilder {
 
     public static ListVisionComponentRep buildListVisionComponentRep(List<VisionComponent> components, Layout layout) {
         ListVisionComponentRep visionComponentReps = new ListVisionComponentRep();
-        ArrayList<ArrayList<ArrayList<Long>>> layoutEntity = buildLayout(layout, Long.class);
+        ArrayList<ArrayList<ArrayList<Long>>> layoutEntity = GsonUtils.getGson().fromJson(layout.getLayout(), new TypeToken<ArrayList<ArrayList<ArrayList<Long>>>>(){}.getType());
         for(int i = 0; i < layoutEntity.size(); i++) {
             for(int j = 0; j < layoutEntity.get(i).size(); j++) {
                 for(int k = 0; k < layoutEntity.get(i).get(j).size(); k++) {
@@ -70,9 +70,9 @@ public class RepresentationBuilder {
         return visionComponentReps;
     }
 
-    public static <T> ArrayList<ArrayList<ArrayList<T>>> buildLayout(Layout layout, Class<T> clazz) {
-        return GsonUtils.getGson().fromJson(layout.getLayout(), new TypeToken<ArrayList<ArrayList<ArrayList<T>>>>(){}.getType());
-    }
+//    public static <T> ArrayList<ArrayList<ArrayList<T>>> buildLayout(Layout layout, Class<T> clazz) {
+//        return GsonUtils.getGson().fromJson(layout.getLayout(), new TypeToken<ArrayList<ArrayList<ArrayList<Class<T>>>>>(){}.getType());
+//    }
 
     public static ListModelRepresentation buildListModelRepresentation(List<Model> models, Layout layout, Object components) {
         ListModelRepresentation modelRepresentations = new ListModelRepresentation();
@@ -113,6 +113,11 @@ public class RepresentationBuilder {
         modelComponentRep.setDescription(modelComponent.getDescription());
         modelComponentRep.setModelId(modelComponent.getModelId());
         return modelComponentRep;
+    }
+
+    public static LayoutRepresentation buildListModelComponentRep(Layout layout, List<ModelComponent> components) {
+        ArrayList<ArrayList<ArrayList<Long>>> layoutEntity = GsonUtils.getGson().fromJson(layout.getLayout(), new TypeToken<ArrayList<ArrayList<ArrayList<Long>>>>(){}.getType());
+        return buildListModelComponentRep(layoutEntity, components);
     }
 
     public static LayoutRepresentation buildListModelComponentRep(ArrayList<ArrayList<ArrayList<Long>>> layoutEntity, List<ModelComponent> components) {

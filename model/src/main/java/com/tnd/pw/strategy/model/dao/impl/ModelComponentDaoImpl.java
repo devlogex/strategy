@@ -24,6 +24,10 @@ public class ModelComponentDaoImpl  implements ModelComponentDao {
             "SELECT * FROM model_component WHERE id = %d";
     private static final String SQL_SELECT_BY_MODEL_ID =
             "SELECT * FROM model_component WHERE model_id = %d";
+    private static final String SQL_DELETE_BY_ID =
+            "DELETE FROM model_component WHERE id = %d";
+    private static final String SQL_DELETE_BY_MODEL_ID =
+            "DELETE FROM model_component WHERE model_id = %d";
 
     @Override
     public void create(ModelComponent entity) throws IOException, DBServiceException {
@@ -53,5 +57,17 @@ public class ModelComponentDaoImpl  implements ModelComponentDao {
             throw new ModelComponentNotFoundException();
         }
         return entities;
+    }
+
+    @Override
+    public void remove(ModelComponent entity) throws IOException, DBServiceException {
+        String query;
+        if(entity.getId() != null) {
+            query = String.format(SQL_DELETE_BY_ID, entity.getId());
+        }
+        else {
+            query = String.format(SQL_DELETE_BY_ID, entity.getModelId());
+        }
+        dataHelper.executeSQL(query);
     }
 }

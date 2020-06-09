@@ -19,7 +19,7 @@ public interface ModelServiceHandler  extends ServiceHandler{
     ListModelRepresentation removeModel(StrategyRequest request) throws IOException, DBServiceException, ModelNotFoundException, LayoutNotFoundException;
 
     LayoutRepresentation addModelComponent(StrategyRequest request) throws IOException, DBServiceException, ModelComponentNotFoundException, LayoutNotFoundException;
-    ModelComponentRep updateModelComponent(StrategyRequest request) throws DBServiceException, IOException;
-    LayoutRepresentation getModelComponent(StrategyRequest request) throws DBServiceException, IOException;
-    LayoutRepresentation removeModelComponent(StrategyRequest request) throws IOException, DBServiceException;
+    ModelComponentRep updateModelComponent(StrategyRequest request) throws DBServiceException, IOException, ModelComponentNotFoundException;
+    LayoutRepresentation getModelComponent(StrategyRequest request) throws DBServiceException, IOException, ModelComponentNotFoundException, LayoutNotFoundException;
+    LayoutRepresentation removeModelComponent(StrategyRequest request) throws IOException, DBServiceException, ModelComponentNotFoundException, LayoutNotFoundException;
 }
