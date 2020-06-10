@@ -5,4 +5,5 @@ import com.tnd.pw.strategy.common.requests.StrategyRequest;
 
 public interface LayoutServiceHandler {
     LayoutRepresentation updateLayout(StrategyRequest request) throws Exception;
+    LayoutRepresentation updateLayoutList(StrategyRequest data) throws Exception;
 }

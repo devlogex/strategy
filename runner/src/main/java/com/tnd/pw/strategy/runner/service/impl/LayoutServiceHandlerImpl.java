@@ -38,6 +38,24 @@ public class LayoutServiceHandlerImpl implements LayoutServiceHandler {
         return serviceHandler.getLayoutInstance(request.getLayoutParent(), request.getLayoutType());
     }
 
+    @Override
+    public LayoutRepresentation updateLayoutList(StrategyRequest request) throws Exception{
+        Layout layout = layoutService.get(request.getLayoutParent(), request.getLayoutType());
+        ArrayList<ArrayList<ArrayList<Long>>> layoutRep = GsonUtils.getGson().fromJson(layout.getLayout(), new TypeToken<ArrayList<ArrayList<ArrayList<Long>>>>(){}.getType());
+        ArrayList<Long> newLayoutRep = GsonUtils.getGson().fromJson(request.getLayout(), new TypeToken<ArrayList<Long>>(){}.getType());
+        if(!checkLayoutList(layoutRep, newLayoutRep)) {
+            LOGGER.error("[LayoutHandlerBuz] updateLayout() - Invalid data request \n layoutEntity: {} \n newLayout: {}", layoutRep, newLayoutRep);
+            throw new InvalidDataRequestException("New layout not right !");
+        }
+        for(int i = 0; i < newLayoutRep.size(); i++) {
+            layoutRep.get(i).get(0).set(0, newLayoutRep.get(i));
+        }
+        layout.setLayout(GsonUtils.convertToString(layoutRep));
+        layoutService.update(layout);
+        ServiceHandler serviceHandler = getServiceHandler(request.getLayoutType());
+        return serviceHandler.getLayoutInstance(request.getLayoutParent(), request.getLayoutType());
+    }
+
     private ServiceHandler getServiceHandler(String layoutType) {
         LayoutType type = LayoutType.valueOf(layoutType);
         switch (type) {
@@ -72,4 +90,19 @@ public class LayoutServiceHandlerImpl implements LayoutServiceHandler {
         return size == set.size();
     }
 
+    private boolean checkLayoutList(ArrayList<ArrayList<ArrayList<Long>>> layout, ArrayList<Long> newLayout) {
+        HashSet set = new HashSet();
+        for(int i = 0; i < layout.size(); i++) {
+            for(int j = 0; j < layout.get(i).size(); j++) {
+                for(int k = 0; k < layout.get(i).get(j).size(); k++) {
+                    set.add(layout.get(i).get(j).get(k));
+                }
+            }
+        }
+        int size = set.size();
+        for(int i = 0; i < newLayout.size(); i++) {
+            set.add(newLayout.get(i));
+        }
+        return size == set.size();
+    }
 }

@@ -26,6 +26,7 @@ import com.tnd.pw.strategy.runner.handler.LayoutHandler;
 import com.tnd.pw.strategy.runner.handler.ModelHandler;
 import com.tnd.pw.strategy.runner.handler.PositionHandler;
 import com.tnd.pw.strategy.runner.handler.VisionHandler;
+import com.tnd.pw.strategy.runner.service.LayoutServiceHandler;
 import com.tnd.pw.strategy.runner.service.ModelServiceHandler;
 import com.tnd.pw.strategy.runner.service.PositionServiceHandler;
 import com.tnd.pw.strategy.runner.service.impl.LayoutServiceHandlerImpl;
@@ -107,7 +108,7 @@ public class RunnerConfig {
     }
 
     @Bean
-    LayoutServiceHandlerImpl layoutServiceHandler() {
+    LayoutServiceHandler layoutServiceHandler() {
         return new LayoutServiceHandlerImpl();
     }
 
