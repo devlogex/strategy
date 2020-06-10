@@ -12,7 +12,7 @@ import com.tnd.pw.strategy.model.exception.ModelNotFoundException;
 
 import java.io.IOException;
 
-public interface ModelServiceHandler  extends ServiceHandler{
+public interface ModelServiceHandler extends ServiceHandler{
     ListModelRepresentation addModel(StrategyRequest request) throws IOException, DBServiceException, ModelNotFoundException;
     ModelRepresentation updateModel(StrategyRequest request) throws DBServiceException, IOException, ModelNotFoundException;
     ListModelRepresentation getModel(StrategyRequest request) throws DBServiceException, IOException, LayoutNotFoundException;

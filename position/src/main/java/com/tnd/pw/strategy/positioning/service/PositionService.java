@@ -8,7 +8,8 @@ import java.io.IOException;
 import java.util.List;
 
 public interface PositionService {
-    Position create(Long workspaceId, Integer type) throws IOException, DBServiceException;
+    Position create(Long workspaceId) throws IOException, DBServiceException;
     void update(Position entity) throws IOException, DBServiceException;
-    List<Position> get(Long id, Long workspaceId, Integer type, String timeFrame) throws IOException, DBServiceException, PositionNotFoundException;
+    List<Position> get(Long id, Long workspaceId, String buzType, String timeFrame) throws IOException, DBServiceException, PositionNotFoundException;
+    void remove(Long positionId) throws IOException, DBServiceException;
 }

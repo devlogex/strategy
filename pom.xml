@@ -15,7 +15,7 @@
         <module>dbservice</module>
         <module>layout</module>
         <module>model</module>
-        <module>positioning</module>
+        <module>position</module>
     </modules>
 
     <properties>

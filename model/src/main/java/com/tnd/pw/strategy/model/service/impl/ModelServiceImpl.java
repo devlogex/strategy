@@ -24,6 +24,7 @@ public class ModelServiceImpl implements ModelService {
         entity.setTimeFrame("");
         entity.setDescription("");
         entity.setFiles("");
+        entity.setBuzType("Business");
         modelDao.create(entity);
         return entity;
     }

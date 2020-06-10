@@ -176,7 +176,7 @@ public class VisionServiceHandlerImpl implements VisionServiceHandler {
         VisionComponent component = null;
         try {
             component = visionComponentService.getById(request.getComponentId());
-            layout = layoutService.get(request.getVisionId(), LayoutType.VISION_COMPONENT.name());
+            layout = layoutService.get(component.getVisionId(), LayoutType.VISION_COMPONENT.name());
         } catch (VisionComponentNotFoundException e) {
             LOGGER.error("[VisionHandlerBuz] VisionComponentNotFoundException with component_id: {}", request.getComponentId());
             throw e;

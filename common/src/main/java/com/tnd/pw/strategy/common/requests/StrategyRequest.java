@@ -7,6 +7,10 @@ import java.io.Serializable;
 public class StrategyRequest implements Serializable {
     private static final long serialVersionUID = 1L;
 
+    @SerializedName("position_id")
+    private Long positionId;
+    @SerializedName("position_name")
+    private String positionName;
     @SerializedName("model_id")
     private Long modelId;
     @SerializedName("model_name")
@@ -32,6 +36,8 @@ public class StrategyRequest implements Serializable {
     private String color;
     @SerializedName("description")
     private String description;
+    @SerializedName("buz_type")
+    private String buzType;
 
     @SerializedName("layout")
     private String layout;
@@ -39,6 +45,22 @@ public class StrategyRequest implements Serializable {
     private String layoutType;
     @SerializedName("layout_parent")
     private Long layoutParent;
+
+    public String getPositionName() {
+        return positionName;
+    }
+
+    public void setPositionName(String positionName) {
+        this.positionName = positionName;
+    }
+
+    public Long getPositionId() {
+        return positionId;
+    }
+
+    public void setPositionId(Long positionId) {
+        this.positionId = positionId;
+    }
 
     public Long getVisionId() {
         return visionId;
@@ -158,5 +180,13 @@ public class StrategyRequest implements Serializable {
 
     public void setModelName(String modelName) {
         this.modelName = modelName;
+    }
+
+    public String getBuzType() {
+        return buzType;
+    }
+
+    public void setBuzType(String buzType) {
+        this.buzType = buzType;
     }
 }

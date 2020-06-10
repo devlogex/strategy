@@ -11,4 +11,5 @@ public interface PositionComponentDao {
     void create(PositionComponent entity) throws IOException, DBServiceException;
     void update(PositionComponent entity) throws IOException, DBServiceException;
     List<PositionComponent> get(PositionComponent entity) throws IOException, DBServiceException, PositionComponentNotFoundException;
+    void remove(PositionComponent entity) throws IOException, DBServiceException;
 }

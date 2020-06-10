@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 
-public class ModelRepresentation implements Serializable {
+public class PositionRepresentation implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @SerializedName("id")
@@ -23,19 +23,6 @@ public class ModelRepresentation implements Serializable {
     private String files;
     @SerializedName("description")
     private String description;
-
-    public ModelRepresentation() {
-    }
-
-    public ModelRepresentation(Long id, String name, Long workspaceId, String type, String timeFrame, String files, String description) {
-        this.id = id;
-        this.name = name;
-        this.workspaceId = workspaceId;
-        this.type = type;
-        this.timeFrame = timeFrame;
-        this.files = files;
-        this.description = description;
-    }
 
     public Long getId() {
         return id;
@@ -59,6 +46,14 @@ public class ModelRepresentation implements Serializable {
 
     public void setWorkspaceId(Long workspaceId) {
         this.workspaceId = workspaceId;
+    }
+
+    public String getBuzType() {
+        return buzType;
+    }
+
+    public void setBuzType(String buzType) {
+        this.buzType = buzType;
     }
 
     public String getType() {
@@ -91,13 +86,5 @@ public class ModelRepresentation implements Serializable {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public String getBuzType() {
-        return buzType;
-    }
-
-    public void setBuzType(String buzType) {
-        this.buzType = buzType;
     }
 }

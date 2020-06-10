@@ -14,12 +14,23 @@ import com.tnd.pw.strategy.model.service.ModelComponentService;
 import com.tnd.pw.strategy.model.service.ModelService;
 import com.tnd.pw.strategy.model.service.impl.ModelComponentServiceImpl;
 import com.tnd.pw.strategy.model.service.impl.ModelServiceImpl;
+import com.tnd.pw.strategy.positioning.dao.PositionComponentDao;
+import com.tnd.pw.strategy.positioning.dao.PositionDao;
+import com.tnd.pw.strategy.positioning.dao.impl.PositionComponentDaoImpl;
+import com.tnd.pw.strategy.positioning.dao.impl.PositionDaoImpl;
+import com.tnd.pw.strategy.positioning.service.PositionComponentService;
+import com.tnd.pw.strategy.positioning.service.PositionService;
+import com.tnd.pw.strategy.positioning.service.impl.PositionComponentServiceImpl;
+import com.tnd.pw.strategy.positioning.service.impl.PositionServiceImpl;
 import com.tnd.pw.strategy.runner.handler.LayoutHandler;
 import com.tnd.pw.strategy.runner.handler.ModelHandler;
+import com.tnd.pw.strategy.runner.handler.PositionHandler;
 import com.tnd.pw.strategy.runner.handler.VisionHandler;
 import com.tnd.pw.strategy.runner.service.ModelServiceHandler;
+import com.tnd.pw.strategy.runner.service.PositionServiceHandler;
 import com.tnd.pw.strategy.runner.service.impl.LayoutServiceHandlerImpl;
 import com.tnd.pw.strategy.runner.service.impl.ModelServiceHandlerImpl;
+import com.tnd.pw.strategy.runner.service.impl.PositionServiceHandlerImpl;
 import com.tnd.pw.strategy.runner.service.impl.VisionServiceHandlerImpl;
 import com.tnd.pw.strategy.vision.dao.VisionComponentDao;
 import com.tnd.pw.strategy.vision.dao.VisionDao;
@@ -128,5 +139,35 @@ public class RunnerConfig {
     @Bean
     public ModelHandler modelHandler() {
         return new ModelHandler();
+    }
+
+    @Bean
+    public PositionDao positionDao(){
+        return new PositionDaoImpl();
+    }
+
+    @Bean
+    public PositionComponentDao positionComponentDao() {
+        return new PositionComponentDaoImpl();
+    }
+
+    @Bean
+    public PositionService positionService() {
+        return new PositionServiceImpl();
+    }
+
+    @Bean
+    public PositionComponentService positionComponentService() {
+        return new PositionComponentServiceImpl();
+    }
+
+    @Bean
+    public PositionServiceHandler positionServiceHandler() {
+        return new PositionServiceHandlerImpl();
+    }
+
+    @Bean
+    public PositionHandler positionHandler() {
+        return new PositionHandler();
     }
 }

@@ -16,10 +16,10 @@ public class ModelDaoImpl implements ModelDao {
     private DataHelper dataHelper;
 
     private static final String SQL_CREATE =
-            "INSERT INTO model(id, workspace_id, name, type, time_frame, description, files) " +
-                    "values(%d, %d, '%s', %d, '%s', '%s', '%s')";
+            "INSERT INTO model(id, workspace_id, name, type, buz_type, time_frame, description, files) " +
+                    "values(%d, %d, '%s', %d, '%s', '%s', '%s', '%s')";
     private static final String SQL_UPDATE =
-            "UPDATE model SET name = '%s', time_frame = '%s', description = '%s', files = '%s' WHERE id = %d";
+            "UPDATE model SET name = '%s', time_frame = '%s', buz_type = '%s', description = '%s', files = '%s' WHERE id = %d";
     private static final String SQL_SELECT_BY_ID =
             "SELECT * FROM model WHERE id = %d";
     private static final String SQL_SELECT_BY_WORKSPACE_ID =
@@ -30,20 +30,28 @@ public class ModelDaoImpl implements ModelDao {
             "SELECT * FROM model WHERE workspace_id = %d AND time_frame = '%s'";
     private static final String SQL_SELECT_BY_WORKSPACE_ID_TYPE_TIME_FRAME =
             "SELECT * FROM model WHERE workspace_id = %d AND type = %d AND time_frame = '%s'";
+    private static final String SQL_SELECT_BY_WORKSPACE_ID_BUZ_TYPE =
+            "SELECT * FROM model WHERE workspace_id = %d AND buz_type = '%s'";
+    private static final String SQL_SELECT_BY_WORKSPACE_ID_TIME_FRAME_BUZ_TYPE =
+            "SELECT * FROM model WHERE workspace_id = %d AND time_frame = '%s' AND buz_type = '%s'";
+    private static final String SQL_SELECT_BY_WORKSPACE_ID_TIME_FRAME_BUZ_TYPE_TYPE =
+            "SELECT * FROM model WHERE workspace_id = %d AND time_frame = '%s' AND buz_type = '%s' AND type = %d";
+    private static final String SQL_SELECT_BY_WORKSPACE_ID_BUZ_TYPE_TYPE =
+            "SELECT * FROM model WHERE workspace_id = %d AND buz_type = '%s' AND type = %d";
     private static final String SQL_DELETE =
             "DELETE FROM model WHERE id = %d";
 
     @Override
     public void create(Model entity) throws IOException, DBServiceException {
         String query = String.format(SQL_CREATE, entity.getId(), entity.getWorkspaceId(), entity.getName(),
-                entity.getType(), entity.getTimeFrame(), entity.getDescription(), entity.getFiles());
+                entity.getType(), entity.getBuzType(), entity.getTimeFrame(), entity.getDescription(), entity.getFiles());
         dataHelper.executeSQL(query);
     }
 
     @Override
     public void update(Model entity) throws IOException, DBServiceException {
         String query = String.format(SQL_UPDATE, entity.getName(),
-                entity.getTimeFrame(), entity.getDescription(), entity.getFiles(), entity.getId());
+                entity.getTimeFrame(), entity.getBuzType(), entity.getDescription(), entity.getFiles(), entity.getId());
         dataHelper.executeSQL(query);
     }
 
@@ -53,17 +61,37 @@ public class ModelDaoImpl implements ModelDao {
         if(entity.getId() != null) {
             query = String.format(SQL_SELECT_BY_ID, entity.getId());
         }
-        else if(entity.getTimeFrame() != null && entity.getType() != null) {
-            query = String.format(SQL_SELECT_BY_WORKSPACE_ID_TYPE_TIME_FRAME,
-                    entity.getWorkspaceId(), entity.getType(), entity.getTimeFrame());
-        }
-        else if(entity.getType() != null) {
-            query = String.format(SQL_SELECT_BY_WORKSPACE_ID_TYPE,
-                    entity.getWorkspaceId(), entity.getType());
+        else if(entity.getBuzType() != null) {
+            if(entity.getTimeFrame() != null && entity.getType() != null) {
+                query = String.format(SQL_SELECT_BY_WORKSPACE_ID_TIME_FRAME_BUZ_TYPE_TYPE,
+                        entity.getWorkspaceId(), entity.getTimeFrame(), entity.getBuzType(), entity.getType());
+            }
+            else if(entity.getTimeFrame() != null) {
+                query = String.format(SQL_SELECT_BY_WORKSPACE_ID_TIME_FRAME_BUZ_TYPE,
+                        entity.getWorkspaceId(), entity.getTimeFrame(), entity.getBuzType());
+            }
+            else if(entity.getType() != null) {
+                query = String.format(SQL_SELECT_BY_WORKSPACE_ID_BUZ_TYPE_TYPE,
+                        entity.getWorkspaceId(), entity.getBuzType(), entity.getType());
+            }
+            else {
+                query = String.format(SQL_SELECT_BY_WORKSPACE_ID_BUZ_TYPE,
+                        entity.getWorkspaceId(), entity.getBuzType());
+            }
         }
         else if(entity.getTimeFrame() != null) {
-            query = String.format(SQL_SELECT_BY_WORKSPACE_ID_TIME_FRAME,
-                    entity.getWorkspaceId(), entity.getTimeFrame());
+            if(entity.getType() != null) {
+                query = String.format(SQL_SELECT_BY_WORKSPACE_ID_TYPE_TIME_FRAME,
+                        entity.getWorkspaceId(), entity.getType(), entity.getTimeFrame());
+            }
+            else {
+                query = String.format(SQL_SELECT_BY_WORKSPACE_ID_TIME_FRAME,
+                        entity.getWorkspaceId(), entity.getTimeFrame());
+            }
+        }
+        else if(entity.getType() != null){
+            query = String.format(SQL_SELECT_BY_WORKSPACE_ID_TYPE,
+                    entity.getWorkspaceId(), entity.getType());
         }
         else {
             query = String.format(SQL_SELECT_BY_WORKSPACE_ID,

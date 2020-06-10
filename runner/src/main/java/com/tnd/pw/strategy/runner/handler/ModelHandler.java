@@ -10,12 +10,9 @@ import com.tnd.pw.strategy.common.representations.*;
 import com.tnd.pw.strategy.common.requests.StrategyRequest;
 import com.tnd.pw.strategy.common.utils.GsonUtils;
 import com.tnd.pw.strategy.layout.exception.LayoutNotFoundException;
-import com.tnd.pw.strategy.model.entity.ModelComponent;
 import com.tnd.pw.strategy.model.exception.ModelComponentNotFoundException;
 import com.tnd.pw.strategy.model.exception.ModelNotFoundException;
 import com.tnd.pw.strategy.runner.service.ModelServiceHandler;
-import com.tnd.pw.strategy.vision.exception.VisionComponentNotFoundException;
-import com.tnd.pw.strategy.vision.exception.VisionNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,7 +54,7 @@ public class ModelHandler  implements BaseHandler {
 
     @HandlerService(path = "/strategy/model/delete", protocol = "POST",
             dataRequestType = "com.tnd.pw.strategy.common.requests.StrategyRequest")
-    public BaseResponse<ListModelRepresentation> removeModel(BaseRequest<StrategyRequest> request) throws DBServiceException, IOException, VisionComponentNotFoundException, ModelNotFoundException, LayoutNotFoundException {
+    public BaseResponse<ListModelRepresentation> removeModel(BaseRequest<StrategyRequest> request) throws DBServiceException, IOException, ModelNotFoundException, LayoutNotFoundException {
         LOGGER.info("[ModelHandler] removeModel() - request: {}", GsonUtils.convertToString(request));
         ListModelRepresentation response = modelServiceHandler.removeModel(request.getData());
         LOGGER.info("[ModelHandler] removeModel() - response: {}", GsonUtils.convertToString(response));

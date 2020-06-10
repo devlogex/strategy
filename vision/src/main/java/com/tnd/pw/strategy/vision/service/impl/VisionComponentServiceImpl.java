@@ -22,7 +22,7 @@ public class VisionComponentServiceImpl implements VisionComponentService {
         entity.setName(name == null ? "Strategy..." : name);
         entity.setVisionId(visionId);
         entity.setSummary(summary == null ? "Summary..." : summary);
-        entity.setColor(color == null ? "#F5F6FA" : color);
+        entity.setColor(color == null ? "#E9644F" : color);
         entity.setDescription(description == null ? "" : description);
         entity.setFiles(files == null ? "" : files);
         visionComponentDao.create(entity);

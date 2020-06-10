@@ -81,6 +81,9 @@ public class ModelServiceHandlerImpl implements ModelServiceHandler {
         if(request.getTimeFrame() != null) {
             model.setTimeFrame(request.getTimeFrame());
         }
+        if(request.getBuzType() != null) {
+            model.setBuzType(request.getBuzType());
+        }
         modelService.update(model);
         return RepresentationBuilder.buildModelRepresentation(model);
     }
@@ -198,16 +201,22 @@ public class ModelServiceHandlerImpl implements ModelServiceHandler {
     }
 
     @Override
-    public LayoutRepresentation getModelComponent(StrategyRequest request) throws DBServiceException, IOException, ModelComponentNotFoundException, LayoutNotFoundException {
-        if(request.getComponentId() != null) {
-            ModelComponent component = modelComponentService.get(request.getComponentId(), null).get(0);
-            return new LayoutRepresentation(component);
+    public LayoutRepresentation getModelComponent(StrategyRequest request) throws DBServiceException, IOException, LayoutNotFoundException {
+        try{
+            if(request.getComponentId() != null) {
+                ModelComponent component = modelComponentService.get(request.getComponentId(), null).get(0);
+                return new LayoutRepresentation(component);
+            }
+            else {
+                List<ModelComponent> components = modelComponentService.get(null, request.getModelId());
+                Layout layout = layoutService.get(request.getModelId(), LayoutType.MODEL_COMPONENT.name());
+                return RepresentationBuilder.buildListModelComponentRep(layout, components);
+            }
+        } catch (ModelComponentNotFoundException e) {
+            LOGGER.error("[ModelServiceHandlerImpl] ModelComponentNotFoundException with request: {}", GsonUtils.convertToString(request));
+            return null;
         }
-        else {
-            List<ModelComponent> components = modelComponentService.get(null, request.getModelId());
-            Layout layout = layoutService.get(request.getModelId(), LayoutType.MODEL_COMPONENT.name());
-            return RepresentationBuilder.buildListModelComponentRep(layout, components);
-        }
+
     }
 
     @Override

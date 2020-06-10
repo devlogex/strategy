@@ -11,4 +11,5 @@ public interface PositionDao {
     void create(Position entity) throws IOException, DBServiceException;
     void update(Position entity) throws IOException, DBServiceException;
     List<Position> get(Position entity) throws IOException, DBServiceException, PositionNotFoundException;
+    void remove(Long positionId) throws IOException, DBServiceException;
 }

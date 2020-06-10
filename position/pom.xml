@@ -9,8 +9,9 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>positioning</artifactId>
-
+    <groupId>com.tnd.pw.strategy</groupId>
+    <artifactId>position</artifactId>
+    <version>1.0.0</version>
     <dependencies>
         <dependency>
             <groupId>com.google.code.gson</groupId>

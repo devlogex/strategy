@@ -66,7 +66,7 @@ public class ModelComponentDaoImpl  implements ModelComponentDao {
             query = String.format(SQL_DELETE_BY_ID, entity.getId());
         }
         else {
-            query = String.format(SQL_DELETE_BY_ID, entity.getModelId());
+            query = String.format(SQL_DELETE_BY_MODEL_ID, entity.getModelId());
         }
         dataHelper.executeSQL(query);
     }

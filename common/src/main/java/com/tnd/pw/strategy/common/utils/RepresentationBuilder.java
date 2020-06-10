@@ -6,6 +6,8 @@ import com.tnd.pw.strategy.common.representations.*;
 import com.tnd.pw.strategy.layout.entity.Layout;
 import com.tnd.pw.strategy.model.entity.Model;
 import com.tnd.pw.strategy.model.entity.ModelComponent;
+import com.tnd.pw.strategy.positioning.entity.Position;
+import com.tnd.pw.strategy.positioning.entity.PositionComponent;
 import com.tnd.pw.strategy.vision.entity.Vision;
 import com.tnd.pw.strategy.vision.entity.VisionComponent;
 
@@ -101,6 +103,7 @@ public class RepresentationBuilder {
         modelRepresentation.setTimeFrame(model.getTimeFrame());
         modelRepresentation.setDescription(model.getDescription());
         modelRepresentation.setFiles(model.getFiles());
+        modelRepresentation.setBuzType(model.getBuzType());
         return modelRepresentation;
     }
 
@@ -130,6 +133,71 @@ public class RepresentationBuilder {
                     for(int x = 0; x < components.size(); x++) {
                         if(components.get(x).getId().compareTo(layoutEntity.get(i).get(j).get(k)) == 0) {
                             layout.get(i).get(j).add(RepresentationBuilder.buildModelComponentRep(components.get(x)));
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        return new LayoutRepresentation(layout);
+    }
+
+    public static ListPositionRepresentation buildListPositionRepresentation(List<Position> positions, Layout layout, Object components) {
+        ListPositionRepresentation positionRepresentations = new ListPositionRepresentation();
+        ArrayList<ArrayList<ArrayList<Long>>> layoutEntity = GsonUtils.getGson().fromJson(layout.getLayout(), new TypeToken<ArrayList<ArrayList<ArrayList<Long>>>>(){}.getType());
+        for(int i = 0; i < layoutEntity.size(); i++) {
+            for(int j = 0; j < layoutEntity.get(i).size(); j++) {
+                for(int k = 0; k < layoutEntity.get(i).get(j).size(); k++) {
+                    for(int x = 0; x < positions.size(); x++) {
+                        if(positions.get(x).getId().compareTo(layoutEntity.get(i).get(j).get(k)) == 0) {
+                            positionRepresentations.getListPosition().add(buildPositionRepresentation(positions.get(x)));
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        positionRepresentations.setListComponent(components);
+        return positionRepresentations;
+    }
+
+    public static PositionRepresentation buildPositionRepresentation(Position position) {
+        PositionRepresentation positionRepresentation = new PositionRepresentation();
+        positionRepresentation.setId(position.getId());
+        positionRepresentation.setName(position.getName());
+        positionRepresentation.setTimeFrame(position.getTimeFrame());
+        positionRepresentation.setBuzType(position.getBuzType());
+        positionRepresentation.setDescription(position.getDescription());
+        positionRepresentation.setFiles(position.getFiles());
+        return positionRepresentation;
+    }
+
+    public static PositionComponentRep buildPositionComponentRep(PositionComponent positionComponent) {
+        PositionComponentRep positionComponentRep = new PositionComponentRep();
+        positionComponentRep.setId(positionComponent.getId());
+        positionComponentRep.setName(positionComponent.getName());
+        positionComponentRep.setFiles(positionComponent.getFiles());
+        positionComponentRep.setColor(positionComponent.getColor());
+        positionComponentRep.setDescription(positionComponent.getDescription());
+        positionComponentRep.setPositionId(positionComponent.getPositionId());
+        return positionComponentRep;
+    }
+
+    public static LayoutRepresentation buildListPositionComponentRep(Layout layout, List<PositionComponent> components) {
+        ArrayList<ArrayList<ArrayList<Long>>> layoutEntity = GsonUtils.getGson().fromJson(layout.getLayout(), new TypeToken<ArrayList<ArrayList<ArrayList<Long>>>>(){}.getType());
+        return buildListPositionComponentRep(layoutEntity, components);
+    }
+
+    public static LayoutRepresentation buildListPositionComponentRep(ArrayList<ArrayList<ArrayList<Long>>> layoutEntity, List<PositionComponent> components) {
+        ArrayList<ArrayList<ArrayList<PositionComponentRep>>> layout = new ArrayList<>();
+        for(int i = 0; i < layoutEntity.size(); i++) {
+            layout.add(new ArrayList<>());
+            for(int j = 0; j < layoutEntity.get(i).size(); j++) {
+                layout.get(i).add(new ArrayList<>());
+                for(int k = 0; k < layoutEntity.get(i).get(j).size(); k++) {
+                    for(int x = 0; x < components.size(); x++) {
+                        if(components.get(x).getId().compareTo(layoutEntity.get(i).get(j).get(k)) == 0) {
+                            layout.get(i).get(j).add(buildPositionComponentRep(components.get(x)));
                             break;
                         }
                     }

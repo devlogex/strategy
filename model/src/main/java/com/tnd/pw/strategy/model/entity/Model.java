@@ -7,6 +7,8 @@ public class Model extends BaseEntity{
     private Long workspaceId;
     @SerializedName("type")
     private Integer type;
+    @SerializedName("buz_type")
+    private String buzType;
     @SerializedName("time_frame")
     private String timeFrame;
 
@@ -32,5 +34,13 @@ public class Model extends BaseEntity{
 
     public void setTimeFrame(String timeFrame) {
         this.timeFrame = timeFrame;
+    }
+
+    public String getBuzType() {
+        return buzType;
+    }
+
+    public void setBuzType(String buzType) {
+        this.buzType = buzType;
     }
 }

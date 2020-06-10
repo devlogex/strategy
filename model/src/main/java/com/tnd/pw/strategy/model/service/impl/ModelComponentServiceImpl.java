@@ -19,7 +19,7 @@ public class ModelComponentServiceImpl implements ModelComponentService {
         ModelComponent entity = new ModelComponent();
         entity.setId(System.currentTimeMillis());
         entity.setModelId(modelId);
-        entity.setColor(color==null ? "#F5F6FA" : color);
+        entity.setColor(color==null ? "#E9644F" : color);
         entity.setDescription(description==null ? "" : description);
         entity.setName(name == null ? "Model Component Name" : name);
         entity.setFiles(files == null ? "" : files);

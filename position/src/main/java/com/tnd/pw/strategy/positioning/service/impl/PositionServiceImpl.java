@@ -16,12 +16,12 @@ public class PositionServiceImpl implements PositionService {
     private PositionDao positionDao;
 
     @Override
-    public Position create(Long workspaceId, Integer type) throws IOException, DBServiceException {
+    public Position create(Long workspaceId) throws IOException, DBServiceException {
         Position entity = new Position();
         entity.setId(System.currentTimeMillis());
         entity.setWorkspaceId(workspaceId);
-        entity.setName("Model Name");
-        entity.setType(type);
+        entity.setName("Position Name");
+        entity.setBuzType("Business");
         entity.setTimeFrame("");
         entity.setDescription("");
         entity.setFiles("");
@@ -35,12 +35,17 @@ public class PositionServiceImpl implements PositionService {
     }
 
     @Override
-    public List<Position> get(Long id, Long workspaceId, Integer type, String timeFrame) throws IOException, DBServiceException, PositionNotFoundException {
+    public List<Position> get(Long id, Long workspaceId, String buzType, String timeFrame) throws IOException, DBServiceException, PositionNotFoundException {
         Position entity = new Position();
         entity.setId(id);
         entity.setWorkspaceId(workspaceId);
-        entity.setType(type);
+        entity.setBuzType(buzType);
         entity.setTimeFrame(timeFrame);
         return positionDao.get(entity);
+    }
+
+    @Override
+    public void remove(Long positionId) throws IOException, DBServiceException {
+        positionDao.remove(positionId);
     }
 }

@@ -10,10 +10,7 @@ import com.tnd.pw.strategy.layout.entity.Layout;
 import com.tnd.pw.strategy.layout.service.LayoutService;
 import com.tnd.pw.strategy.runner.exception.InvalidDataRequestException;
 ;
-import com.tnd.pw.strategy.runner.service.LayoutServiceHandler;
-import com.tnd.pw.strategy.runner.service.ModelServiceHandler;
-import com.tnd.pw.strategy.runner.service.ServiceHandler;
-import com.tnd.pw.strategy.runner.service.VisionServiceHandler;
+import com.tnd.pw.strategy.runner.service.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,6 +45,8 @@ public class LayoutServiceHandlerImpl implements LayoutServiceHandler {
                 return SpringApplicationContext.getBean(VisionServiceHandler.class);
             case MODEL:case MODEL_COMPONENT:
                 return SpringApplicationContext.getBean(ModelServiceHandler.class);
+            case POSITION:case POSITION_COMPONENT:
+                return SpringApplicationContext.getBean(PositionServiceHandler.class);
             default:
                 throw new IllegalStateException("Unexpected value: " + layoutType);
         }
