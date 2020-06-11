@@ -6,6 +6,7 @@ import com.tnd.pw.strategy.common.representations.*;
 import com.tnd.pw.strategy.layout.entity.Layout;
 import com.tnd.pw.strategy.model.entity.Model;
 import com.tnd.pw.strategy.model.entity.ModelComponent;
+import com.tnd.pw.strategy.personas.entity.Personas;
 import com.tnd.pw.strategy.positioning.entity.Position;
 import com.tnd.pw.strategy.positioning.entity.PositionComponent;
 import com.tnd.pw.strategy.vision.entity.Vision;
@@ -13,6 +14,7 @@ import com.tnd.pw.strategy.vision.entity.VisionComponent;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class RepresentationBuilder {
@@ -205,5 +207,35 @@ public class RepresentationBuilder {
             }
         }
         return new LayoutRepresentation(layout);
+    }
+
+    public static ListPersonasRepresentation buildListPersonasRepresentation(List<Personas> personases, Layout layout) {
+        ListPersonasRepresentation list = new ListPersonasRepresentation();
+        ArrayList<ArrayList<ArrayList<Long>>> layoutEntity = GsonUtils.getGson().fromJson(layout.getLayout(), new TypeToken<ArrayList<ArrayList<ArrayList<Long>>>>(){}.getType());
+        for(int i = 0; i < layoutEntity.size(); i++) {
+            for(int j = 0; j < layoutEntity.get(i).size(); j++) {
+                for(int k = 0; k < layoutEntity.get(i).get(j).size(); k++) {
+                    for(int x = 0; x < personases.size(); x++) {
+                        if(personases.get(x).getId().compareTo(layoutEntity.get(i).get(j).get(k)) == 0) {
+                            list.add(buildPersonasRepresentation(personases.get(x)));
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        return list;
+    }
+
+    public static PersonasRepresentation buildPersonasRepresentation(Personas personas) {
+        PersonasRepresentation personasRepresentation = new PersonasRepresentation();
+        personasRepresentation.setId(personas.getId());
+        personasRepresentation.setWorkspaceId(personas.getId());
+        personasRepresentation.setName(personas.getName());
+        personasRepresentation.setColor(personas.getColor());
+        personasRepresentation.setImage(personas.getImage());
+        HashMap<String, HashMap<String, String>> content = GsonUtils.getGson().fromJson(personas.getContent(), new TypeToken<HashMap<String, HashMap<String,String>>>(){}.getType());
+        personasRepresentation.setContent(content);
+        return personasRepresentation;
     }
 }

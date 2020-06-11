@@ -115,7 +115,7 @@ public class ModelServiceHandlerImpl implements ModelServiceHandler {
             model = modelService.get(request.getModelId(),null,null,null).get(0);
             layout = layoutService.get(model.getWorkspaceId(), LayoutType.MODEL.name());
         } catch (ModelNotFoundException e) {
-            LOGGER.error("[ModelServiceHandlerImpl] ModelNotFoundException with component_id: {}", request.getComponentId());
+            LOGGER.error("[ModelServiceHandlerImpl] ModelNotFoundException with id: {}", request.getModelId());
             throw e;
         } catch (LayoutNotFoundException e) {
             LOGGER.error("[ModelServiceHandlerImpl] LayoutNotFoundException with parent_id: {}, type: {}", model.getWorkspaceId(), LayoutType.MODEL.name());

@@ -108,7 +108,7 @@ public class PositionServiceHandlerImpl implements PositionServiceHandler {
             position = positionService.get(request.getPositionId(),null,null,null).get(0);
             layout = layoutService.get(position.getWorkspaceId(), LayoutType.POSITION.name());
         } catch (PositionNotFoundException e) {
-            LOGGER.error("[PositionServiceHandlerImpl] PositionNotFoundException with component_id: {}", request.getComponentId());
+            LOGGER.error("[PositionServiceHandlerImpl] PositionNotFoundException with id: {}", request.getPositionId());
             throw e;
         } catch (LayoutNotFoundException e) {
             LOGGER.error("[PositionServiceHandlerImpl] LayoutNotFoundException with parent_id: {}, type: {}", position.getWorkspaceId(), LayoutType.POSITION.name());

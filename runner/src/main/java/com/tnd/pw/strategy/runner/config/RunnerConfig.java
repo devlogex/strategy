@@ -14,6 +14,10 @@ import com.tnd.pw.strategy.model.service.ModelComponentService;
 import com.tnd.pw.strategy.model.service.ModelService;
 import com.tnd.pw.strategy.model.service.impl.ModelComponentServiceImpl;
 import com.tnd.pw.strategy.model.service.impl.ModelServiceImpl;
+import com.tnd.pw.strategy.personas.dao.PersonasDao;
+import com.tnd.pw.strategy.personas.dao.impl.PersonasDaoImpl;
+import com.tnd.pw.strategy.personas.service.PersonasService;
+import com.tnd.pw.strategy.personas.service.impl.PersonasServiceImpl;
 import com.tnd.pw.strategy.positioning.dao.PositionComponentDao;
 import com.tnd.pw.strategy.positioning.dao.PositionDao;
 import com.tnd.pw.strategy.positioning.dao.impl.PositionComponentDaoImpl;
@@ -22,17 +26,12 @@ import com.tnd.pw.strategy.positioning.service.PositionComponentService;
 import com.tnd.pw.strategy.positioning.service.PositionService;
 import com.tnd.pw.strategy.positioning.service.impl.PositionComponentServiceImpl;
 import com.tnd.pw.strategy.positioning.service.impl.PositionServiceImpl;
-import com.tnd.pw.strategy.runner.handler.LayoutHandler;
-import com.tnd.pw.strategy.runner.handler.ModelHandler;
-import com.tnd.pw.strategy.runner.handler.PositionHandler;
-import com.tnd.pw.strategy.runner.handler.VisionHandler;
+import com.tnd.pw.strategy.runner.handler.*;
 import com.tnd.pw.strategy.runner.service.LayoutServiceHandler;
 import com.tnd.pw.strategy.runner.service.ModelServiceHandler;
+import com.tnd.pw.strategy.runner.service.PersonasServiceHandler;
 import com.tnd.pw.strategy.runner.service.PositionServiceHandler;
-import com.tnd.pw.strategy.runner.service.impl.LayoutServiceHandlerImpl;
-import com.tnd.pw.strategy.runner.service.impl.ModelServiceHandlerImpl;
-import com.tnd.pw.strategy.runner.service.impl.PositionServiceHandlerImpl;
-import com.tnd.pw.strategy.runner.service.impl.VisionServiceHandlerImpl;
+import com.tnd.pw.strategy.runner.service.impl.*;
 import com.tnd.pw.strategy.vision.dao.VisionComponentDao;
 import com.tnd.pw.strategy.vision.dao.VisionDao;
 import com.tnd.pw.strategy.vision.dao.impl.VisionComponentDaoImpl;
@@ -170,5 +169,25 @@ public class RunnerConfig {
     @Bean
     public PositionHandler positionHandler() {
         return new PositionHandler();
+    }
+
+    @Bean
+    public PersonasDao personasDao(){
+        return new PersonasDaoImpl();
+    }
+
+    @Bean
+    public PersonasService personasService() {
+        return new PersonasServiceImpl();
+    }
+
+    @Bean
+    public PersonasServiceHandler personasServiceHandler() {
+        return new PersonasServiceHandlerImpl();
+    }
+
+    @Bean
+    public PersonasHandler personasHandler() {
+        return new PersonasHandler();
     }
 }

@@ -20,7 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.io.IOException;
 
 @HandlerServiceClass
-public class ModelHandler  implements BaseHandler {
+public class ModelHandler implements BaseHandler {
     private static final Logger LOGGER = LoggerFactory.getLogger(ModelHandler.class);
     @Autowired
     private ModelServiceHandler modelServiceHandler;

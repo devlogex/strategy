@@ -7,6 +7,14 @@ import java.io.Serializable;
 public class StrategyRequest implements Serializable {
     private static final long serialVersionUID = 1L;
 
+    @SerializedName("personas_id")
+    private Long personasId;
+    @SerializedName("personas_name")
+    private String personasName;
+    @SerializedName("content")
+    private String content;
+    @SerializedName("image")
+    private String image;
     @SerializedName("position_id")
     private Long positionId;
     @SerializedName("position_name")
@@ -188,5 +196,37 @@ public class StrategyRequest implements Serializable {
 
     public void setBuzType(String buzType) {
         this.buzType = buzType;
+    }
+
+    public Long getPersonasId() {
+        return personasId;
+    }
+
+    public void setPersonasId(Long personasId) {
+        this.personasId = personasId;
+    }
+
+    public String getPersonasName() {
+        return personasName;
+    }
+
+    public void setPersonasName(String personasName) {
+        this.personasName = personasName;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
     }
 }

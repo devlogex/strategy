@@ -16,6 +16,7 @@
         <module>layout</module>
         <module>model</module>
         <module>position</module>
+        <module>personas</module>
     </modules>
 
     <properties>

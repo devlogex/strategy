@@ -8,8 +8,9 @@
         <version>1.0.0</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
+
     <groupId>com.tnd.pw.strategy</groupId>
-    <artifactId>common</artifactId>
+    <artifactId>personas</artifactId>
     <version>1.0.0</version>
 
     <dependencies>
@@ -18,30 +19,12 @@
             <artifactId>gson</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.tnd.pw.strategy</groupId>
-            <artifactId>vision</artifactId>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
         </dependency>
         <dependency>
             <groupId>com.tnd.pw.strategy</groupId>
-            <artifactId>layout</artifactId>
-            <version>1.0.0</version>
-        </dependency>
-        <dependency>
-            <groupId>com.tnd.pw.strategy</groupId>
-            <artifactId>model</artifactId>
-            <version>1.0.0</version>
-        </dependency>
-        <dependency>
-            <groupId>com.tnd.pw.strategy</groupId>
-            <artifactId>position</artifactId>
-            <version>1.0.0</version>
-        </dependency>
-        <dependency>
-            <groupId>com.tnd.pw.strategy</groupId>
-            <artifactId>personas</artifactId>
-            <version>1.0.0</version>
-            <scope>compile</scope>
+            <artifactId>dbservice</artifactId>
         </dependency>
     </dependencies>
-
 </project>
