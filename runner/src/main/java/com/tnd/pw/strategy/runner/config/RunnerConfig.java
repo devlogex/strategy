@@ -1,5 +1,9 @@
 package com.tnd.pw.strategy.runner.config;
 
+import com.tnd.pw.strategy.competitor.dao.CompetitorDao;
+import com.tnd.pw.strategy.competitor.dao.impl.CompetitorDaoImpl;
+import com.tnd.pw.strategy.competitor.service.CompetitorService;
+import com.tnd.pw.strategy.competitor.service.impl.CompetitorServiceImpl;
 import com.tnd.pw.strategy.dbservice.DBServiceApiClient;
 import com.tnd.pw.strategy.dbservice.DataHelper;
 import com.tnd.pw.strategy.layout.dao.LayoutDao;
@@ -27,10 +31,7 @@ import com.tnd.pw.strategy.positioning.service.PositionService;
 import com.tnd.pw.strategy.positioning.service.impl.PositionComponentServiceImpl;
 import com.tnd.pw.strategy.positioning.service.impl.PositionServiceImpl;
 import com.tnd.pw.strategy.runner.handler.*;
-import com.tnd.pw.strategy.runner.service.LayoutServiceHandler;
-import com.tnd.pw.strategy.runner.service.ModelServiceHandler;
-import com.tnd.pw.strategy.runner.service.PersonasServiceHandler;
-import com.tnd.pw.strategy.runner.service.PositionServiceHandler;
+import com.tnd.pw.strategy.runner.service.*;
 import com.tnd.pw.strategy.runner.service.impl.*;
 import com.tnd.pw.strategy.vision.dao.VisionComponentDao;
 import com.tnd.pw.strategy.vision.dao.VisionDao;
@@ -189,5 +190,26 @@ public class RunnerConfig {
     @Bean
     public PersonasHandler personasHandler() {
         return new PersonasHandler();
+    }
+
+    /////
+    @Bean
+    public CompetitorDao competitorDao(){
+        return new CompetitorDaoImpl();
+    }
+
+    @Bean
+    public CompetitorService competitorService() {
+        return new CompetitorServiceImpl();
+    }
+
+    @Bean
+    public CompetitorServiceHandler competitorServiceHandler() {
+        return new CompetitorServiceHandlerImpl();
+    }
+
+    @Bean
+    public CompetitorHandler competitorHandler() {
+        return new CompetitorHandler();
     }
 }

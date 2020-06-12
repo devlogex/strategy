@@ -19,6 +19,7 @@ public class StrategyRunner {
         commonServer.register(SpringApplicationContext.getBean(ModelHandler.class));
         commonServer.register(SpringApplicationContext.getBean(PositionHandler.class));
         commonServer.register(SpringApplicationContext.getBean(PersonasHandler.class));
+        commonServer.register(SpringApplicationContext.getBean(CompetitorHandler.class));
 
         String port = System.getenv("PORT");
         if(port == null) {

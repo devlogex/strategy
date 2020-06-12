@@ -14,5 +14,4 @@ public interface PersonasServiceHandler extends ServiceHandler{
     PersonasRepresentation updatePersonas(StrategyRequest request) throws DBServiceException, IOException, PersonasNotFoundException;
     ListPersonasRepresentation getPersonas(StrategyRequest request) throws DBServiceException, IOException, LayoutNotFoundException;
     ListPersonasRepresentation removePersonas(StrategyRequest request) throws IOException, DBServiceException, LayoutNotFoundException, PersonasNotFoundException;
-
 }

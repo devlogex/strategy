@@ -3,6 +3,7 @@ package com.tnd.pw.strategy.common.utils;
 import com.google.common.reflect.TypeToken;
 import com.tnd.pw.strategy.common.enums.ModelType;
 import com.tnd.pw.strategy.common.representations.*;
+import com.tnd.pw.strategy.competitor.entity.Competitor;
 import com.tnd.pw.strategy.layout.entity.Layout;
 import com.tnd.pw.strategy.model.entity.Model;
 import com.tnd.pw.strategy.model.entity.ModelComponent;
@@ -237,5 +238,38 @@ public class RepresentationBuilder {
         HashMap<String, HashMap<String, String>> content = GsonUtils.getGson().fromJson(personas.getContent(), new TypeToken<HashMap<String, HashMap<String,String>>>(){}.getType());
         personasRepresentation.setContent(content);
         return personasRepresentation;
+    }
+
+    public static ListCompetitorRepresentation buildListCompetitorRepresentation(List<Competitor> competitors, Layout layout) {
+        ListCompetitorRepresentation list = new ListCompetitorRepresentation();
+        ArrayList<ArrayList<ArrayList<Long>>> layoutEntity = GsonUtils.getGson().fromJson(layout.getLayout(), new TypeToken<ArrayList<ArrayList<ArrayList<Long>>>>(){}.getType());
+        for(int i = 0; i < layoutEntity.size(); i++) {
+            for(int j = 0; j < layoutEntity.get(i).size(); j++) {
+                for(int k = 0; k < layoutEntity.get(i).get(j).size(); k++) {
+                    for(int x = 0; x < competitors.size(); x++) {
+                        if(competitors.get(x).getId().compareTo(layoutEntity.get(i).get(j).get(k)) == 0) {
+                            list.add(buildCompetitorRepresentation(competitors.get(x)));
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        return list;
+    }
+
+    public static CompetitorRepresentation buildCompetitorRepresentation(Competitor competitor) {
+        CompetitorRepresentation competitorRepresentation = new CompetitorRepresentation();
+        competitorRepresentation.setId(competitor.getId());
+        competitorRepresentation.setWorkspaceId(competitor.getWorkspaceId());
+        competitorRepresentation.setName(competitor.getName());
+        competitorRepresentation.setColor(competitor.getColor());
+        competitorRepresentation.setImage(competitor.getImage());
+        HashMap<String, HashMap<String, String>> content = GsonUtils.getGson().fromJson(competitor.getContent(), new TypeToken<HashMap<String, HashMap<String,String>>>(){}.getType());
+        competitorRepresentation.setContent(content);
+        competitorRepresentation.setUrl(competitor.getUrl());
+        HashMap<String, Integer> score = GsonUtils.getGson().fromJson(competitor.getScore(), new TypeToken<HashMap<String, Integer>>(){}.getType());
+        competitorRepresentation.setScore(score);
+        return competitorRepresentation;
     }
 }

@@ -17,6 +17,7 @@
         <module>model</module>
         <module>position</module>
         <module>personas</module>
+        <module>competitor</module>
     </modules>
 
     <properties>

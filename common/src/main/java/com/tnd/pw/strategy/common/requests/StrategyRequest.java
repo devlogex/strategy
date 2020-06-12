@@ -7,6 +7,14 @@ import java.io.Serializable;
 public class StrategyRequest implements Serializable {
     private static final long serialVersionUID = 1L;
 
+    @SerializedName("competitor_id")
+    private Long competitorId;
+    @SerializedName("competitor_name")
+    private String competitorName;
+    @SerializedName("url")
+    private String url;
+    @SerializedName("score")
+    private Object score;
     @SerializedName("personas_id")
     private Long personasId;
     @SerializedName("personas_name")
@@ -228,5 +236,37 @@ public class StrategyRequest implements Serializable {
 
     public void setImage(String image) {
         this.image = image;
+    }
+
+    public Long getCompetitorId() {
+        return competitorId;
+    }
+
+    public void setCompetitorId(Long competitorId) {
+        this.competitorId = competitorId;
+    }
+
+    public String getCompetitorName() {
+        return competitorName;
+    }
+
+    public void setCompetitorName(String competitorName) {
+        this.competitorName = competitorName;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public Object getScore() {
+        return score;
+    }
+
+    public void setScore(Object score) {
+        this.score = score;
     }
 }
