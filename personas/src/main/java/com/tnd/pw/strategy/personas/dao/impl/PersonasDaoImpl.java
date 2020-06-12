@@ -16,8 +16,8 @@ public class PersonasDaoImpl implements PersonasDao {
     private DataHelper dataHelper;
 
     private static final String SQL_CREATE =
-            "INSERT INTO personas(id, name, image, color, content) " +
-                    "values(%d, '%s', '%s', '%s', '%s')";
+            "INSERT INTO personas(id, workspace_id, name, image, color, content) " +
+                    "values(%d, %d, '%s', '%s', '%s', '%s')";
     private static final String SQL_UPDATE =
             "UPDATE personas SET name = '%s', image = '%s', color = '%s', content = '%s' WHERE id = %d";
     private static final String SQL_SELECT_BY_ID =
@@ -28,7 +28,7 @@ public class PersonasDaoImpl implements PersonasDao {
             "DELETE FROM personas WHERE id = %d";
     @Override
     public void create(Personas entity) throws IOException, DBServiceException {
-        String query = String.format(SQL_CREATE, entity.getId(), entity.getName(),
+        String query = String.format(SQL_CREATE, entity.getId(), entity.getWorkspaceId(), entity.getName(),
                 entity.getImage(), entity.getColor(), entity.getContent());
         dataHelper.executeSQL(query);
     }

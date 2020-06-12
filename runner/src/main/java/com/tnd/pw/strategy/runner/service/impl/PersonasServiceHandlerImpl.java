@@ -68,7 +68,7 @@ public class PersonasServiceHandlerImpl implements PersonasServiceHandler {
             personas.setColor(request.getColor());
         }
         if(request.getContent() != null) {
-            personas.setContent(request.getContent());
+            personas.setContent(GsonUtils.convertToString(request.getContent()));
         }
         personasService.update(personas);
         return RepresentationBuilder.buildPersonasRepresentation(personas);

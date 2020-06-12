@@ -19,6 +19,6 @@ public class DBServiceApiClient extends AbstractService {
     }
 
     public BaseResponse<Boolean> executeSQL(String url, DBServiceRequest request) throws IOException {
-        return client.sendRequest(url, Protocol.GET.name(), request);
+        return client.sendRequest(url, Protocol.POST.name(), request);
     }
 }

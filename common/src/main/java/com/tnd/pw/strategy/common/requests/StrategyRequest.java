@@ -12,7 +12,7 @@ public class StrategyRequest implements Serializable {
     @SerializedName("personas_name")
     private String personasName;
     @SerializedName("content")
-    private String content;
+    private Object content;
     @SerializedName("image")
     private String image;
     @SerializedName("position_id")
@@ -214,11 +214,11 @@ public class StrategyRequest implements Serializable {
         this.personasName = personasName;
     }
 
-    public String getContent() {
+    public Object getContent() {
         return content;
     }
 
-    public void setContent(String content) {
+    public void setContent(Object content) {
         this.content = content;
     }
 

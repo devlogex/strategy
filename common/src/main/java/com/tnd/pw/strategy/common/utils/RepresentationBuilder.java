@@ -230,7 +230,7 @@ public class RepresentationBuilder {
     public static PersonasRepresentation buildPersonasRepresentation(Personas personas) {
         PersonasRepresentation personasRepresentation = new PersonasRepresentation();
         personasRepresentation.setId(personas.getId());
-        personasRepresentation.setWorkspaceId(personas.getId());
+        personasRepresentation.setWorkspaceId(personas.getWorkspaceId());
         personasRepresentation.setName(personas.getName());
         personasRepresentation.setColor(personas.getColor());
         personasRepresentation.setImage(personas.getImage());
