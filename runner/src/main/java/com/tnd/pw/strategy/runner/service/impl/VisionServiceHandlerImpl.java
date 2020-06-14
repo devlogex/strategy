@@ -227,7 +227,7 @@ public class VisionServiceHandlerImpl implements VisionServiceHandler {
 
     @Override
     public LayoutRepresentation getLayoutInstance(Long parentId, String layoutType) throws Exception {
-        Vision vision = visionService.getByWorkspaceId(parentId);
+        Vision vision = visionService.getById(parentId);
         List<VisionComponent> visionComponents = visionComponentService.getByVisionId(vision.getId());
         Layout layout = layoutService.get(parentId, LayoutType.VISION_COMPONENT.name());
         return new LayoutRepresentation(RepresentationBuilder.buildListVisionComponentRep(visionComponents, layout));
