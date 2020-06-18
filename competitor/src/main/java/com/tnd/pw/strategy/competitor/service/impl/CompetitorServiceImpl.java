@@ -33,10 +33,10 @@ public class CompetitorServiceImpl implements CompetitorService {
 
     private String defaultScore() {
         HashMap<String,Integer> score = new HashMap<>();
-        score.put("Product breadth", 0);
-        score.put("Ability to execute", 0);
-        score.put("Strength of vision", 0);
-        score.put("Market awareness", 0);
+        score.put("Product_breadth", 0);
+        score.put("Ability_to_execute", 0);
+        score.put("Strength_of_vision", 0);
+        score.put("Market_awareness", 0);
         return GsonUtils.convertToString(score);
     }
 
@@ -51,9 +51,9 @@ public class CompetitorServiceImpl implements CompetitorService {
         content.get("Employees").put("content","");
         content.get("Employees").put("files","");
 
-        content.put("Growth Rate", new HashMap<>());
-        content.get("Growth Rate").put("content","");
-        content.get("Growth Rate").put("files","");
+        content.put("Growth_Rate", new HashMap<>());
+        content.get("Growth_Rate").put("content","");
+        content.get("Growth_Rate").put("files","");
 
         content.put("Customers", new HashMap<>());
         content.get("Customers").put("content","");
@@ -91,9 +91,9 @@ public class CompetitorServiceImpl implements CompetitorService {
         content.get("Differentiators").put("content","");
         content.get("Differentiators").put("files","");
 
-        content.put("Recent News", new HashMap<>());
-        content.get("Recent News").put("content","");
-        content.get("Recent News").put("files","");
+        content.put("Recent_News", new HashMap<>());
+        content.get("Recent_News").put("content","");
+        content.get("Recent_News").put("files","");
 
         return GsonUtils.convertToString(content);
     }

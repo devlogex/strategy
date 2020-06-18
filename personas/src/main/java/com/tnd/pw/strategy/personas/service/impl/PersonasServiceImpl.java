@@ -48,9 +48,9 @@ public class PersonasServiceImpl implements PersonasService {
         content.get("Influence").put("content","");
         content.get("Influence").put("files","");
 
-        content.put("Product knowledge", new HashMap<>());
-        content.get("Product knowledge").put("content","");
-        content.get("Product knowledge").put("files","");
+        content.put("Product_knowledge", new HashMap<>());
+        content.get("Product_knowledge").put("content","");
+        content.get("Product_knowledge").put("files","");
 
         content.put("Likes", new HashMap<>());
         content.get("Likes").put("content","");
@@ -80,9 +80,9 @@ public class PersonasServiceImpl implements PersonasService {
         content.get("Skills").put("content","");
         content.get("Skills").put("files","");
 
-        content.put("Trusts information from", new HashMap<>());
-        content.get("Trusts information from").put("content","");
-        content.get("Trusts information from").put("files","");
+        content.put("Trusts_information_from", new HashMap<>());
+        content.get("Trusts_information_from").put("content","");
+        content.get("Trusts_information_from").put("files","");
 
         return GsonUtils.convertToString(content);
     }
