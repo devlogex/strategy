@@ -69,6 +69,10 @@ public class LayoutServiceHandlerImpl implements LayoutServiceHandler {
                 return SpringApplicationContext.getBean(PersonasServiceHandler.class);
             case COMPETITOR:
                 return SpringApplicationContext.getBean(CompetitorServiceHandler.class);
+            case GOAL:
+                return SpringApplicationContext.getBean(GoalServiceHandler.class);
+            case INITIATIVE:
+                return SpringApplicationContext.getBean(InitiativeServiceHandler.class);
             default:
                 throw new IllegalStateException("Unexpected value: " + layoutType);
         }

@@ -57,6 +57,21 @@
             <artifactId>position</artifactId>
             <version>1.0.0</version>
         </dependency>
+        <dependency>
+            <groupId>com.tnd.pw.strategy</groupId>
+            <artifactId>competitor</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.tnd.pw.strategy</groupId>
+            <artifactId>goal</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.tnd.pw.strategy</groupId>
+            <artifactId>initiative</artifactId>
+            <version>1.0.0</version>
+        </dependency>
     </dependencies>
 
     <build>

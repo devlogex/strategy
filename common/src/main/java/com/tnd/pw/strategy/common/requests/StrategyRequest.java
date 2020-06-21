@@ -1,12 +1,38 @@
 package com.tnd.pw.strategy.common.requests;
 
 import com.google.gson.annotations.SerializedName;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.io.Serializable;
 
+@Setter
+@Getter
 public class StrategyRequest implements Serializable {
     private static final long serialVersionUID = 1L;
 
+    @SerializedName("start_at")
+    private Long startAt;
+    @SerializedName("end_at")
+    private Long endAt;
+    @SerializedName("visiable")
+    private Integer visiable;
+    @SerializedName("initiative_id")
+    private Long initiativeId;
+    @SerializedName("parent_initiative")
+    private String parentInitiative;
+    @SerializedName("goal_id")
+    private Long goalId;
+    @SerializedName("parent_goal")
+    private String parentGoal;
+    @SerializedName("status")
+    private String status;
+    @SerializedName("metric")
+    private String metric;
+    @SerializedName("metric_description")
+    private String metricDescription;
+    @SerializedName("metric_file")
+    private String metricFile;
     @SerializedName("competitor_id")
     private Long competitorId;
     @SerializedName("competitor_name")
@@ -45,7 +71,7 @@ public class StrategyRequest implements Serializable {
     @SerializedName("component_id")
     private Long componentId;
     @SerializedName("name")
-    private String componentName;
+    private String name;
     @SerializedName("summary")
     private String summary;
     @SerializedName("color")
@@ -61,212 +87,4 @@ public class StrategyRequest implements Serializable {
     private String layoutType;
     @SerializedName("layout_parent")
     private Long layoutParent;
-
-    public String getPositionName() {
-        return positionName;
-    }
-
-    public void setPositionName(String positionName) {
-        this.positionName = positionName;
-    }
-
-    public Long getPositionId() {
-        return positionId;
-    }
-
-    public void setPositionId(Long positionId) {
-        this.positionId = positionId;
-    }
-
-    public Long getVisionId() {
-        return visionId;
-    }
-
-    public Long getModelId() {
-        return modelId;
-    }
-
-    public void setModelId(Long modelId) {
-        this.modelId = modelId;
-    }
-
-    public String getTimeFrame() {
-        return timeFrame;
-    }
-
-    public void setTimeFrame(String timeFrame) {
-        this.timeFrame = timeFrame;
-    }
-
-    public void setVisionId(Long visionId) {
-        this.visionId = visionId;
-    }
-
-    public String getComponentName() {
-        return componentName;
-    }
-
-    public void setComponentName(String componentName) {
-        this.componentName = componentName;
-    }
-
-    public Long getWorkspaceId() {
-        return workspaceId;
-    }
-
-    public void setWorkspaceId(Long workspaceId) {
-        this.workspaceId = workspaceId;
-    }
-
-    public String getFiles() {
-        return files;
-    }
-
-    public void setFiles(String files) {
-        this.files = files;
-    }
-
-    public Long getComponentId() {
-        return componentId;
-    }
-
-    public void setComponentId(Long componentId) {
-        this.componentId = componentId;
-    }
-
-    public String getSummary() {
-        return summary;
-    }
-
-    public void setSummary(String summary) {
-        this.summary = summary;
-    }
-
-    public String getColor() {
-        return color;
-    }
-
-    public void setColor(String color) {
-        this.color = color;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public String getLayout() {
-        return layout;
-    }
-
-    public void setLayout(String layout) {
-        this.layout = layout;
-    }
-
-    public String getLayoutType() {
-        return layoutType;
-    }
-
-    public void setLayoutType(String layoutType) {
-        this.layoutType = layoutType;
-    }
-
-    public String getModelType() {
-        return modelType;
-    }
-
-    public void setModelType(String modelType) {
-        this.modelType = modelType;
-    }
-
-    public Long getLayoutParent() {
-        return layoutParent;
-    }
-
-    public void setLayoutParent(Long layoutParent) {
-        this.layoutParent = layoutParent;
-    }
-
-    public String getModelName() {
-        return modelName;
-    }
-
-    public void setModelName(String modelName) {
-        this.modelName = modelName;
-    }
-
-    public String getBuzType() {
-        return buzType;
-    }
-
-    public void setBuzType(String buzType) {
-        this.buzType = buzType;
-    }
-
-    public Long getPersonasId() {
-        return personasId;
-    }
-
-    public void setPersonasId(Long personasId) {
-        this.personasId = personasId;
-    }
-
-    public String getPersonasName() {
-        return personasName;
-    }
-
-    public void setPersonasName(String personasName) {
-        this.personasName = personasName;
-    }
-
-    public Object getContent() {
-        return content;
-    }
-
-    public void setContent(Object content) {
-        this.content = content;
-    }
-
-    public String getImage() {
-        return image;
-    }
-
-    public void setImage(String image) {
-        this.image = image;
-    }
-
-    public Long getCompetitorId() {
-        return competitorId;
-    }
-
-    public void setCompetitorId(Long competitorId) {
-        this.competitorId = competitorId;
-    }
-
-    public String getCompetitorName() {
-        return competitorName;
-    }
-
-    public void setCompetitorName(String competitorName) {
-        this.competitorName = competitorName;
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
-
-    public Object getScore() {
-        return score;
-    }
-
-    public void setScore(Object score) {
-        this.score = score;
-    }
 }

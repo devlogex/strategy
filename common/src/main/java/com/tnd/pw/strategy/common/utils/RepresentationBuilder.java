@@ -1,9 +1,12 @@
 package com.tnd.pw.strategy.common.utils;
 
 import com.google.common.reflect.TypeToken;
+import com.tnd.pw.strategy.common.enums.GoalState;
 import com.tnd.pw.strategy.common.enums.ModelType;
 import com.tnd.pw.strategy.common.representations.*;
 import com.tnd.pw.strategy.competitor.entity.Competitor;
+import com.tnd.pw.strategy.goal.entity.Goal;
+import com.tnd.pw.strategy.initiative.entity.Initiative;
 import com.tnd.pw.strategy.layout.entity.Layout;
 import com.tnd.pw.strategy.model.entity.Model;
 import com.tnd.pw.strategy.model.entity.ModelComponent;
@@ -13,7 +16,6 @@ import com.tnd.pw.strategy.positioning.entity.PositionComponent;
 import com.tnd.pw.strategy.vision.entity.Vision;
 import com.tnd.pw.strategy.vision.entity.VisionComponent;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -271,5 +273,75 @@ public class RepresentationBuilder {
         HashMap<String, Integer> score = GsonUtils.getGson().fromJson(competitor.getScore(), new TypeToken<HashMap<String, Integer>>(){}.getType());
         competitorRepresentation.setScore(score);
         return competitorRepresentation;
+    }
+
+    public static ListGoalRepresentation buildListGoalRepresentation(List<Goal> goals, Layout layout) {
+        ListGoalRepresentation list = new ListGoalRepresentation();
+        ArrayList<ArrayList<ArrayList<Long>>> layoutEntity = GsonUtils.getGson().fromJson(layout.getLayout(), new TypeToken<ArrayList<ArrayList<ArrayList<Long>>>>(){}.getType());
+        for(int i = 0; i < layoutEntity.size(); i++) {
+            for(int j = 0; j < layoutEntity.get(i).size(); j++) {
+                for(int k = 0; k < layoutEntity.get(i).get(j).size(); k++) {
+                    for(int x = 0; x < goals.size(); x++) {
+                        if(goals.get(x).getId().compareTo(layoutEntity.get(i).get(j).get(k)) == 0) {
+                            list.add(buildGoalRepresentation(goals.get(x)));
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        return list;
+    }
+
+    public static GoalRepresentation buildGoalRepresentation(Goal goal) {
+        GoalRepresentation goalRepresentation = new GoalRepresentation();
+        goalRepresentation.setId(goal.getId());
+        goalRepresentation.setWorkspaceId(goal.getWorkspaceId());
+        goalRepresentation.setName(goal.getName());
+        goalRepresentation.setDescription(goal.getDescription());
+        goalRepresentation.setFiles(goal.getFiles());
+        goalRepresentation.setParentGoal(goal.getParentGoal());
+        goalRepresentation.setStatus(GoalState.values()[goal.getStatus()].name());
+        goalRepresentation.setTimeFrame(goal.getTimeFrame());
+        goalRepresentation.setColor(goal.getColor());
+        goalRepresentation.setMetric(goal.getMetric());
+        goalRepresentation.setMetricDescription(goal.getMetricDescription());
+        goalRepresentation.setMetricFile(goal.getMetricFile());
+        return goalRepresentation;
+    }
+
+    public static ListInitiativeRepresentation buildListInitiativeRepresentation(List<Initiative> initiatives, Layout layout) {
+        ListInitiativeRepresentation list = new ListInitiativeRepresentation();
+        ArrayList<ArrayList<ArrayList<Long>>> layoutEntity = GsonUtils.getGson().fromJson(layout.getLayout(), new TypeToken<ArrayList<ArrayList<ArrayList<Long>>>>(){}.getType());
+        for(int i = 0; i < layoutEntity.size(); i++) {
+            for(int j = 0; j < layoutEntity.get(i).size(); j++) {
+                for(int k = 0; k < layoutEntity.get(i).get(j).size(); k++) {
+                    for(int x = 0; x < initiatives.size(); x++) {
+                        if(initiatives.get(x).getId().compareTo(layoutEntity.get(i).get(j).get(k)) == 0) {
+                            list.add(buildInitiativeRepresentation(initiatives.get(x)));
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        return list;
+    }
+
+    public static InitiativeRepresentation buildInitiativeRepresentation(Initiative initiative) {
+        InitiativeRepresentation initiativeRepresentation = new InitiativeRepresentation();
+        initiativeRepresentation.setId(initiative.getId());
+        initiativeRepresentation.setWorkspaceId(initiative.getWorkspaceId());
+        initiativeRepresentation.setName(initiative.getName());
+        initiativeRepresentation.setDescription(initiative.getDescription());
+        initiativeRepresentation.setFiles(initiative.getFiles());
+        initiativeRepresentation.setParentInitiative(initiative.getParentInitiative());
+        initiativeRepresentation.setStatus(GoalState.values()[initiative.getStatus()].name());
+        initiativeRepresentation.setTimeFrame(initiative.getTimeFrame());
+        initiativeRepresentation.setColor(initiative.getColor());
+        initiativeRepresentation.setStartAt(initiative.getStartAt());
+        initiativeRepresentation.setEndAt(initiative.getEndAt());
+        initiativeRepresentation.setVisible(initiative.getVisible());
+        return initiativeRepresentation;
     }
 }

@@ -151,7 +151,7 @@ public class PositionServiceHandlerImpl implements PositionServiceHandler {
     @Override
     public LayoutRepresentation addPositionComponent(StrategyRequest request) throws IOException, DBServiceException, LayoutNotFoundException, PositionComponentNotFoundException {
         try {
-            PositionComponent component = positionComponentService.create(request.getPositionId(), request.getComponentName(), request.getColor(), request.getDescription(), request.getFiles());
+            PositionComponent component = positionComponentService.create(request.getPositionId(), request.getName(), request.getColor(), request.getDescription(), request.getFiles());
             Layout layout = layoutService.get(component.getPositionId(), LayoutType.POSITION_COMPONENT.name());
             ArrayList<ArrayList<ArrayList<Long>>> layoutEntity = GsonUtils.getGson().fromJson(layout.getLayout(), new TypeToken<ArrayList<ArrayList<ArrayList<Long>>>>(){}.getType());
             if (layoutEntity.get(0) != null) {
@@ -180,8 +180,8 @@ public class PositionServiceHandlerImpl implements PositionServiceHandler {
         if(request.getColor() != null) {
             positionComponent.setColor(request.getColor());
         }
-        if(request.getComponentName() != null) {
-            positionComponent.setName(request.getComponentName());
+        if(request.getName() != null) {
+            positionComponent.setName(request.getName());
         }
         if(request.getDescription() != null) {
             positionComponent.setDescription(request.getDescription());

@@ -18,6 +18,8 @@
         <module>position</module>
         <module>personas</module>
         <module>competitor</module>
+        <module>goal</module>
+        <module>initiative</module>
     </modules>
 
     <properties>
@@ -29,11 +31,17 @@
         <strategy.version>1.0.0</strategy.version>
         <common.ioc.version>1.0.0</common.ioc.version>
         <dbservice.version>1.0.0</dbservice.version>
+        <lombok.version>1.18.12</lombok.version>
         <spring.version>5.2.6.RELEASE</spring.version>
     </properties>
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>${lombok.version}</version>
+            </dependency>
             <dependency>
                 <groupId>com.tnd.dbservice</groupId>
                 <artifactId>common</artifactId>

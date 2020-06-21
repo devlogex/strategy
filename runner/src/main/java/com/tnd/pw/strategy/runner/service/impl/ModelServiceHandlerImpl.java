@@ -21,9 +21,6 @@ import com.tnd.pw.strategy.model.exception.ModelNotFoundException;
 import com.tnd.pw.strategy.model.service.ModelComponentService;
 import com.tnd.pw.strategy.model.service.ModelService;
 import com.tnd.pw.strategy.runner.service.ModelServiceHandler;
-import com.tnd.pw.strategy.vision.entity.Vision;
-import com.tnd.pw.strategy.vision.entity.VisionComponent;
-import com.tnd.pw.strategy.vision.exception.VisionComponentNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -158,7 +155,7 @@ public class ModelServiceHandlerImpl implements ModelServiceHandler {
     @Override
     public LayoutRepresentation addModelComponent(StrategyRequest request) throws IOException, DBServiceException, ModelComponentNotFoundException, LayoutNotFoundException {
         try {
-            ModelComponent component = modelComponentService.create(request.getModelId(), request.getComponentName(), request.getColor(), request.getDescription(), request.getFiles());
+            ModelComponent component = modelComponentService.create(request.getModelId(), request.getName(), request.getColor(), request.getDescription(), request.getFiles());
             Layout layout = layoutService.get(component.getModelId(), LayoutType.MODEL_COMPONENT.name());
             ArrayList<ArrayList<ArrayList<Long>>> layoutEntity = GsonUtils.getGson().fromJson(layout.getLayout(), new TypeToken<ArrayList<ArrayList<ArrayList<Long>>>>(){}.getType());
             if (layoutEntity.get(0) != null) {
@@ -187,8 +184,8 @@ public class ModelServiceHandlerImpl implements ModelServiceHandler {
         if(request.getColor() != null) {
             modelComponent.setColor(request.getColor());
         }
-        if(request.getComponentName() != null) {
-            modelComponent.setName(request.getComponentName());
+        if(request.getName() != null) {
+            modelComponent.setName(request.getName());
         }
         if(request.getDescription() != null) {
             modelComponent.setDescription(request.getDescription());

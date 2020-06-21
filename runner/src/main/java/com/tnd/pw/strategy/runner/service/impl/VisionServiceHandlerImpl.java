@@ -1,7 +1,6 @@
 package com.tnd.pw.strategy.runner.service.impl;
 
 import com.google.common.reflect.TypeToken;
-import com.google.gson.Gson;
 import com.tnd.dbservice.common.exception.DBServiceException;
 import com.tnd.pw.strategy.common.enums.LayoutType;
 import com.tnd.pw.strategy.common.representations.*;
@@ -104,7 +103,7 @@ public class VisionServiceHandlerImpl implements VisionServiceHandler {
     public ListVisionComponentRep addVisionComponent(StrategyRequest request) throws IOException, DBServiceException, VisionNotFoundException, LayoutNotFoundException, VisionComponentNotFoundException {
         try {
             Vision vision = visionService.getById(request.getVisionId());
-            VisionComponent visionComponent = visionComponentService.create(request.getVisionId(), request.getComponentName(), request.getSummary(), request.getColor(), request.getDescription(), request.getFiles());
+            VisionComponent visionComponent = visionComponentService.create(request.getVisionId(), request.getName(), request.getSummary(), request.getColor(), request.getDescription(), request.getFiles());
             Layout layout = layoutService.get(vision.getId(), LayoutType.VISION_COMPONENT.name());
             ArrayList<ArrayList<ArrayList<Long>>> layoutRep = GsonUtils.getGson().fromJson(layout.getLayout(), new TypeToken<ArrayList<ArrayList<ArrayList<Long>>>>(){}.getType());
             if (layoutRep != null && layoutRep.get(0) != null) {
@@ -141,8 +140,8 @@ public class VisionServiceHandlerImpl implements VisionServiceHandler {
         if(request.getDescription() != null) {
             visionComponent.setDescription(request.getDescription());
         }
-        if(request.getComponentName() != null) {
-            visionComponent.setName(request.getComponentName());
+        if(request.getName() != null) {
+            visionComponent.setName(request.getName());
         }
         VisionComponent newComponent = visionComponentService.update(visionComponent);
         return RepresentationBuilder.buildVisionComponentRep(newComponent);
