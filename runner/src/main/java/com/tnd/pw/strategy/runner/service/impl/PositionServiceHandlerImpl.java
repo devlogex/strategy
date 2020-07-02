@@ -36,10 +36,10 @@ public class PositionServiceHandlerImpl implements PositionServiceHandler {
 
     @Override
     public ListPositionRepresentation addPosition(StrategyRequest request) throws IOException, DBServiceException, PositionNotFoundException {
-        Position position = positionService.create(request.getWorkspaceId());
+        Position position = positionService.create(request.getProductId());
         Layout layout;
         try {
-            layout = layoutService.get(request.getWorkspaceId(), LayoutType.POSITION.name());
+            layout = layoutService.get(request.getProductId(), LayoutType.POSITION.name());
             ArrayList<ArrayList<ArrayList<Long>>> layoutEntity = GsonUtils.getGson().fromJson(layout.getLayout(), new TypeToken<ArrayList<ArrayList<ArrayList<Long>>>>(){}.getType());
             layoutEntity.add(new ArrayList<>());
             layoutEntity.get(layoutEntity.size() - 1).add(new ArrayList<>());
@@ -51,17 +51,17 @@ public class PositionServiceHandlerImpl implements PositionServiceHandler {
             layoutEntity.add(new ArrayList<>());
             layoutEntity.get(0).add(new ArrayList<>());
             layoutEntity.get(0).get(0).add(position.getId());
-            layout = layoutService.create(request.getWorkspaceId(), LayoutType.POSITION.name(), GsonUtils.convertToString(layoutEntity));
+            layout = layoutService.create(request.getProductId(), LayoutType.POSITION.name(), GsonUtils.convertToString(layoutEntity));
 
         }
         LayoutRepresentation layoutRepresentation = createPositionComponentDefaults(position);
-        List<Position> positions = positionService.get(null, request.getWorkspaceId(), null, null);
+        List<Position> positions = positionService.get(Position.builder().productId(request.getProductId()).build());
         return RepresentationBuilder.buildListPositionRepresentation(positions, layout, layoutRepresentation.getLayout());
     }
 
     @Override
     public PositionRepresentation updatePosition(StrategyRequest request) throws DBServiceException, IOException, PositionNotFoundException {
-        Position position = positionService.get(request.getPositionId(), null, null, null).get(0);
+        Position position = positionService.get(Position.builder().id(request.getPositionId()).build()).get(0);
         if(request.getPositionName() != null) {
             position.setName(request.getPositionName());
         }
@@ -85,11 +85,14 @@ public class PositionServiceHandlerImpl implements PositionServiceHandler {
     public ListPositionRepresentation getPosition(StrategyRequest request) throws DBServiceException, IOException, LayoutNotFoundException {
         try {
             List<Position> positions = positionService.get(
-                    request.getPositionId(),
-                    request.getWorkspaceId(),
-                    request.getBuzType(),
-                    request.getTimeFrame());
-            Layout layout = layoutService.get(positions.get(0).getWorkspaceId(), LayoutType.POSITION.name());
+                    Position.builder()
+                            .id(request.getPositionId())
+                            .productId(request.getProductId())
+                            .buzType(request.getBuzType())
+                            .timeFrame(request.getTimeFrame())
+                            .build()
+            );
+            Layout layout = layoutService.get(positions.get(0).getProductId(), LayoutType.POSITION.name());
             return RepresentationBuilder.buildListPositionRepresentation(positions, layout, null);
         } catch (PositionNotFoundException e) {
             LOGGER.error("[PositionServiceHandlerImpl] PositionNotFoundException with request: {}", GsonUtils.convertToString(request));
@@ -105,13 +108,13 @@ public class PositionServiceHandlerImpl implements PositionServiceHandler {
         Layout layout;
         Position position = null;
         try {
-            position = positionService.get(request.getPositionId(),null,null,null).get(0);
-            layout = layoutService.get(position.getWorkspaceId(), LayoutType.POSITION.name());
+            position = positionService.get(Position.builder().id(request.getPositionId()).build()).get(0);
+            layout = layoutService.get(position.getProductId(), LayoutType.POSITION.name());
         } catch (PositionNotFoundException e) {
             LOGGER.error("[PositionServiceHandlerImpl] PositionNotFoundException with id: {}", request.getPositionId());
             throw e;
         } catch (LayoutNotFoundException e) {
-            LOGGER.error("[PositionServiceHandlerImpl] LayoutNotFoundException with parent_id: {}, type: {}", position.getWorkspaceId(), LayoutType.POSITION.name());
+            LOGGER.error("[PositionServiceHandlerImpl] LayoutNotFoundException with parent_id: {}, type: {}", position.getProductId(), LayoutType.POSITION.name());
             throw e;
         }
 
@@ -141,7 +144,7 @@ public class PositionServiceHandlerImpl implements PositionServiceHandler {
         layoutService.remove(position.getId(), LayoutType.POSITION_COMPONENT.name());
         List<Position> positions = null;
         try {
-            positions = positionService.get(null, position.getWorkspaceId(), null, null);
+            positions = positionService.get(Position.builder().productId(position.getProductId()).build());
         } catch (PositionNotFoundException e) {
             return null;
         }
@@ -254,7 +257,7 @@ public class PositionServiceHandlerImpl implements PositionServiceHandler {
     @Override
     public LayoutRepresentation getLayoutInstance(Long parentId, String layoutType) throws Exception {
         if(layoutType.equals(LayoutType.POSITION.name())) {
-            List<Position> positions = positionService.get(null, parentId, null, null);
+            List<Position> positions = positionService.get(Position.builder().productId(parentId).build());
             Layout layout = layoutService.get(parentId, layoutType);
             return new LayoutRepresentation(RepresentationBuilder.buildListPositionRepresentation(positions, layout, null));
         }

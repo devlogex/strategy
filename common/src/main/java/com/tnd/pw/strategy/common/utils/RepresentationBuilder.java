@@ -25,7 +25,7 @@ public class RepresentationBuilder {
     public static VisionRepresentation buildVisionRepresentation(Vision vision, List<VisionComponent> components, Layout layout) {
         VisionRepresentation visionRepresentation = new VisionRepresentation();
         visionRepresentation.setId(vision.getId());
-        visionRepresentation.setWorkspaceId(vision.getWorkspaceId());
+        visionRepresentation.setProductId(vision.getProductId());
         visionRepresentation.setFiles(vision.getFiles());
         visionRepresentation.setDescription(vision.getDescription());
         if(components != null && layout != null) {
@@ -104,6 +104,7 @@ public class RepresentationBuilder {
         ModelRepresentation modelRepresentation = new ModelRepresentation();
         modelRepresentation.setId(model.getId());
         modelRepresentation.setName(model.getName());
+        modelRepresentation.setProductId(model.getProductId());
         modelRepresentation.setType(ModelType.values()[model.getType()].name());
         modelRepresentation.setTimeFrame(model.getTimeFrame());
         modelRepresentation.setDescription(model.getDescription());
@@ -233,7 +234,7 @@ public class RepresentationBuilder {
     public static PersonasRepresentation buildPersonasRepresentation(Personas personas) {
         PersonasRepresentation personasRepresentation = new PersonasRepresentation();
         personasRepresentation.setId(personas.getId());
-        personasRepresentation.setWorkspaceId(personas.getWorkspaceId());
+        personasRepresentation.setProductId(personas.getProductId());
         personasRepresentation.setName(personas.getName());
         personasRepresentation.setColor(personas.getColor());
         personasRepresentation.setImage(personas.getImage());
@@ -263,7 +264,7 @@ public class RepresentationBuilder {
     public static CompetitorRepresentation buildCompetitorRepresentation(Competitor competitor) {
         CompetitorRepresentation competitorRepresentation = new CompetitorRepresentation();
         competitorRepresentation.setId(competitor.getId());
-        competitorRepresentation.setWorkspaceId(competitor.getWorkspaceId());
+        competitorRepresentation.setProductId(competitor.getProductId());
         competitorRepresentation.setName(competitor.getName());
         competitorRepresentation.setColor(competitor.getColor());
         competitorRepresentation.setImage(competitor.getImage());
@@ -296,7 +297,7 @@ public class RepresentationBuilder {
     public static GoalRepresentation buildGoalRepresentation(Goal goal) {
         GoalRepresentation goalRepresentation = new GoalRepresentation();
         goalRepresentation.setId(goal.getId());
-        goalRepresentation.setWorkspaceId(goal.getWorkspaceId());
+        goalRepresentation.setProductId(goal.getProductId());
         goalRepresentation.setName(goal.getName());
         goalRepresentation.setDescription(goal.getDescription());
         goalRepresentation.setFiles(goal.getFiles());
@@ -331,7 +332,7 @@ public class RepresentationBuilder {
     public static InitiativeRepresentation buildInitiativeRepresentation(Initiative initiative) {
         InitiativeRepresentation initiativeRepresentation = new InitiativeRepresentation();
         initiativeRepresentation.setId(initiative.getId());
-        initiativeRepresentation.setWorkspaceId(initiative.getWorkspaceId());
+        initiativeRepresentation.setProductId(initiative.getProductId());
         initiativeRepresentation.setName(initiative.getName());
         initiativeRepresentation.setDescription(initiative.getDescription());
         initiativeRepresentation.setFiles(initiative.getFiles());

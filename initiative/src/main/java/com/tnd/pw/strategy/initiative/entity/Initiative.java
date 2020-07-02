@@ -15,8 +15,8 @@ public class Initiative implements Serializable {
 
     @SerializedName("id")
     private Long id;
-    @SerializedName("workspace_id")
-    private Long workspaceId;
+    @SerializedName("product_id")
+    private Long productId;
     @SerializedName("name")
     private String name;
     @SerializedName("description")

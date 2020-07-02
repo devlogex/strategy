@@ -63,8 +63,8 @@ public class StrategyRequest implements Serializable {
     private String modelType;
     @SerializedName("vision_id")
     private Long visionId;
-    @SerializedName("workspace_id")
-    private Long workspaceId;
+    @SerializedName("product_id")
+    private Long productId;
     @SerializedName("files")
     private String files;
 

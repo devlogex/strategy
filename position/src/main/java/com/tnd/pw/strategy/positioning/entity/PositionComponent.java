@@ -1,26 +1,29 @@
 package com.tnd.pw.strategy.positioning.entity;
 
 import com.google.gson.annotations.SerializedName;
+import lombok.*;
 
-public class PositionComponent extends BaseEntity {
+import java.io.Serializable;
+
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@Setter
+@Getter
+public class PositionComponent implements Serializable {
+    private static final long serialVersionUID = 1L;
+
+    @SerializedName("id")
+    private Long id;
+    @SerializedName("name")
+    private String name;
+    @SerializedName("files")
+    private String files;
+    @SerializedName("description")
+    private String description;
     @SerializedName("position_id")
     private Long positionId;
     @SerializedName("color")
     private String color;
 
-    public Long getPositionId() {
-        return positionId;
-    }
-
-    public void setPositionId(Long positionId) {
-        this.positionId = positionId;
-    }
-
-    public String getColor() {
-        return color;
-    }
-
-    public void setColor(String color) {
-        this.color = color;
-    }
 }

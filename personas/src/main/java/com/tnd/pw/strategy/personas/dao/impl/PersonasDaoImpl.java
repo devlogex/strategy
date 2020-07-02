@@ -16,19 +16,19 @@ public class PersonasDaoImpl implements PersonasDao {
     private DataHelper dataHelper;
 
     private static final String SQL_CREATE =
-            "INSERT INTO personas(id, workspace_id, name, image, color, content) " +
+            "INSERT INTO personas(id, product_id, name, image, color, content) " +
                     "values(%d, %d, '%s', '%s', '%s', '%s')";
     private static final String SQL_UPDATE =
             "UPDATE personas SET name = '%s', image = '%s', color = '%s', content = '%s' WHERE id = %d";
     private static final String SQL_SELECT_BY_ID =
             "SELECT * FROM personas WHERE id = %d";
-    private static final String SQL_SELECT_BY_WORKSPACE_ID =
-            "SELECT * FROM personas WHERE workspace_id = %d";
+    private static final String SQL_SELECT_BY_PRODUCT_ID =
+            "SELECT * FROM personas WHERE product_id = %d";
     private static final String SQL_DELETE =
             "DELETE FROM personas WHERE id = %d";
     @Override
     public void create(Personas entity) throws IOException, DBServiceException {
-        String query = String.format(SQL_CREATE, entity.getId(), entity.getWorkspaceId(), entity.getName(),
+        String query = String.format(SQL_CREATE, entity.getId(), entity.getProductId(), entity.getName(),
                 entity.getImage(), entity.getColor(), entity.getContent());
         dataHelper.executeSQL(query);
     }
@@ -47,7 +47,7 @@ public class PersonasDaoImpl implements PersonasDao {
             query = String.format(SQL_SELECT_BY_ID, entity.getId());
         }
         else {
-            query = String.format(SQL_SELECT_BY_WORKSPACE_ID, entity.getWorkspaceId());
+            query = String.format(SQL_SELECT_BY_PRODUCT_ID, entity.getProductId());
         }
         List<Personas> entities = dataHelper.querySQL(query, Personas.class);
         if(CollectionUtils.isEmpty(entities)) {

@@ -16,18 +16,18 @@ public class VisionDaoImpl implements VisionDao {
     private DataHelper dataHelper;
 
     private static final String SQL_CREATE =
-            "INSERT INTO vision(id, workspace_id, description, files) values(%d, %d, '%s', '%s')";
+            "INSERT INTO vision(id, product_id, description, files) values(%d, %d, '%s', '%s')";
     private static final String SQL_UPDATE =
             "UPDATE vision SET description = '%s', files = '%s' WHERE id = %d";
     private static final String SQL_SELECT_BY_ID =
             "SELECT * FROM vision where id = %d";
-    private static final String SQL_SELECT_BY_WORKSPACE_ID =
-            "SELECT * FROM vision where workspace_id = %d";
+    private static final String SQL_SELECT_BY_PRODUCT_ID =
+            "SELECT * FROM vision where product_id = %d";
 
 
     @Override
     public void create(Vision entity) throws IOException, DBServiceException {
-        String query = String.format(SQL_CREATE, entity.getId(), entity.getWorkspaceId(), entity.getDescription(), entity.getFiles());
+        String query = String.format(SQL_CREATE, entity.getId(), entity.getProductId(), entity.getDescription(), entity.getFiles());
         dataHelper.executeSQL(query);
     }
 
@@ -43,8 +43,8 @@ public class VisionDaoImpl implements VisionDao {
         if(entity.getId() != null) {
             query = String.format(SQL_SELECT_BY_ID, entity.getId());
         }
-        else if(entity.getWorkspaceId() != null) {
-            query = String.format(SQL_SELECT_BY_WORKSPACE_ID, entity.getWorkspaceId());
+        else if(entity.getProductId() != null) {
+            query = String.format(SQL_SELECT_BY_PRODUCT_ID, entity.getProductId());
         }
         List<Vision> entities = dataHelper.querySQL(query, Vision.class);
         if(CollectionUtils.isEmpty(entities)) {

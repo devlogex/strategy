@@ -33,10 +33,7 @@ public class ModelComponentServiceImpl implements ModelComponentService {
     }
 
     @Override
-    public List<ModelComponent> get(Long id, Long modelId) throws IOException, DBServiceException, ModelComponentNotFoundException {
-        ModelComponent entity = new ModelComponent();
-        entity.setId(id);
-        entity.setModelId(modelId);
+    public List<ModelComponent> get(ModelComponent entity) throws IOException, DBServiceException, ModelComponentNotFoundException {
         return modelComponentDao.get(entity);
     }
 

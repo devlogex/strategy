@@ -8,8 +8,8 @@ import java.io.IOException;
 import java.util.List;
 
 public interface VisionService {
-    Vision create(Long workspaceId) throws IOException, DBServiceException;
+    Vision create(Long productId) throws IOException, DBServiceException;
     Vision update(Vision entity) throws IOException, DBServiceException;
-    Vision getById(Long id) throws IOException, DBServiceException, VisionNotFoundException;
-    Vision getByWorkspaceId(Long workspaceId) throws DBServiceException, VisionNotFoundException, IOException;
+    List<Vision> get(Vision entity) throws IOException, DBServiceException, VisionNotFoundException;
+
 }

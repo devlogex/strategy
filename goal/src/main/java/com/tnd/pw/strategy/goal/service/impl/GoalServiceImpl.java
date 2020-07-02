@@ -15,10 +15,10 @@ public class GoalServiceImpl implements GoalService {
     private GoalDao goalDao;
 
     @Override
-    public Goal create(Long workspaceId) throws IOException, DBServiceException {
+    public Goal create(Long productId) throws IOException, DBServiceException {
         Goal entity = new Goal();
         entity.setId(System.currentTimeMillis());
-        entity.setWorkspaceId(workspaceId);
+        entity.setProductId(productId);
         entity.setName("Name...");
         entity.setDescription("");
         entity.setFiles("");

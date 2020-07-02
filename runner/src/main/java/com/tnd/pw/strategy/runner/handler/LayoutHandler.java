@@ -37,4 +37,13 @@ public class LayoutHandler implements BaseHandler {
         LOGGER.info("[LayoutHandler] updateLayoutList() - response: {}", GsonUtils.convertToString(response));
         return new BaseResponse<>(response);
     }
+
+    @HandlerService(path = "/strategy/layout", protocol = "GET",
+            dataRequestType = "com.tnd.pw.strategy.common.requests.StrategyRequest")
+    public BaseResponse<LayoutRepresentation> getLayout(BaseRequest<StrategyRequest> request) throws Exception {
+        LOGGER.info("[LayoutHandler] getLayout() - request: {}", GsonUtils.convertToString(request));
+        LayoutRepresentation response = layoutServiceHandler.getLayout(request.getData());
+        LOGGER.info("[LayoutHandler] getLayout() - response: {}", GsonUtils.convertToString(response));
+        return new BaseResponse<>(response);
+    }
 }

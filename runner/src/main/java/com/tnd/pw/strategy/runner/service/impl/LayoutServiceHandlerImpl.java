@@ -2,11 +2,13 @@ package com.tnd.pw.strategy.runner.service.impl;
 
 import com.google.common.reflect.TypeToken;
 import com.tnd.com.ioc.SpringApplicationContext;
+import com.tnd.dbservice.common.exception.DBServiceException;
 import com.tnd.pw.strategy.common.enums.LayoutType;
 import com.tnd.pw.strategy.common.representations.LayoutRepresentation;
 import com.tnd.pw.strategy.common.requests.StrategyRequest;
 import com.tnd.pw.strategy.common.utils.GsonUtils;
 import com.tnd.pw.strategy.layout.entity.Layout;
+import com.tnd.pw.strategy.layout.exception.LayoutNotFoundException;
 import com.tnd.pw.strategy.layout.service.LayoutService;
 import com.tnd.pw.strategy.runner.exception.InvalidDataRequestException;
 ;
@@ -15,6 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 
@@ -54,6 +57,18 @@ public class LayoutServiceHandlerImpl implements LayoutServiceHandler {
         layoutService.update(layout);
         ServiceHandler serviceHandler = getServiceHandler(request.getLayoutType());
         return serviceHandler.getLayoutInstance(request.getLayoutParent(), request.getLayoutType());
+    }
+
+    @Override
+    public LayoutRepresentation getLayout(StrategyRequest request) throws IOException, DBServiceException {
+        try {
+            Layout layout = layoutService.get(request.getLayoutParent(), request.getLayoutType());
+            return new LayoutRepresentation(layout);
+        } catch (LayoutNotFoundException e) {
+            LOGGER.error("[LayoutHandlerBuz] getLayout() - LayoutNotFoundException, layout_parent: {}, layout_type: {}"
+                    ,request.getLayoutParent(),request.getLayoutType());
+            return null;
+        }
     }
 
     private ServiceHandler getServiceHandler(String layoutType) {

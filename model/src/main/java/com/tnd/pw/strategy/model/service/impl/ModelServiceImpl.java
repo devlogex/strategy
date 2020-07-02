@@ -15,10 +15,10 @@ public class ModelServiceImpl implements ModelService {
     private ModelDao modelDao;
 
     @Override
-    public Model create(Long workspaceId, Integer type) throws IOException, DBServiceException {
+    public Model create(Long productId, Integer type) throws IOException, DBServiceException {
         Model entity = new Model();
         entity.setId(System.currentTimeMillis());
-        entity.setWorkspaceId(workspaceId);
+        entity.setProductId(productId);
         entity.setName("Model Name");
         entity.setType(type);
         entity.setTimeFrame("");
@@ -35,12 +35,7 @@ public class ModelServiceImpl implements ModelService {
     }
 
     @Override
-    public List<Model> get(Long id, Long workspaceId, Integer type, String timeFrame) throws IOException, DBServiceException, ModelNotFoundException {
-        Model entity = new Model();
-        entity.setId(id);
-        entity.setWorkspaceId(workspaceId);
-        entity.setType(type);
-        entity.setTimeFrame(timeFrame);
+    public List<Model> get(Model entity) throws IOException, DBServiceException, ModelNotFoundException {
         return modelDao.get(entity);
     }
 

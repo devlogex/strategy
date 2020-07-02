@@ -17,10 +17,10 @@ public class PersonasServiceImpl implements PersonasService {
     private PersonasDao personasDao;
 
     @Override
-    public Personas create(Long workspaceId) throws IOException, DBServiceException {
+    public Personas create(Long productId) throws IOException, DBServiceException {
         Personas entity = new Personas();
         entity.setId(System.currentTimeMillis());
-        entity.setWorkspaceId(workspaceId);
+        entity.setProductId(productId);
         entity.setName("Name");
         entity.setImage("");
         entity.setColor("#D50000");
@@ -93,10 +93,7 @@ public class PersonasServiceImpl implements PersonasService {
     }
 
     @Override
-    public List<Personas> get(Long id, Long workspaceId) throws IOException, DBServiceException, PersonasNotFoundException {
-        Personas entity = new Personas();
-        entity.setId(id);
-        entity.setWorkspaceId(workspaceId);
+    public List<Personas> get(Personas entity) throws IOException, DBServiceException, PersonasNotFoundException {
         return personasDao.get(entity);
     }
 

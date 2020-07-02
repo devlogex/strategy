@@ -16,7 +16,7 @@ public class InitiativeDaoImpl  implements InitiativeDao {
     private DataHelper dataHelper;
 
     private static final String SQL_CREATE =
-            "INSERT INTO initiative(id, workspace_id, name, description, files, parent_initiative, " +
+            "INSERT INTO initiative(id, product_id, name, description, files, parent_initiative, " +
                     "status, time_frame, color) " +
                     "values(%d, %d, '%s', '%s', '%s', '%s', %d, '%s', '%s')";
     private static final String SQL_UPDATE =
@@ -26,19 +26,19 @@ public class InitiativeDaoImpl  implements InitiativeDao {
                     " WHERE id = %d";
     private static final String SQL_SELECT_BY_ID =
             "SELECT * FROM initiative WHERE id = %d";
-    private static final String SQL_SELECT_BY_WORKSPACE_ID =
-            "SELECT * FROM initiative WHERE workspace_id = %d";
-    private static final String SQL_SELECT_BY_WORKSPACE_ID_STATUS =
-            "SELECT * FROM initiative WHERE workspace_id = %d AND status = %d";
-    private static final String SQL_SELECT_BY_WORKSPACE_ID_TIME_FRAME =
-            "SELECT * FROM initiative WHERE workspace_id = %d AND time_frame = '%s'";
-    private static final String SQL_SELECT_BY_WORKSPACE_ID_STATUS_TIME_FRAME =
-            "SELECT * FROM initiative WHERE workspace_id = %d AND status = %d AND time_frame = '%s'";
+    private static final String SQL_SELECT_BY_PRODUCT_ID =
+            "SELECT * FROM initiative WHERE product_id = %d";
+    private static final String SQL_SELECT_BY_PRODUCT_ID_STATUS =
+            "SELECT * FROM initiative WHERE product_id = %d AND status = %d";
+    private static final String SQL_SELECT_BY_PRODUCT_ID_TIME_FRAME =
+            "SELECT * FROM initiative WHERE product_id = %d AND time_frame = '%s'";
+    private static final String SQL_SELECT_BY_PRODUCT_ID_STATUS_TIME_FRAME =
+            "SELECT * FROM initiative WHERE product_id = %d AND status = %d AND time_frame = '%s'";
     private static final String SQL_DELETE =
             "DELETE FROM initiative WHERE id = %d";
     @Override
     public void create(Initiative entity) throws IOException, DBServiceException {
-        String query = String.format(SQL_CREATE, entity.getId(), entity.getWorkspaceId(),
+        String query = String.format(SQL_CREATE, entity.getId(), entity.getProductId(),
                 entity.getName(), entity.getDescription(), entity.getFiles(), entity.getParentInitiative(),
                 entity.getStatus(), entity.getTimeFrame(), entity.getColor());
         dataHelper.executeSQL(query);
@@ -60,19 +60,19 @@ public class InitiativeDaoImpl  implements InitiativeDao {
             query = String.format(SQL_SELECT_BY_ID, entity.getId());
         }
         else if(entity.getStatus() != null && entity.getTimeFrame() != null) {
-            query = String.format(SQL_SELECT_BY_WORKSPACE_ID_STATUS_TIME_FRAME,
-                    entity.getWorkspaceId(), entity.getStatus(), entity.getTimeFrame());
+            query = String.format(SQL_SELECT_BY_PRODUCT_ID_STATUS_TIME_FRAME,
+                    entity.getProductId(), entity.getStatus(), entity.getTimeFrame());
         }
         else if(entity.getStatus() != null) {
-            query = String.format(SQL_SELECT_BY_WORKSPACE_ID_STATUS,
-                    entity.getWorkspaceId(), entity.getStatus());
+            query = String.format(SQL_SELECT_BY_PRODUCT_ID_STATUS,
+                    entity.getProductId(), entity.getStatus());
         }
         else if(entity.getTimeFrame() != null) {
-            query = String.format(SQL_SELECT_BY_WORKSPACE_ID_TIME_FRAME,
-                    entity.getWorkspaceId(), entity.getTimeFrame());
+            query = String.format(SQL_SELECT_BY_PRODUCT_ID_TIME_FRAME,
+                    entity.getProductId(), entity.getTimeFrame());
         }
         else {
-            query = String.format(SQL_SELECT_BY_WORKSPACE_ID, entity.getWorkspaceId());
+            query = String.format(SQL_SELECT_BY_PRODUCT_ID, entity.getProductId());
         }
         List<Initiative> entities = dataHelper.querySQL(query, Initiative.class);
         if(CollectionUtils.isEmpty(entities)) {

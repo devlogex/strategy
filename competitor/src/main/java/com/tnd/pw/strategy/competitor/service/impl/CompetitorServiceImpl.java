@@ -17,10 +17,10 @@ public class CompetitorServiceImpl implements CompetitorService {
     private CompetitorDao competitorDao;
 
     @Override
-    public Competitor create(Long workspaceId) throws IOException, DBServiceException {
+    public Competitor create(Long productId) throws IOException, DBServiceException {
         Competitor entity = new Competitor();
         entity.setId(System.currentTimeMillis());
-        entity.setWorkspaceId(workspaceId);
+        entity.setProductId(productId);
         entity.setName("Name");
         entity.setImage("");
         entity.setColor("#D50000");
@@ -104,10 +104,7 @@ public class CompetitorServiceImpl implements CompetitorService {
     }
 
     @Override
-    public List<Competitor> get(Long id, Long workspaceId) throws IOException, DBServiceException, CompetitorNotFoundException {
-        Competitor entity = new Competitor();
-        entity.setId(id);
-        entity.setWorkspaceId(workspaceId);
+    public List<Competitor> get(Competitor entity) throws IOException, DBServiceException, CompetitorNotFoundException {
         return competitorDao.get(entity);
     }
 

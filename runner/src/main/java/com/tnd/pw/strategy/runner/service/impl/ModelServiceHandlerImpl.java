@@ -40,10 +40,10 @@ public class ModelServiceHandlerImpl implements ModelServiceHandler {
 
     @Override
     public ListModelRepresentation addModel(StrategyRequest request) throws IOException, DBServiceException, ModelNotFoundException {
-        Model model = modelService.create(request.getWorkspaceId(), ModelType.valueOf(request.getModelType()).ordinal());
+        Model model = modelService.create(request.getProductId(), ModelType.valueOf(request.getModelType()).ordinal());
         Layout layout;
         try {
-            layout = layoutService.get(request.getWorkspaceId(), LayoutType.MODEL.name());
+            layout = layoutService.get(request.getProductId(), LayoutType.MODEL.name());
             ArrayList<ArrayList<ArrayList<Long>>> layoutEntity = GsonUtils.getGson().fromJson(layout.getLayout(), new TypeToken<ArrayList<ArrayList<ArrayList<Long>>>>(){}.getType());
             layoutEntity.add(new ArrayList<>());
             layoutEntity.get(layoutEntity.size() - 1).add(new ArrayList<>());
@@ -55,17 +55,17 @@ public class ModelServiceHandlerImpl implements ModelServiceHandler {
             layoutEntity.add(new ArrayList<>());
             layoutEntity.get(0).add(new ArrayList<>());
             layoutEntity.get(0).get(0).add(model.getId());
-            layout = layoutService.create(request.getWorkspaceId(), LayoutType.MODEL.name(), GsonUtils.convertToString(layoutEntity));
+            layout = layoutService.create(request.getProductId(), LayoutType.MODEL.name(), GsonUtils.convertToString(layoutEntity));
 
         }
         LayoutRepresentation layoutRepresentation = createModelComponentDefaults(model);
-        List<Model> models = modelService.get(null, request.getWorkspaceId(), null, null);
+        List<Model> models = modelService.get(Model.builder().productId(request.getProductId()).build());
         return RepresentationBuilder.buildListModelRepresentation(models, layout, layoutRepresentation.getLayout());
     }
 
     @Override
     public ModelRepresentation updateModel(StrategyRequest request) throws DBServiceException, IOException, ModelNotFoundException {
-        Model model = modelService.get(request.getModelId(), null, null, null).get(0);
+        Model model = modelService.get(Model.builder().id(request.getModelId()).build()).get(0);
         if(request.getModelName() != null) {
             model.setName(request.getModelName());
         }
@@ -89,11 +89,19 @@ public class ModelServiceHandlerImpl implements ModelServiceHandler {
     public ListModelRepresentation getModel(StrategyRequest request) throws DBServiceException, IOException, LayoutNotFoundException {
         try {
             List<Model> models = modelService.get(
-                    request.getModelId(),
-                    request.getWorkspaceId(),
-                    request.getModelType() == null ? null : ModelType.valueOf(request.getModelType()).ordinal(),
-                    request.getTimeFrame());
-            Layout layout = layoutService.get(models.get(0).getWorkspaceId(), LayoutType.MODEL.name());
+                    request.getModelType() == null ?
+                        Model.builder()
+                            .id(request.getModelId())
+                            .productId(request.getProductId())
+                            .timeFrame(request.getTimeFrame()).build()
+                    :
+                        Model.builder()
+                                .id(request.getModelId())
+                                .productId(request.getProductId())
+                                .timeFrame(request.getTimeFrame())
+                                .type(ModelType.valueOf(request.getModelType()).ordinal()).build()
+            );
+            Layout layout = layoutService.get(models.get(0).getProductId(), LayoutType.MODEL.name());
             return RepresentationBuilder.buildListModelRepresentation(models, layout, null);
         } catch (ModelNotFoundException e) {
             LOGGER.error("[ModelServiceHandlerImpl] ModelNotFoundException with request: {}", GsonUtils.convertToString(request));
@@ -109,13 +117,13 @@ public class ModelServiceHandlerImpl implements ModelServiceHandler {
         Layout layout;
         Model model = null;
         try {
-            model = modelService.get(request.getModelId(),null,null,null).get(0);
-            layout = layoutService.get(model.getWorkspaceId(), LayoutType.MODEL.name());
+            model = modelService.get(Model.builder().id(request.getModelId()).build()).get(0);
+            layout = layoutService.get(model.getProductId(), LayoutType.MODEL.name());
         } catch (ModelNotFoundException e) {
             LOGGER.error("[ModelServiceHandlerImpl] ModelNotFoundException with id: {}", request.getModelId());
             throw e;
         } catch (LayoutNotFoundException e) {
-            LOGGER.error("[ModelServiceHandlerImpl] LayoutNotFoundException with parent_id: {}, type: {}", model.getWorkspaceId(), LayoutType.MODEL.name());
+            LOGGER.error("[ModelServiceHandlerImpl] LayoutNotFoundException with parent_id: {}, type: {}", model.getProductId(), LayoutType.MODEL.name());
             throw e;
         }
 
@@ -145,7 +153,7 @@ public class ModelServiceHandlerImpl implements ModelServiceHandler {
         layoutService.remove(model.getId(), LayoutType.MODEL_COMPONENT.name());
         List<Model> models = null;
         try {
-            models = modelService.get(null, model.getWorkspaceId(), null, null);
+            models = modelService.get(Model.builder().productId(model.getProductId()).build());
         } catch (ModelNotFoundException e) {
             return null;
         }
@@ -167,7 +175,7 @@ public class ModelServiceHandlerImpl implements ModelServiceHandler {
             }
             layout.setLayout(GsonUtils.convertToString(layoutEntity));
             layoutService.update(layout);
-            List<ModelComponent> components = modelComponentService.get(null, component.getModelId());
+            List<ModelComponent> components = modelComponentService.get(ModelComponent.builder().modelId(component.getModelId()).build());
             return RepresentationBuilder.buildListModelComponentRep(layoutEntity, components);
         } catch (ModelComponentNotFoundException e) {
             LOGGER.error("[ModelServiceHandlerImpl] ModelComponentNotFoundException with component_id: {}", request.getComponentId());
@@ -180,7 +188,7 @@ public class ModelServiceHandlerImpl implements ModelServiceHandler {
 
     @Override
     public ModelComponentRep updateModelComponent(StrategyRequest request) throws DBServiceException, IOException, ModelComponentNotFoundException {
-        ModelComponent modelComponent = modelComponentService.get(request.getComponentId(), null).get(0);
+        ModelComponent modelComponent = modelComponentService.get(ModelComponent.builder().id(request.getComponentId()).build()).get(0);
         if(request.getColor() != null) {
             modelComponent.setColor(request.getColor());
         }
@@ -201,11 +209,11 @@ public class ModelServiceHandlerImpl implements ModelServiceHandler {
     public LayoutRepresentation getModelComponent(StrategyRequest request) throws DBServiceException, IOException, LayoutNotFoundException {
         try{
             if(request.getComponentId() != null) {
-                ModelComponent component = modelComponentService.get(request.getComponentId(), null).get(0);
+                ModelComponent component = modelComponentService.get(ModelComponent.builder().id(request.getComponentId()).build()).get(0);
                 return new LayoutRepresentation(component);
             }
             else {
-                List<ModelComponent> components = modelComponentService.get(null, request.getModelId());
+                List<ModelComponent> components = modelComponentService.get(ModelComponent.builder().modelId(request.getModelId()).build());
                 Layout layout = layoutService.get(request.getModelId(), LayoutType.MODEL_COMPONENT.name());
                 return RepresentationBuilder.buildListModelComponentRep(layout, components);
             }
@@ -221,7 +229,7 @@ public class ModelServiceHandlerImpl implements ModelServiceHandler {
         Layout layout;
         ModelComponent component = null;
         try {
-            component = modelComponentService.get(request.getComponentId(), null).get(0);
+            component = modelComponentService.get(ModelComponent.builder().id(request.getComponentId()).build()).get(0);
             layout = layoutService.get(component.getModelId(), LayoutType.MODEL_COMPONENT.name());
         } catch (ModelComponentNotFoundException e) {
             LOGGER.error("[ModelHandlerBuz] ModelComponentNotFoundException with component_id: {}", request.getComponentId());
@@ -252,19 +260,19 @@ public class ModelServiceHandlerImpl implements ModelServiceHandler {
         layout.setLayout(GsonUtils.convertToString(layoutEntity));
         layoutService.update(layout);
         modelComponentService.remove(request.getComponentId(), null );
-        List<ModelComponent> components = modelComponentService.get(null, component.getModelId());
+        List<ModelComponent> components = modelComponentService.get(ModelComponent.builder().modelId(component.getModelId()).build());
         return RepresentationBuilder.buildListModelComponentRep(layout, components);
     }
 
     @Override
     public LayoutRepresentation getLayoutInstance(Long parentId, String layoutType) throws Exception {
         if(layoutType.equals(LayoutType.MODEL.name())) {
-            List<Model> models = modelService.get(null, parentId, null, null);
+            List<Model> models = modelService.get(Model.builder().productId(parentId).build());
             Layout layout = layoutService.get(parentId, layoutType);
             return new LayoutRepresentation(RepresentationBuilder.buildListModelRepresentation(models, layout, null));
         }
         else {
-            List<ModelComponent> components = modelComponentService.get(null, parentId);
+            List<ModelComponent> components = modelComponentService.get(ModelComponent.builder().modelId(parentId).build());
             Layout layout = layoutService.get(parentId, layoutType);
             return new LayoutRepresentation(RepresentationBuilder.buildListModelComponentRep(layout, components));
         }

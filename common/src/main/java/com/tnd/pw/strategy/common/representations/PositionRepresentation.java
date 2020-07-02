@@ -1,9 +1,17 @@
 package com.tnd.pw.strategy.common.representations;
 
 import com.google.gson.annotations.SerializedName;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.io.Serializable;
 
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class PositionRepresentation implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -11,8 +19,8 @@ public class PositionRepresentation implements Serializable {
     private Long id;
     @SerializedName("name")
     private String name;
-    @SerializedName("workspace_id")
-    private Long workspaceId;
+    @SerializedName("product_id")
+    private Long productId;
     @SerializedName("type")
     private String type;
     @SerializedName("buz_type")
@@ -24,67 +32,4 @@ public class PositionRepresentation implements Serializable {
     @SerializedName("description")
     private String description;
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Long getWorkspaceId() {
-        return workspaceId;
-    }
-
-    public void setWorkspaceId(Long workspaceId) {
-        this.workspaceId = workspaceId;
-    }
-
-    public String getBuzType() {
-        return buzType;
-    }
-
-    public void setBuzType(String buzType) {
-        this.buzType = buzType;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public String getTimeFrame() {
-        return timeFrame;
-    }
-
-    public void setTimeFrame(String timeFrame) {
-        this.timeFrame = timeFrame;
-    }
-
-    public String getFiles() {
-        return files;
-    }
-
-    public void setFiles(String files) {
-        this.files = files;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
 }

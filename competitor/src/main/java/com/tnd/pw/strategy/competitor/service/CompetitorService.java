@@ -8,8 +8,8 @@ import java.io.IOException;
 import java.util.List;
 
 public interface CompetitorService {
-    Competitor create(Long workspaceId) throws IOException, DBServiceException;
+    Competitor create(Long productId) throws IOException, DBServiceException;
     void update(Competitor entity) throws IOException, DBServiceException;
-    List<Competitor> get(Long id, Long workspaceId) throws IOException, DBServiceException, CompetitorNotFoundException;
+    List<Competitor> get(Competitor entity) throws IOException, DBServiceException, CompetitorNotFoundException;
     void remove(Long competitorId) throws IOException, DBServiceException;
 }

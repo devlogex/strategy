@@ -8,6 +8,7 @@ import com.tnd.pw.strategy.vision.service.VisionService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.IOException;
+import java.util.List;
 
 public class VisionServiceImpl implements VisionService {
     @Autowired
@@ -15,10 +16,10 @@ public class VisionServiceImpl implements VisionService {
 
 
     @Override
-    public Vision create( Long workspaceId) throws IOException, DBServiceException {
+    public Vision create( Long productId) throws IOException, DBServiceException {
         Vision entity = new Vision();
         entity.setId(System.currentTimeMillis());
-        entity.setWorkspaceId(workspaceId);
+        entity.setProductId(productId);
         entity.setFiles("");
         entity.setDescription("");
         visionDao.create(entity);
@@ -32,16 +33,8 @@ public class VisionServiceImpl implements VisionService {
     }
 
     @Override
-    public Vision getById(Long id) throws IOException, DBServiceException, VisionNotFoundException {
-        Vision entity = new Vision();
-        entity.setId(id);
-        return visionDao.get(entity).get(0);
+    public List<Vision> get(Vision entity) throws IOException, DBServiceException, VisionNotFoundException {
+        return visionDao.get(entity);
     }
 
-    @Override
-    public Vision getByWorkspaceId(Long workspaceId) throws DBServiceException, VisionNotFoundException, IOException {
-        Vision entity = new Vision();
-        entity.setWorkspaceId(workspaceId);
-        return visionDao.get(entity).get(0);
-    }
 }

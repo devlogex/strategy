@@ -37,7 +37,7 @@ public class VisionServiceHandlerImpl implements VisionServiceHandler {
     private static int num_comp_default = 9;
 
     public VisionRepresentation addVision(StrategyRequest request) throws IOException, DBServiceException {
-        Vision vision = visionService.create(request.getWorkspaceId());
+        Vision vision = visionService.create(request.getProductId());
         List<VisionComponent> visionComponents = createComponentDefaults(vision.getId());
         Layout layout = createLayout(vision.getId(), visionComponents);
         return RepresentationBuilder.buildVisionRepresentation(vision, visionComponents, layout);
@@ -54,7 +54,7 @@ public class VisionServiceHandlerImpl implements VisionServiceHandler {
     }
 
     public VisionRepresentation updateVision(StrategyRequest request) throws DBServiceException, VisionNotFoundException, IOException {
-        Vision vision = visionService.getById(request.getVisionId());
+        Vision vision = visionService.get(Vision.builder().id(request.getVisionId()).build()).get(0);
         if(request.getFiles() != null) {
             vision.setFiles(request.getFiles());
         }
@@ -80,11 +80,7 @@ public class VisionServiceHandlerImpl implements VisionServiceHandler {
     public VisionRepresentation getVision(StrategyRequest request) throws DBServiceException, IOException {
         Vision vision = null;
         try {
-            if (request.getVisionId() != null) {
-                vision = visionService.getById(request.getVisionId());
-            } else {
-                vision = visionService.getByWorkspaceId(request.getWorkspaceId());
-            }
+            vision = visionService.get(Vision.builder().id(request.getVisionId()).productId(request.getProductId()).build()).get(0);
             List<VisionComponent> visionComponents = visionComponentService.getByVisionId(vision.getId());
             Layout layout = layoutService.get(vision.getId(), LayoutType.VISION_COMPONENT.name());
             return RepresentationBuilder.buildVisionRepresentation(vision, visionComponents, layout);
@@ -102,7 +98,7 @@ public class VisionServiceHandlerImpl implements VisionServiceHandler {
 
     public ListVisionComponentRep addVisionComponent(StrategyRequest request) throws IOException, DBServiceException, VisionNotFoundException, LayoutNotFoundException, VisionComponentNotFoundException {
         try {
-            Vision vision = visionService.getById(request.getVisionId());
+            Vision vision = visionService.get(Vision.builder().id(request.getVisionId()).build()).get(0);
             VisionComponent visionComponent = visionComponentService.create(request.getVisionId(), request.getName(), request.getSummary(), request.getColor(), request.getDescription(), request.getFiles());
             Layout layout = layoutService.get(vision.getId(), LayoutType.VISION_COMPONENT.name());
             ArrayList<ArrayList<ArrayList<Long>>> layoutRep = GsonUtils.getGson().fromJson(layout.getLayout(), new TypeToken<ArrayList<ArrayList<ArrayList<Long>>>>(){}.getType());
@@ -155,7 +151,7 @@ public class VisionServiceHandlerImpl implements VisionServiceHandler {
                 visionComponentReps.add(RepresentationBuilder.buildVisionComponentRep(visionComponent));
             } else {
                 List<VisionComponent> visionComponents = visionComponentService.getByVisionId(request.getVisionId());
-                Vision vision = visionService.getById(request.getVisionId());
+                Vision vision = visionService.get(Vision.builder().id(request.getVisionId()).build()).get(0);
                 Layout layout = layoutService.get(vision.getId(), LayoutType.VISION_COMPONENT.name());
                 visionComponentReps = RepresentationBuilder.buildListVisionComponentRep(visionComponents, layout);
             }
@@ -226,8 +222,7 @@ public class VisionServiceHandlerImpl implements VisionServiceHandler {
 
     @Override
     public LayoutRepresentation getLayoutInstance(Long parentId, String layoutType) throws Exception {
-        Vision vision = visionService.getById(parentId);
-        List<VisionComponent> visionComponents = visionComponentService.getByVisionId(vision.getId());
+        List<VisionComponent> visionComponents = visionComponentService.getByVisionId(parentId);
         Layout layout = layoutService.get(parentId, LayoutType.VISION_COMPONENT.name());
         return new LayoutRepresentation(RepresentationBuilder.buildListVisionComponentRep(visionComponents, layout));
     }

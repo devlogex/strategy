@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.util.List;
 
 public interface GoalService {
-    Goal create(Long workspaceId) throws IOException, DBServiceException;
+    Goal create(Long productId) throws IOException, DBServiceException;
     void update(Goal entity) throws IOException, DBServiceException;
     List<Goal> get(Goal entity) throws IOException, DBServiceException, GoalNotFoundException;
     void remove(Long goalId) throws IOException, DBServiceException;

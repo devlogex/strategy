@@ -16,7 +16,7 @@ public class PositionDaoImpl implements PositionDao {
     private DataHelper dataHelper;
 
     private static final String SQL_CREATE =
-            "INSERT INTO position(id, workspace_id, name, buz_type, time_frame, description, files) " +
+            "INSERT INTO position(id, product_id, name, buz_type, time_frame, description, files) " +
                     "values(%d, %d, '%s', '%s', '%s', '%s', '%s')";
     private static final String SQL_UPDATE =
             "UPDATE position " +
@@ -24,20 +24,20 @@ public class PositionDaoImpl implements PositionDao {
                     "WHERE id = %d";
     private static final String SQL_SELECT_BY_ID =
             "SELECT * FROM position WHERE id = %d";
-    private static final String SQL_SELECT_BY_WORKSPACE_ID =
-            "SELECT * FROM position WHERE workspace_id = %d";
-    private static final String SQL_SELECT_BY_WORKSPACE_ID_BUZ_TYPE =
-            "SELECT * FROM position WHERE workspace_id = %d AND buz_type = '%s'";
-    private static final String SQL_SELECT_BY_WORKSPACE_ID_TIME_FRAME =
-            "SELECT * FROM position WHERE workspace_id = %d AND time_frame = '%s'";
-    private static final String SQL_SELECT_BY_WORKSPACE_ID_BUZ_TYPE_TIME_FRAME =
-            "SELECT * FROM position WHERE workspace_id = %d AND buz_type = '%s' AND time_frame = '%s'";
+    private static final String SQL_SELECT_BY_PRODUCT_ID =
+            "SELECT * FROM position WHERE product_id = %d";
+    private static final String SQL_SELECT_BY_PRODUCT_ID_BUZ_TYPE =
+            "SELECT * FROM position WHERE product_id = %d AND buz_type = '%s'";
+    private static final String SQL_SELECT_BY_PRODUCT_ID_TIME_FRAME =
+            "SELECT * FROM position WHERE product_id = %d AND time_frame = '%s'";
+    private static final String SQL_SELECT_BY_PRODUCT_ID_BUZ_TYPE_TIME_FRAME =
+            "SELECT * FROM position WHERE product_id = %d AND buz_type = '%s' AND time_frame = '%s'";
     private static final String SQL_DELETE =
             "DELETE FROM position WHERE id = %d";
 
     @Override
     public void create(Position entity) throws IOException, DBServiceException {
-        String query = String.format(SQL_CREATE, entity.getId(), entity.getWorkspaceId(), entity.getName(),
+        String query = String.format(SQL_CREATE, entity.getId(), entity.getProductId(), entity.getName(),
                 entity.getBuzType(), entity.getTimeFrame(), entity.getDescription(), entity.getFiles());
         dataHelper.executeSQL(query);
     }
@@ -56,20 +56,20 @@ public class PositionDaoImpl implements PositionDao {
             query = String.format(SQL_SELECT_BY_ID, entity.getId());
         }
         else if(entity.getTimeFrame() != null && entity.getBuzType() != null) {
-            query = String.format(SQL_SELECT_BY_WORKSPACE_ID_BUZ_TYPE_TIME_FRAME,
-                    entity.getWorkspaceId(), entity.getBuzType(), entity.getTimeFrame());
+            query = String.format(SQL_SELECT_BY_PRODUCT_ID_BUZ_TYPE_TIME_FRAME,
+                    entity.getProductId(), entity.getBuzType(), entity.getTimeFrame());
         }
         else if(entity.getBuzType() != null) {
-            query = String.format(SQL_SELECT_BY_WORKSPACE_ID_BUZ_TYPE,
-                    entity.getWorkspaceId(), entity.getBuzType());
+            query = String.format(SQL_SELECT_BY_PRODUCT_ID_BUZ_TYPE,
+                    entity.getProductId(), entity.getBuzType());
         }
         else if(entity.getTimeFrame() != null) {
-            query = String.format(SQL_SELECT_BY_WORKSPACE_ID_TIME_FRAME,
-                    entity.getWorkspaceId(), entity.getTimeFrame());
+            query = String.format(SQL_SELECT_BY_PRODUCT_ID_TIME_FRAME,
+                    entity.getProductId(), entity.getTimeFrame());
         }
         else {
-            query = String.format(SQL_SELECT_BY_WORKSPACE_ID,
-                    entity.getWorkspaceId());
+            query = String.format(SQL_SELECT_BY_PRODUCT_ID,
+                    entity.getProductId());
         }
         List<Position> entities = dataHelper.querySQL(query, Position.class);
         if(CollectionUtils.isEmpty(entities)) {

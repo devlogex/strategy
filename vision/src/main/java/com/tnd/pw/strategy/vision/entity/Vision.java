@@ -1,17 +1,25 @@
 package com.tnd.pw.strategy.vision.entity;
 
 import com.google.gson.annotations.SerializedName;
+import lombok.*;
 
-public class Vision extends BaseEntity{
+import java.io.Serializable;
 
-    @SerializedName("workspace_id")
-    private Long workspaceId;
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@Setter
+@Getter
+public class Vision implements Serializable {
+    private static final long serialVersionUID = 1L;
 
-    public Long getWorkspaceId() {
-        return workspaceId;
-    }
+    @SerializedName("id")
+    private Long id;
+    @SerializedName("files")
+    private String files;
+    @SerializedName("description")
+    private String description;
+    @SerializedName("product_id")
+    private Long productId;
 
-    public void setWorkspaceId(Long workspaceId) {
-        this.workspaceId = workspaceId;
-    }
 }

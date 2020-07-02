@@ -33,10 +33,10 @@ public class PersonasServiceHandlerImpl implements PersonasServiceHandler {
 
     @Override
     public ListPersonasRepresentation addPersonas(StrategyRequest request) throws IOException, DBServiceException, PersonasNotFoundException {
-        Personas personas = personasService.create(request.getWorkspaceId());
+        Personas personas = personasService.create(request.getProductId());
         Layout layout;
         try {
-            layout = layoutService.get(request.getWorkspaceId(), LayoutType.PERSONAS.name());
+            layout = layoutService.get(request.getProductId(), LayoutType.PERSONAS.name());
             ArrayList<ArrayList<ArrayList<Long>>> layoutEntity = GsonUtils.getGson().fromJson(layout.getLayout(), new TypeToken<ArrayList<ArrayList<ArrayList<Long>>>>(){}.getType());
             layoutEntity.add(new ArrayList<>());
             layoutEntity.get(layoutEntity.size() - 1).add(new ArrayList<>());
@@ -48,16 +48,16 @@ public class PersonasServiceHandlerImpl implements PersonasServiceHandler {
             layoutEntity.add(new ArrayList<>());
             layoutEntity.get(0).add(new ArrayList<>());
             layoutEntity.get(0).get(0).add(personas.getId());
-            layout = layoutService.create(request.getWorkspaceId(), LayoutType.PERSONAS.name(), GsonUtils.convertToString(layoutEntity));
+            layout = layoutService.create(request.getProductId(), LayoutType.PERSONAS.name(), GsonUtils.convertToString(layoutEntity));
 
         }
-        List<Personas> personases = personasService.get(null, request.getWorkspaceId());
+        List<Personas> personases = personasService.get(Personas.builder().productId(request.getProductId()).build());
         return RepresentationBuilder.buildListPersonasRepresentation(personases, layout);
     }
 
     @Override
     public PersonasRepresentation updatePersonas(StrategyRequest request) throws DBServiceException, IOException, PersonasNotFoundException {
-        Personas personas = personasService.get(request.getPersonasId(), null).get(0);
+        Personas personas = personasService.get(Personas.builder().productId(request.getPersonasId()).build()).get(0);
         if(request.getPersonasName() != null) {
             personas.setName(request.getPersonasName());
         }
@@ -78,9 +78,12 @@ public class PersonasServiceHandlerImpl implements PersonasServiceHandler {
     public ListPersonasRepresentation getPersonas(StrategyRequest request) throws DBServiceException, IOException, LayoutNotFoundException {
         try {
             List<Personas> personasList = personasService.get(
-                    request.getPersonasId(),
-                    request.getWorkspaceId());
-            Layout layout = layoutService.get(personasList.get(0).getWorkspaceId(), LayoutType.PERSONAS.name());
+                    Personas.builder()
+                            .id(request.getPersonasId())
+                            .productId(request.getProductId())
+                            .build()
+                    );
+            Layout layout = layoutService.get(personasList.get(0).getProductId(), LayoutType.PERSONAS.name());
             return RepresentationBuilder.buildListPersonasRepresentation(personasList, layout);
         } catch (PersonasNotFoundException e) {
             LOGGER.error("[PersonasServiceHandlerImpl] PersonasNotFoundException with request: {}", GsonUtils.convertToString(request));
@@ -96,13 +99,13 @@ public class PersonasServiceHandlerImpl implements PersonasServiceHandler {
         Layout layout;
         Personas personas = null;
         try {
-            personas = personasService.get(request.getPersonasId(),null).get(0);
-            layout = layoutService.get(personas.getWorkspaceId(), LayoutType.PERSONAS.name());
+            personas = personasService.get(Personas.builder().id(request.getPersonasId()).build()).get(0);
+            layout = layoutService.get(personas.getProductId(), LayoutType.PERSONAS.name());
         } catch (PersonasNotFoundException e) {
             LOGGER.error("[PersonasServiceHandlerImpl] PersonasNotFoundException with id: {}", request.getPersonasId());
             throw e;
         } catch (LayoutNotFoundException e) {
-            LOGGER.error("[PersonasServiceHandlerImpl] LayoutNotFoundException with parent_id: {}, type: {}", personas.getWorkspaceId(), LayoutType.PERSONAS.name());
+            LOGGER.error("[PersonasServiceHandlerImpl] LayoutNotFoundException with parent_id: {}, type: {}", personas.getProductId(), LayoutType.PERSONAS.name());
             throw e;
         }
 
@@ -130,7 +133,7 @@ public class PersonasServiceHandlerImpl implements PersonasServiceHandler {
 
         List<Personas> personasList = null;
         try {
-            personasList = personasService.get(null, personas.getWorkspaceId());
+            personasList = personasService.get(Personas.builder().productId(personas.getProductId()).build());
         } catch (PersonasNotFoundException e) {
             return null;
         }
@@ -139,7 +142,7 @@ public class PersonasServiceHandlerImpl implements PersonasServiceHandler {
 
     @Override
     public LayoutRepresentation getLayoutInstance(Long parentId, String layoutType) throws Exception {
-        List<Personas> personasList = personasService.get(null, parentId);
+        List<Personas> personasList = personasService.get(Personas.builder().productId(parentId).build());
         Layout layout = layoutService.get(parentId, layoutType);
         return new LayoutRepresentation(RepresentationBuilder.buildListPersonasRepresentation(personasList, layout));
     }

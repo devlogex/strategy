@@ -16,10 +16,10 @@ public class PositionServiceImpl implements PositionService {
     private PositionDao positionDao;
 
     @Override
-    public Position create(Long workspaceId) throws IOException, DBServiceException {
+    public Position create(Long productId) throws IOException, DBServiceException {
         Position entity = new Position();
         entity.setId(System.currentTimeMillis());
-        entity.setWorkspaceId(workspaceId);
+        entity.setProductId(productId);
         entity.setName("Position Name");
         entity.setBuzType("Business");
         entity.setTimeFrame("");
@@ -35,12 +35,7 @@ public class PositionServiceImpl implements PositionService {
     }
 
     @Override
-    public List<Position> get(Long id, Long workspaceId, String buzType, String timeFrame) throws IOException, DBServiceException, PositionNotFoundException {
-        Position entity = new Position();
-        entity.setId(id);
-        entity.setWorkspaceId(workspaceId);
-        entity.setBuzType(buzType);
-        entity.setTimeFrame(timeFrame);
+    public List<Position> get(Position entity) throws IOException, DBServiceException, PositionNotFoundException {
         return positionDao.get(entity);
     }
 
