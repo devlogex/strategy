@@ -57,7 +57,7 @@ public class PersonasServiceHandlerImpl implements PersonasServiceHandler {
 
     @Override
     public PersonasRepresentation updatePersonas(StrategyRequest request) throws DBServiceException, IOException, PersonasNotFoundException {
-        Personas personas = personasService.get(Personas.builder().productId(request.getPersonasId()).build()).get(0);
+        Personas personas = personasService.get(Personas.builder().id(request.getPersonasId()).build()).get(0);
         if(request.getPersonasName() != null) {
             personas.setName(request.getPersonasName());
         }
