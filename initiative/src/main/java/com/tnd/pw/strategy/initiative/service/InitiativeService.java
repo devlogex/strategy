@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.util.List;
 
 public interface InitiativeService {
-    Initiative create(Long productId) throws IOException, DBServiceException;
+    Initiative create(Initiative entity) throws IOException, DBServiceException;
     void update(Initiative entity) throws IOException, DBServiceException;
     List<Initiative> get(Initiative entity) throws IOException, DBServiceException, InitiativeNotFoundException;
     void remove(Long initiativeId) throws IOException, DBServiceException;

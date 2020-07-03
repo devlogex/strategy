@@ -319,9 +319,26 @@ public class RepresentationBuilder {
                 for(int k = 0; k < layoutEntity.get(i).get(j).size(); k++) {
                     for(int x = 0; x < initiatives.size(); x++) {
                         if(initiatives.get(x).getId().compareTo(layoutEntity.get(i).get(j).get(k)) == 0) {
-                            list.add(buildInitiativeRepresentation(initiatives.get(x)));
+                            list.getInitiatives().add(buildInitiativeRepresentation(initiatives.get(x)));
                             break;
                         }
+                    }
+                }
+            }
+        }
+        return list;
+    }
+
+    public static ListInitiativeRepresentation buildListInitiativeStatusRep(List<Initiative> initiatives, Layout layout) {
+        ListInitiativeRepresentation list = new ListInitiativeRepresentation();
+        HashMap<String, ArrayList<Long>> layoutEntity = GsonUtils.getGson().fromJson(layout.getLayout(), new TypeToken<HashMap<String, ArrayList<Long>>>(){}.getType());
+        for(String key: layoutEntity.keySet()) {
+            list.getInitiativeStatus().put(key, new ArrayList<>());
+            for(int i = 0; i < layoutEntity.get(key).size(); i++) {
+                for(int j = 0; j < initiatives.size(); j++) {
+                    if(initiatives.get(j).getId().compareTo(layoutEntity.get(key).get(i)) == 0) {
+                        list.getInitiativeStatus().get(key).add(buildInitiativeRepresentation(initiatives.get(j)));
+                        break;
                     }
                 }
             }

@@ -6,6 +6,7 @@ import com.tnd.pw.strategy.common.representations.ListInitiativeRepresentation;
 import com.tnd.pw.strategy.common.requests.StrategyRequest;
 import com.tnd.pw.strategy.initiative.exception.InitiativeNotFoundException;
 import com.tnd.pw.strategy.layout.exception.LayoutNotFoundException;
+import com.tnd.pw.strategy.runner.exception.InvalidDataRequestException;
 
 import java.io.IOException;
 
@@ -14,4 +15,6 @@ public interface InitiativeServiceHandler extends ServiceHandler {
     InitiativeRepresentation updateInitiative(StrategyRequest request) throws DBServiceException, IOException, InitiativeNotFoundException;
     ListInitiativeRepresentation getInitiative(StrategyRequest request) throws DBServiceException, IOException, LayoutNotFoundException;
     ListInitiativeRepresentation removeInitiative(StrategyRequest request) throws IOException, DBServiceException, LayoutNotFoundException, InitiativeNotFoundException;
+    ListInitiativeRepresentation getInitiativeState(StrategyRequest request) throws IOException, DBServiceException, LayoutNotFoundException;
+    ListInitiativeRepresentation updateInitiativeState(StrategyRequest request) throws DBServiceException, IOException, InitiativeNotFoundException, LayoutNotFoundException, InvalidDataRequestException;
 }

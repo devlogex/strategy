@@ -15,15 +15,14 @@ public class InitiativeServiceImpl implements InitiativeService {
     private InitiativeDao initiativeDao;
 
     @Override
-    public Initiative create(Long productId) throws IOException, DBServiceException {
-        Initiative entity = new Initiative();
+    public Initiative create(Initiative entity) throws IOException, DBServiceException {
         entity.setId(System.currentTimeMillis());
-        entity.setProductId(productId);
+        if(entity.getStatus() == null)
+            entity.setStatus(0);
         entity.setName("Name...");
         entity.setDescription("");
         entity.setFiles("");
         entity.setParentInitiative("");
-        entity.setStatus(0);
         entity.setTimeFrame("");
         entity.setColor("#5DBF40");
         initiativeDao.create(entity);
