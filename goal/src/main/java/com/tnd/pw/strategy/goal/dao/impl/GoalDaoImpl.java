@@ -16,7 +16,7 @@ public class GoalDaoImpl implements GoalDao {
     private DataHelper dataHelper;
 
     private static final String SQL_CREATE =
-            "INSERT INTO goal(id, PRODUCT_id, name, description, files, parent_goal, " +
+            "INSERT INTO goal(id, product_id, name, description, files, parent_goal, " +
                     "status, time_frame, color, metric, metric_description, metric_file) " +
                     "values(%d, %d, '%s', '%s', '%s', '%s', %d, '%s', '%s', '%s', '%s', '%s')";
     private static final String SQL_UPDATE =

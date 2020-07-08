@@ -37,7 +37,7 @@ public class InitiativeHandler implements BaseHandler {
 
     @HandlerService(path = "/strategy/initiative/update", protocol = "POST",
             dataRequestType = "com.tnd.pw.strategy.common.requests.StrategyRequest")
-    public BaseResponse<InitiativeRepresentation> updateInitiative(BaseRequest<StrategyRequest> request) throws DBServiceException, IOException, InitiativeNotFoundException {
+    public BaseResponse<InitiativeRepresentation> updateInitiative(BaseRequest<StrategyRequest> request) throws DBServiceException, IOException, InitiativeNotFoundException, LayoutNotFoundException {
         LOGGER.info("[InitiativeHandler] updateInitiative() - request: {}", GsonUtils.convertToString(request));
         InitiativeRepresentation response = initiativeServiceHandler.updateInitiative(request.getData());
         LOGGER.info("[InitiativeHandler] updateInitiative() - response: {}", GsonUtils.convertToString(response));

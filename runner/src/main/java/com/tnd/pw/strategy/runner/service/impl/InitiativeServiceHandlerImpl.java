@@ -87,7 +87,7 @@ public class InitiativeServiceHandlerImpl implements InitiativeServiceHandler {
     }
 
     @Override
-    public InitiativeRepresentation updateInitiative(StrategyRequest request) throws DBServiceException, IOException, InitiativeNotFoundException {
+    public InitiativeRepresentation updateInitiative(StrategyRequest request) throws DBServiceException, IOException, InitiativeNotFoundException, LayoutNotFoundException {
         Initiative initiative = initiativeService.get(Initiative.builder().id(request.getInitiativeId()).build()).get(0);
         if(request.getName() != null) {
             initiative.setName(request.getName());
@@ -100,9 +100,6 @@ public class InitiativeServiceHandlerImpl implements InitiativeServiceHandler {
         }
         if(request.getParentInitiative() != null) {
             initiative.setParentInitiative(request.getParentInitiative());
-        }
-        if(request.getStatus() != null) {
-            initiative.setStatus(InitiativeState.valueOf(request.getStatus()).ordinal());
         }
         if(request.getTimeFrame() != null) {
             initiative.setTimeFrame(request.getTimeFrame());
@@ -118,6 +115,17 @@ public class InitiativeServiceHandlerImpl implements InitiativeServiceHandler {
         }
         if(request.getVisiable() != null) {
             initiative.setVisible(request.getVisiable());
+        }
+
+        if(request.getStatus() != null) {
+            Layout layout = layoutService.get(initiative.getProductId(), LayoutType.INITIATIVE_STATE.name());
+            HashMap<String, ArrayList<Long>> layoutEntity = GsonUtils.getGson().fromJson(layout.getLayout(), new TypeToken<HashMap<String, ArrayList<Long>>>(){}.getType());
+            layoutEntity.get(InitiativeState.values()[initiative.getStatus()].name()).remove(initiative.getId());
+            layoutEntity.get(InitiativeState.valueOf(request.getStatus()).name()).add(initiative.getId());
+            layout.setLayout(GsonUtils.convertToString(layoutEntity));
+            layoutService.update(layout);
+
+            initiative.setStatus(InitiativeState.valueOf(request.getStatus()).ordinal());
         }
         initiativeService.update(initiative);
         return RepresentationBuilder.buildInitiativeRepresentation(initiative);

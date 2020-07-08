@@ -12,7 +12,7 @@ import java.io.IOException;
 
 public interface InitiativeServiceHandler extends ServiceHandler {
     ListInitiativeRepresentation addInitiative(StrategyRequest request) throws IOException, DBServiceException, InitiativeNotFoundException;
-    InitiativeRepresentation updateInitiative(StrategyRequest request) throws DBServiceException, IOException, InitiativeNotFoundException;
+    InitiativeRepresentation updateInitiative(StrategyRequest request) throws DBServiceException, IOException, InitiativeNotFoundException, LayoutNotFoundException;
     ListInitiativeRepresentation getInitiative(StrategyRequest request) throws DBServiceException, IOException, LayoutNotFoundException;
     ListInitiativeRepresentation removeInitiative(StrategyRequest request) throws IOException, DBServiceException, LayoutNotFoundException, InitiativeNotFoundException;
     ListInitiativeRepresentation getInitiativeState(StrategyRequest request) throws IOException, DBServiceException, LayoutNotFoundException;
