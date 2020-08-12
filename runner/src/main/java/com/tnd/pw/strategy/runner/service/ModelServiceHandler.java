@@ -1,10 +1,7 @@
 package com.tnd.pw.strategy.runner.service;
 
 import com.tnd.dbservice.common.exception.DBServiceException;
-import com.tnd.pw.strategy.common.representations.LayoutRepresentation;
-import com.tnd.pw.strategy.common.representations.ListModelRepresentation;
-import com.tnd.pw.strategy.common.representations.ModelComponentRep;
-import com.tnd.pw.strategy.common.representations.ModelRepresentation;
+import com.tnd.pw.strategy.common.representations.*;
 import com.tnd.pw.strategy.common.requests.StrategyRequest;
 import com.tnd.pw.strategy.layout.exception.LayoutNotFoundException;
 import com.tnd.pw.strategy.model.exception.ModelComponentNotFoundException;
@@ -20,6 +17,9 @@ public interface ModelServiceHandler extends ServiceHandler{
 
     LayoutRepresentation addModelComponent(StrategyRequest request) throws IOException, DBServiceException, ModelComponentNotFoundException, LayoutNotFoundException;
     ModelComponentRep updateModelComponent(StrategyRequest request) throws DBServiceException, IOException, ModelComponentNotFoundException;
-    LayoutRepresentation getModelComponent(StrategyRequest request) throws DBServiceException, IOException, ModelComponentNotFoundException, LayoutNotFoundException;
+    LayoutRepresentation getModelComponentById(StrategyRequest request) throws IOException, DBServiceException;
+    LayoutRepresentation getModelComponentByModelId(StrategyRequest request) throws IOException, DBServiceException, LayoutNotFoundException;
     LayoutRepresentation removeModelComponent(StrategyRequest request) throws IOException, DBServiceException, ModelComponentNotFoundException, LayoutNotFoundException;
+
+    FilterInfoRepresentation getFilterInfos(StrategyRequest request) throws IOException, DBServiceException;
 }

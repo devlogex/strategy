@@ -1,6 +1,7 @@
 package com.tnd.pw.strategy.positioning.service.impl;
 
 
+import com.tnd.common.api.common.Utils.GenUID;
 import com.tnd.dbservice.common.exception.DBServiceException;
 import com.tnd.pw.strategy.positioning.dao.PositionDao;
 import com.tnd.pw.strategy.positioning.entity.Position;
@@ -18,7 +19,7 @@ public class PositionServiceImpl implements PositionService {
     @Override
     public Position create(Long productId) throws IOException, DBServiceException {
         Position entity = new Position();
-        entity.setId(System.currentTimeMillis());
+        entity.setId(GenUID.genIdByProduct(productId));
         entity.setProductId(productId);
         entity.setName("Position Name");
         entity.setBuzType("Business");
@@ -42,5 +43,15 @@ public class PositionServiceImpl implements PositionService {
     @Override
     public void remove(Long positionId) throws IOException, DBServiceException {
         positionDao.remove(positionId);
+    }
+
+    @Override
+    public List<String> getBuzTypes(Long productId) throws IOException, DBServiceException {
+        return positionDao.getBuzTypes(productId);
+    }
+
+    @Override
+    public List<String> getTimeFrames(Long productId) throws IOException, DBServiceException {
+        return positionDao.getTimeFrames(productId);
     }
 }

@@ -12,4 +12,6 @@ public interface GoalDao {
     void update(Goal entity) throws IOException, DBServiceException;
     List<Goal> get(Goal entity) throws IOException, DBServiceException, GoalNotFoundException;
     void remove(Long goalId) throws IOException, DBServiceException;
+
+    List<String> getTimeFrames(Long productId) throws IOException, DBServiceException;
 }

@@ -1,5 +1,6 @@
 package com.tnd.pw.strategy.goal.service.impl;
 
+import com.tnd.common.api.common.Utils.GenUID;
 import com.tnd.dbservice.common.exception.DBServiceException;
 import com.tnd.pw.strategy.goal.dao.GoalDao;
 import com.tnd.pw.strategy.goal.entity.Goal;
@@ -17,7 +18,7 @@ public class GoalServiceImpl implements GoalService {
     @Override
     public Goal create(Long productId) throws IOException, DBServiceException {
         Goal entity = new Goal();
-        entity.setId(System.currentTimeMillis());
+        entity.setId(GenUID.genIdByProduct(productId));
         entity.setProductId(productId);
         entity.setName("Name...");
         entity.setDescription("");
@@ -46,5 +47,10 @@ public class GoalServiceImpl implements GoalService {
     @Override
     public void remove(Long goalId) throws IOException, DBServiceException {
         goalDao.remove(goalId);
+    }
+
+    @Override
+    public List<String> getTimeFrames(Long productId) throws IOException, DBServiceException {
+        return goalDao.getTimeFrames(productId);
     }
 }

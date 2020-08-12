@@ -4,6 +4,7 @@ import com.google.common.reflect.TypeToken;
 import com.tnd.dbservice.common.exception.DBServiceException;
 import com.tnd.pw.strategy.common.enums.GoalState;
 import com.tnd.pw.strategy.common.enums.LayoutType;
+import com.tnd.pw.strategy.common.representations.FilterInfoRepresentation;
 import com.tnd.pw.strategy.common.representations.GoalRepresentation;
 import com.tnd.pw.strategy.common.representations.LayoutRepresentation;
 import com.tnd.pw.strategy.common.representations.ListGoalRepresentation;
@@ -34,10 +35,10 @@ public class GoalServiceHandlerImpl implements GoalServiceHandler {
 
     @Override
     public ListGoalRepresentation addGoal(StrategyRequest request) throws IOException, DBServiceException, GoalNotFoundException {
-        Goal goal = goalServiceService.create(request.getProductId());
+        Goal goal = goalServiceService.create(request.getId());
         Layout layout;
         try {
-            layout = layoutService.get(request.getProductId(), LayoutType.GOAL.name());
+            layout = layoutService.get(request.getId(), LayoutType.GOAL.name());
             ArrayList<ArrayList<ArrayList<Long>>> layoutEntity = GsonUtils.getGson().fromJson(layout.getLayout(), new TypeToken<ArrayList<ArrayList<ArrayList<Long>>>>(){}.getType());
             layoutEntity.add(new ArrayList<>());
             layoutEntity.get(layoutEntity.size() - 1).add(new ArrayList<>());
@@ -49,16 +50,16 @@ public class GoalServiceHandlerImpl implements GoalServiceHandler {
             layoutEntity.add(new ArrayList<>());
             layoutEntity.get(0).add(new ArrayList<>());
             layoutEntity.get(0).get(0).add(goal.getId());
-            layout = layoutService.create(request.getProductId(), LayoutType.GOAL.name(), GsonUtils.convertToString(layoutEntity));
+            layout = layoutService.create(request.getId(), LayoutType.GOAL.name(), GsonUtils.convertToString(layoutEntity));
 
         }
-        List<Goal> goals = goalServiceService.get(Goal.builder().productId(request.getProductId()).build());
+        List<Goal> goals = goalServiceService.get(Goal.builder().productId(request.getId()).build());
         return RepresentationBuilder.buildListGoalRepresentation(goals, layout);
     }
 
     @Override
     public GoalRepresentation updateGoal(StrategyRequest request) throws DBServiceException, IOException, GoalNotFoundException {
-        Goal goal = goalServiceService.get(Goal.builder().id(request.getGoalId()).build()).get(0);
+        Goal goal = goalServiceService.get(Goal.builder().id(request.getId()).build()).get(0);
         if(request.getName() != null) {
             goal.setName(request.getName());
         }
@@ -98,11 +99,12 @@ public class GoalServiceHandlerImpl implements GoalServiceHandler {
         try {
             List<Goal> goals = goalServiceService.get(
                     request.getStatus() == null ?
-                        Goal.builder().id(request.getGoalId())
+                        Goal.builder()
+                                .id(request.getId())
                                 .productId(request.getProductId())
                                 .timeFrame(request.getTimeFrame()).build()
                             :
-                            Goal.builder().id(request.getGoalId())
+                            Goal.builder().id(request.getId())
                                     .productId(request.getProductId())
                                     .status(GoalState.valueOf(request.getStatus()).ordinal())
                                     .timeFrame(request.getTimeFrame()).build()
@@ -123,10 +125,10 @@ public class GoalServiceHandlerImpl implements GoalServiceHandler {
         Layout layout;
         Goal goal = null;
         try {
-            goal = goalServiceService.get(Goal.builder().id(request.getGoalId()).build()).get(0);
+            goal = goalServiceService.get(Goal.builder().id(request.getId()).build()).get(0);
             layout = layoutService.get(goal.getProductId(), LayoutType.GOAL.name());
         } catch (GoalNotFoundException e) {
-            LOGGER.error("[GoalServiceHandlerImpl] GoalNotFoundException with id: {}", request.getGoalId());
+            LOGGER.error("[GoalServiceHandlerImpl] GoalNotFoundException with id: {}", request.getId());
             throw e;
         } catch (LayoutNotFoundException e) {
             LOGGER.error("[GoalServiceHandlerImpl] LayoutNotFoundException with parent_id: {}, type: {}", goal.getProductId(), LayoutType.GOAL.name());
@@ -138,7 +140,7 @@ public class GoalServiceHandlerImpl implements GoalServiceHandler {
         for(int i = 0; i < layoutEntity.size(); i++) {
             for(int j = 0; j < layoutEntity.get(i).size(); j++) {
                 for(int k = 0; k < layoutEntity.get(i).get(j).size(); k++) {
-                    if(layoutEntity.get(i).get(j).get(k).compareTo(request.getGoalId()) == 0) {
+                    if(layoutEntity.get(i).get(j).get(k).compareTo(request.getId()) == 0) {
                         layoutEntity.get(i).get(j).remove(k);
                         if(layoutEntity.get(i).get(j).size() == 0) {
                             layoutEntity.get(i).remove(j);
@@ -162,6 +164,12 @@ public class GoalServiceHandlerImpl implements GoalServiceHandler {
             return null;
         }
         return RepresentationBuilder.buildListGoalRepresentation(goals, layout);
+    }
+
+    @Override
+    public FilterInfoRepresentation getFilterInfos(StrategyRequest request) throws IOException, DBServiceException {
+        List<String> timeFrames = goalServiceService.getTimeFrames(request.getId());
+        return new FilterInfoRepresentation(timeFrames, null);
     }
 
     @Override

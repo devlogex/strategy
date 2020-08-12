@@ -9,7 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ModelDaoImpl implements ModelDao {
     @Autowired
@@ -40,6 +42,9 @@ public class ModelDaoImpl implements ModelDao {
             "SELECT * FROM model WHERE product_id = %d AND buz_type = '%s' AND type = %d";
     private static final String SQL_DELETE =
             "DELETE FROM model WHERE id = %d";
+
+    private static final String SQL_SELECT_TIME_FRAMES =
+            "SELECT DISTINCT time_frame FROM model WHERE product_id = %d AND NOT time_frame = ''";
 
     @Override
     public void create(Model entity) throws IOException, DBServiceException {
@@ -108,5 +113,12 @@ public class ModelDaoImpl implements ModelDao {
     public void remove(Long modelId) throws IOException, DBServiceException {
         String query = String.format(SQL_DELETE, modelId);
         dataHelper.executeSQL(query);
+    }
+
+    @Override
+    public List<String> getTimeFrames(Long productId) throws IOException, DBServiceException {
+        String query = String.format(SQL_SELECT_TIME_FRAMES, productId);
+        List<Model> models = dataHelper.querySQL(query, Model.class);
+        return models == null ? new ArrayList<>() : models.stream().map(model -> model.getTimeFrame()).collect(Collectors.toList());
     }
 }

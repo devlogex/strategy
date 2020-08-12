@@ -1,5 +1,6 @@
 package com.tnd.pw.strategy.model.service.impl;
 
+import com.tnd.common.api.common.Utils.GenUID;
 import com.tnd.dbservice.common.exception.DBServiceException;
 import com.tnd.pw.strategy.model.dao.ModelDao;
 import com.tnd.pw.strategy.model.entity.Model;
@@ -17,7 +18,7 @@ public class ModelServiceImpl implements ModelService {
     @Override
     public Model create(Long productId, Integer type) throws IOException, DBServiceException {
         Model entity = new Model();
-        entity.setId(System.currentTimeMillis());
+        entity.setId(GenUID.genIdByProduct(productId));
         entity.setProductId(productId);
         entity.setName("Model Name");
         entity.setType(type);
@@ -42,5 +43,10 @@ public class ModelServiceImpl implements ModelService {
     @Override
     public void remove(Long modelId) throws IOException, DBServiceException {
         modelDao.remove(modelId);
+    }
+
+    @Override
+    public List<String> getTimeFrames(Long productId) throws IOException, DBServiceException {
+        return modelDao.getTimeFrames(productId);
     }
 }

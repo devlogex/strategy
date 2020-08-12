@@ -33,10 +33,10 @@ public class PersonasServiceHandlerImpl implements PersonasServiceHandler {
 
     @Override
     public ListPersonasRepresentation addPersonas(StrategyRequest request) throws IOException, DBServiceException, PersonasNotFoundException {
-        Personas personas = personasService.create(request.getProductId());
+        Personas personas = personasService.create(request.getId());
         Layout layout;
         try {
-            layout = layoutService.get(request.getProductId(), LayoutType.PERSONAS.name());
+            layout = layoutService.get(request.getId(), LayoutType.PERSONAS.name());
             ArrayList<ArrayList<ArrayList<Long>>> layoutEntity = GsonUtils.getGson().fromJson(layout.getLayout(), new TypeToken<ArrayList<ArrayList<ArrayList<Long>>>>(){}.getType());
             layoutEntity.add(new ArrayList<>());
             layoutEntity.get(layoutEntity.size() - 1).add(new ArrayList<>());
@@ -48,18 +48,18 @@ public class PersonasServiceHandlerImpl implements PersonasServiceHandler {
             layoutEntity.add(new ArrayList<>());
             layoutEntity.get(0).add(new ArrayList<>());
             layoutEntity.get(0).get(0).add(personas.getId());
-            layout = layoutService.create(request.getProductId(), LayoutType.PERSONAS.name(), GsonUtils.convertToString(layoutEntity));
+            layout = layoutService.create(request.getId(), LayoutType.PERSONAS.name(), GsonUtils.convertToString(layoutEntity));
 
         }
-        List<Personas> personases = personasService.get(Personas.builder().productId(request.getProductId()).build());
+        List<Personas> personases = personasService.get(Personas.builder().productId(request.getId()).build());
         return RepresentationBuilder.buildListPersonasRepresentation(personases, layout);
     }
 
     @Override
     public PersonasRepresentation updatePersonas(StrategyRequest request) throws DBServiceException, IOException, PersonasNotFoundException {
-        Personas personas = personasService.get(Personas.builder().id(request.getPersonasId()).build()).get(0);
-        if(request.getPersonasName() != null) {
-            personas.setName(request.getPersonasName());
+        Personas personas = personasService.get(Personas.builder().id(request.getId()).build()).get(0);
+        if(request.getName() != null) {
+            personas.setName(request.getName());
         }
         if(request.getImage() != null) {
             personas.setImage(request.getImage());
@@ -79,7 +79,7 @@ public class PersonasServiceHandlerImpl implements PersonasServiceHandler {
         try {
             List<Personas> personasList = personasService.get(
                     Personas.builder()
-                            .id(request.getPersonasId())
+                            .id(request.getId())
                             .productId(request.getProductId())
                             .build()
                     );
@@ -99,10 +99,10 @@ public class PersonasServiceHandlerImpl implements PersonasServiceHandler {
         Layout layout;
         Personas personas = null;
         try {
-            personas = personasService.get(Personas.builder().id(request.getPersonasId()).build()).get(0);
+            personas = personasService.get(Personas.builder().id(request.getId()).build()).get(0);
             layout = layoutService.get(personas.getProductId(), LayoutType.PERSONAS.name());
         } catch (PersonasNotFoundException e) {
-            LOGGER.error("[PersonasServiceHandlerImpl] PersonasNotFoundException with id: {}", request.getPersonasId());
+            LOGGER.error("[PersonasServiceHandlerImpl] PersonasNotFoundException with id: {}", request.getId());
             throw e;
         } catch (LayoutNotFoundException e) {
             LOGGER.error("[PersonasServiceHandlerImpl] LayoutNotFoundException with parent_id: {}, type: {}", personas.getProductId(), LayoutType.PERSONAS.name());
@@ -114,7 +114,7 @@ public class PersonasServiceHandlerImpl implements PersonasServiceHandler {
         for(int i = 0; i < layoutEntity.size(); i++) {
             for(int j = 0; j < layoutEntity.get(i).size(); j++) {
                 for(int k = 0; k < layoutEntity.get(i).get(j).size(); k++) {
-                    if(layoutEntity.get(i).get(j).get(k).compareTo(request.getPersonasId()) == 0) {
+                    if(layoutEntity.get(i).get(j).get(k).compareTo(request.getId()) == 0) {
                         layoutEntity.get(i).get(j).remove(k);
                         if(layoutEntity.get(i).get(j).size() == 0) {
                             layoutEntity.get(i).remove(j);

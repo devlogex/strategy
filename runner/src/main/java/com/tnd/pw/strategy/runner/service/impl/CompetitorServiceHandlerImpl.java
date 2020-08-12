@@ -33,10 +33,10 @@ public class CompetitorServiceHandlerImpl implements CompetitorServiceHandler {
 
     @Override
     public ListCompetitorRepresentation addCompetitor(StrategyRequest request) throws IOException, DBServiceException, CompetitorNotFoundException {
-        Competitor competitor = competitorService.create(request.getProductId());
+        Competitor competitor = competitorService.create(request.getId());
         Layout layout;
         try {
-            layout = layoutService.get(request.getProductId(), LayoutType.COMPETITOR.name());
+            layout = layoutService.get(request.getId(), LayoutType.COMPETITOR.name());
             ArrayList<ArrayList<ArrayList<Long>>> layoutEntity = GsonUtils.getGson().fromJson(layout.getLayout(), new TypeToken<ArrayList<ArrayList<ArrayList<Long>>>>(){}.getType());
             layoutEntity.add(new ArrayList<>());
             layoutEntity.get(layoutEntity.size() - 1).add(new ArrayList<>());
@@ -48,18 +48,18 @@ public class CompetitorServiceHandlerImpl implements CompetitorServiceHandler {
             layoutEntity.add(new ArrayList<>());
             layoutEntity.get(0).add(new ArrayList<>());
             layoutEntity.get(0).get(0).add(competitor.getId());
-            layout = layoutService.create(request.getProductId(), LayoutType.COMPETITOR.name(), GsonUtils.convertToString(layoutEntity));
+            layout = layoutService.create(request.getId(), LayoutType.COMPETITOR.name(), GsonUtils.convertToString(layoutEntity));
 
         }
-        List<Competitor> competitors = competitorService.get(Competitor.builder().productId(request.getProductId()).build());
+        List<Competitor> competitors = competitorService.get(Competitor.builder().productId(request.getId()).build());
         return RepresentationBuilder.buildListCompetitorRepresentation(competitors, layout);
     }
 
     @Override
     public CompetitorRepresentation updateCompetitor(StrategyRequest request) throws DBServiceException, IOException, CompetitorNotFoundException {
-        Competitor competitor = competitorService.get(Competitor.builder().id(request.getCompetitorId()).build()).get(0);
-        if(request.getCompetitorName() != null) {
-            competitor.setName(request.getCompetitorName());
+        Competitor competitor = competitorService.get(Competitor.builder().id(request.getId()).build()).get(0);
+        if(request.getName() != null) {
+            competitor.setName(request.getName());
         }
         if(request.getImage() != null) {
             competitor.setImage(request.getImage());
@@ -85,7 +85,7 @@ public class CompetitorServiceHandlerImpl implements CompetitorServiceHandler {
         try {
             List<Competitor> competitors = competitorService.get(
                     Competitor.builder()
-                            .id(request.getCompetitorId())
+                            .id(request.getId())
                             .productId(request.getProductId())
                             .build()
             );
@@ -105,10 +105,10 @@ public class CompetitorServiceHandlerImpl implements CompetitorServiceHandler {
         Layout layout;
         Competitor competitor = null;
         try {
-            competitor = competitorService.get(Competitor.builder().id(request.getCompetitorId()).build()).get(0);
+            competitor = competitorService.get(Competitor.builder().id(request.getId()).build()).get(0);
             layout = layoutService.get(competitor.getProductId(), LayoutType.COMPETITOR.name());
         } catch (CompetitorNotFoundException e) {
-            LOGGER.error("[CompetitorServiceHandlerImpl] CompetitorNotFoundException with id: {}", request.getCompetitorId());
+            LOGGER.error("[CompetitorServiceHandlerImpl] CompetitorNotFoundException with id: {}", request.getId());
             throw e;
         } catch (LayoutNotFoundException e) {
             LOGGER.error("[CompetitorServiceHandlerImpl] LayoutNotFoundException with parent_id: {}, type: {}", competitor.getProductId(), LayoutType.COMPETITOR.name());
@@ -120,7 +120,7 @@ public class CompetitorServiceHandlerImpl implements CompetitorServiceHandler {
         for(int i = 0; i < layoutEntity.size(); i++) {
             for(int j = 0; j < layoutEntity.get(i).size(); j++) {
                 for(int k = 0; k < layoutEntity.get(i).get(j).size(); k++) {
-                    if(layoutEntity.get(i).get(j).get(k).compareTo(request.getCompetitorId()) == 0) {
+                    if(layoutEntity.get(i).get(j).get(k).compareTo(request.getId()) == 0) {
                         layoutEntity.get(i).get(j).remove(k);
                         if(layoutEntity.get(i).get(j).size() == 0) {
                             layoutEntity.get(i).remove(j);

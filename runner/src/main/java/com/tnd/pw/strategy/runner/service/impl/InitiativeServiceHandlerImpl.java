@@ -4,6 +4,7 @@ import com.google.common.reflect.TypeToken;
 import com.tnd.dbservice.common.exception.DBServiceException;
 import com.tnd.pw.strategy.common.enums.InitiativeState;
 import com.tnd.pw.strategy.common.enums.LayoutType;
+import com.tnd.pw.strategy.common.representations.FilterInfoRepresentation;
 import com.tnd.pw.strategy.common.representations.InitiativeRepresentation;
 import com.tnd.pw.strategy.common.representations.LayoutRepresentation;
 import com.tnd.pw.strategy.common.representations.ListInitiativeRepresentation;
@@ -39,13 +40,13 @@ public class InitiativeServiceHandlerImpl implements InitiativeServiceHandler {
     public ListInitiativeRepresentation addInitiative(StrategyRequest request) throws IOException, DBServiceException, InitiativeNotFoundException {
         Initiative initiative = initiativeService.create(
                 Initiative.builder()
-                        .productId(request.getProductId())
+                        .productId(request.getId())
                         .status(request.getStatus() != null ? InitiativeState.valueOf(request.getStatus()).ordinal() : 0)
                         .build()
         );
         Layout layout;
         try {
-            layout = layoutService.get(request.getProductId(), LayoutType.INITIATIVE.name());
+            layout = layoutService.get(request.getId(), LayoutType.INITIATIVE.name());
             ArrayList<ArrayList<ArrayList<Long>>> layoutEntity = GsonUtils.getGson().fromJson(layout.getLayout(), new TypeToken<ArrayList<ArrayList<ArrayList<Long>>>>(){}.getType());
             layoutEntity.add(new ArrayList<>());
             layoutEntity.get(layoutEntity.size() - 1).add(new ArrayList<>());
@@ -57,13 +58,13 @@ public class InitiativeServiceHandlerImpl implements InitiativeServiceHandler {
             layoutEntity.add(new ArrayList<>());
             layoutEntity.get(0).add(new ArrayList<>());
             layoutEntity.get(0).get(0).add(initiative.getId());
-            layout = layoutService.create(request.getProductId(), LayoutType.INITIATIVE.name(), GsonUtils.convertToString(layoutEntity));
+            layout = layoutService.create(request.getId(), LayoutType.INITIATIVE.name(), GsonUtils.convertToString(layoutEntity));
 
         }
 
         Layout layoutState;
         try {
-            layoutState = layoutService.get(request.getProductId(), LayoutType.INITIATIVE_STATE.name());
+            layoutState = layoutService.get(request.getId(), LayoutType.INITIATIVE_STATE.name());
             HashMap<String, ArrayList<Long>> layoutEntity = GsonUtils.getGson().fromJson(layoutState.getLayout(), new TypeToken<HashMap<String, ArrayList<Long>>>(){}.getType());
             layoutEntity.get(InitiativeState.values()[initiative.getStatus()].name()).add(initiative.getId());
             layoutState.setLayout(GsonUtils.convertToString(layoutEntity));
@@ -74,10 +75,10 @@ public class InitiativeServiceHandlerImpl implements InitiativeServiceHandler {
                 layoutEntity.put(state.name(), new ArrayList<>());
             }
             layoutEntity.get(InitiativeState.values()[initiative.getStatus()].name()).add(initiative.getId());
-            layoutState = layoutService.create(request.getProductId(), LayoutType.INITIATIVE_STATE.name(), GsonUtils.convertToString(layoutEntity));
+            layoutState = layoutService.create(request.getId(), LayoutType.INITIATIVE_STATE.name(), GsonUtils.convertToString(layoutEntity));
         }
 
-        List<Initiative> initiatives = initiativeService.get(Initiative.builder().productId(request.getProductId()).build());
+        List<Initiative> initiatives = initiativeService.get(Initiative.builder().productId(request.getId()).build());
         if(request.getStatus() == null) {
             return RepresentationBuilder.buildListInitiativeRepresentation(initiatives, layout);
         }
@@ -88,7 +89,7 @@ public class InitiativeServiceHandlerImpl implements InitiativeServiceHandler {
 
     @Override
     public InitiativeRepresentation updateInitiative(StrategyRequest request) throws DBServiceException, IOException, InitiativeNotFoundException, LayoutNotFoundException {
-        Initiative initiative = initiativeService.get(Initiative.builder().id(request.getInitiativeId()).build()).get(0);
+        Initiative initiative = initiativeService.get(Initiative.builder().id(request.getId()).build()).get(0);
         if(request.getName() != null) {
             initiative.setName(request.getName());
         }
@@ -136,11 +137,13 @@ public class InitiativeServiceHandlerImpl implements InitiativeServiceHandler {
         try {
             List<Initiative> initiatives = initiativeService.get(
                     request.getStatus() == null ?
-                            Initiative.builder().id(request.getInitiativeId())
+                            Initiative.builder()
+                                    .id(request.getId())
                                     .productId(request.getProductId())
                                     .timeFrame(request.getTimeFrame()).build()
                             :
-                            Initiative.builder().id(request.getInitiativeId())
+                            Initiative.builder()
+                                    .id(request.getId())
                                     .productId(request.getProductId())
                                     .status(InitiativeState.valueOf(request.getStatus()).ordinal())
                                     .timeFrame(request.getTimeFrame()).build()
@@ -162,11 +165,11 @@ public class InitiativeServiceHandlerImpl implements InitiativeServiceHandler {
         Layout layoutState;
         Initiative initiative = null;
         try {
-            initiative = initiativeService.get(Initiative.builder().id(request.getInitiativeId()).build()).get(0);
+            initiative = initiativeService.get(Initiative.builder().id(request.getId()).build()).get(0);
             layout = layoutService.get(initiative.getProductId(), LayoutType.INITIATIVE.name());
             layoutState = layoutService.get(initiative.getProductId(), LayoutType.INITIATIVE_STATE.name());
         } catch (InitiativeNotFoundException e) {
-            LOGGER.error("[InitiativeServiceHandlerImpl] InitiativeNotFoundException with id: {}", request.getInitiativeId());
+            LOGGER.error("[InitiativeServiceHandlerImpl] InitiativeNotFoundException with id: {}", request.getId());
             throw e;
         } catch (LayoutNotFoundException e) {
             LOGGER.error("[InitiativeServiceHandlerImpl] LayoutNotFoundException with parent_id: {}, type: {} | {}", initiative.getProductId(), LayoutType.INITIATIVE.name(), LayoutType.INITIATIVE_STATE.name());
@@ -178,7 +181,7 @@ public class InitiativeServiceHandlerImpl implements InitiativeServiceHandler {
         for(int i = 0; i < layoutEntity.size(); i++) {
             for(int j = 0; j < layoutEntity.get(i).size(); j++) {
                 for(int k = 0; k < layoutEntity.get(i).get(j).size(); k++) {
-                    if(layoutEntity.get(i).get(j).get(k).compareTo(request.getInitiativeId()) == 0) {
+                    if(layoutEntity.get(i).get(j).get(k).compareTo(request.getId()) == 0) {
                         layoutEntity.get(i).get(j).remove(k);
                         if(layoutEntity.get(i).get(j).size() == 0) {
                             layoutEntity.get(i).remove(j);
@@ -229,11 +232,13 @@ public class InitiativeServiceHandlerImpl implements InitiativeServiceHandler {
         try {
             List<Initiative> initiatives = initiativeService.get(
                     request.getStatus() == null ?
-                            Initiative.builder().id(request.getInitiativeId())
+                            Initiative.builder()
+                                    .id(request.getId())
                                     .productId(request.getProductId())
                                     .timeFrame(request.getTimeFrame()).build()
                             :
-                            Initiative.builder().id(request.getInitiativeId())
+                            Initiative.builder()
+                                    .id(request.getId())
                                     .productId(request.getProductId())
                                     .status(InitiativeState.valueOf(request.getStatus()).ordinal())
                                     .timeFrame(request.getTimeFrame()).build()
@@ -251,7 +256,7 @@ public class InitiativeServiceHandlerImpl implements InitiativeServiceHandler {
 
     @Override
     public ListInitiativeRepresentation updateInitiativeState(StrategyRequest request) throws DBServiceException, IOException, InitiativeNotFoundException, LayoutNotFoundException, InvalidDataRequestException {
-        Initiative initiative = initiativeService.get(Initiative.builder().id(request.getInitiativeId()).build()).get(0);
+        Initiative initiative = initiativeService.get(Initiative.builder().id(request.getId()).build()).get(0);
 
         Layout layout = layoutService.get(initiative.getProductId(), LayoutType.INITIATIVE_STATE.name());
         HashMap<String, ArrayList<Long>> layoutEntity = GsonUtils.getGson().fromJson(layout.getLayout(), new TypeToken<HashMap<String, ArrayList<Long>>>(){}.getType());
@@ -268,6 +273,12 @@ public class InitiativeServiceHandlerImpl implements InitiativeServiceHandler {
 
         List<Initiative> initiatives = initiativeService.get(Initiative.builder().productId(initiative.getProductId()).build());
         return RepresentationBuilder.buildListInitiativeStatusRep(initiatives, layout);
+    }
+
+    @Override
+    public FilterInfoRepresentation getFilterInfos(StrategyRequest request) throws IOException, DBServiceException {
+        List<String> timeFrames = initiativeService.getTimeFrames(request.getId());
+        return new FilterInfoRepresentation(timeFrames, null);
     }
 
     @Override

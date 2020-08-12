@@ -11,18 +11,15 @@ import java.io.IOException;
 
 public interface PositionServiceHandler extends ServiceHandler {
     ListPositionRepresentation addPosition(StrategyRequest request) throws IOException, DBServiceException, PositionNotFoundException;
-
     PositionRepresentation updatePosition(StrategyRequest request) throws DBServiceException, IOException, PositionNotFoundException;
-
     ListPositionRepresentation getPosition(StrategyRequest request) throws DBServiceException, IOException, LayoutNotFoundException;
-
     ListPositionRepresentation removePosition(StrategyRequest request) throws IOException, DBServiceException, LayoutNotFoundException, PositionNotFoundException;
 
     LayoutRepresentation addPositionComponent(StrategyRequest request) throws IOException, DBServiceException, LayoutNotFoundException, PositionComponentNotFoundException;
-
     PositionComponentRep updatePositionComponent(StrategyRequest request) throws DBServiceException, IOException, PositionComponentNotFoundException;
-
-    LayoutRepresentation getPositionComponent(StrategyRequest request) throws DBServiceException, IOException, LayoutNotFoundException, PositionComponentNotFoundException;
-
+    LayoutRepresentation getPositionComponentById(StrategyRequest request) throws IOException, DBServiceException;
+    LayoutRepresentation getPositionComponentByPositionId(StrategyRequest request) throws DBServiceException, LayoutNotFoundException, IOException;
     LayoutRepresentation removePositionComponent(StrategyRequest request) throws IOException, DBServiceException, LayoutNotFoundException, PositionComponentNotFoundException;
+
+    FilterInfoRepresentation getFilterInfos(StrategyRequest request) throws IOException, DBServiceException;
 }

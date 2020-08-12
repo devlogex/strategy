@@ -27,7 +27,7 @@ public class LayoutServiceHandlerImpl implements LayoutServiceHandler {
     private LayoutService layoutService;
 
     public LayoutRepresentation updateLayout(StrategyRequest request) throws Exception {
-        Layout layout = layoutService.get(request.getLayoutParent(), request.getLayoutType());
+        Layout layout = layoutService.get(request.getId(), request.getLayoutType());
         ArrayList<ArrayList<ArrayList<Long>>> layoutRep = GsonUtils.getGson().fromJson(layout.getLayout(), new TypeToken<ArrayList<ArrayList<ArrayList<Long>>>>(){}.getType());
         ArrayList<ArrayList<ArrayList<Long>>> newLayoutRep = GsonUtils.getGson().fromJson(request.getLayout(), new TypeToken<ArrayList<ArrayList<ArrayList<Long>>>>(){}.getType());
         if(!checkLayout(layoutRep, newLayoutRep)) {
@@ -38,12 +38,12 @@ public class LayoutServiceHandlerImpl implements LayoutServiceHandler {
         layoutService.update(layout);
 
         ServiceHandler serviceHandler = getServiceHandler(request.getLayoutType());
-        return serviceHandler.getLayoutInstance(request.getLayoutParent(), request.getLayoutType());
+        return serviceHandler.getLayoutInstance(request.getId(), request.getLayoutType());
     }
 
     @Override
     public LayoutRepresentation updateLayoutList(StrategyRequest request) throws Exception{
-        Layout layout = layoutService.get(request.getLayoutParent(), request.getLayoutType());
+        Layout layout = layoutService.get(request.getId(), request.getLayoutType());
         ArrayList<ArrayList<ArrayList<Long>>> layoutRep = GsonUtils.getGson().fromJson(layout.getLayout(), new TypeToken<ArrayList<ArrayList<ArrayList<Long>>>>(){}.getType());
         ArrayList<Long> newLayoutRep = GsonUtils.getGson().fromJson(request.getLayout(), new TypeToken<ArrayList<Long>>(){}.getType());
         if(!checkLayoutList(layoutRep, newLayoutRep)) {
@@ -56,17 +56,17 @@ public class LayoutServiceHandlerImpl implements LayoutServiceHandler {
         layout.setLayout(GsonUtils.convertToString(layoutRep));
         layoutService.update(layout);
         ServiceHandler serviceHandler = getServiceHandler(request.getLayoutType());
-        return serviceHandler.getLayoutInstance(request.getLayoutParent(), request.getLayoutType());
+        return serviceHandler.getLayoutInstance(request.getId(), request.getLayoutType());
     }
 
     @Override
     public LayoutRepresentation getLayout(StrategyRequest request) throws IOException, DBServiceException {
         try {
-            Layout layout = layoutService.get(request.getLayoutParent(), request.getLayoutType());
+            Layout layout = layoutService.get(request.getId(), request.getLayoutType());
             return new LayoutRepresentation(layout);
         } catch (LayoutNotFoundException e) {
             LOGGER.error("[LayoutHandlerBuz] getLayout() - LayoutNotFoundException, layout_parent: {}, layout_type: {}"
-                    ,request.getLayoutParent(),request.getLayoutType());
+                    ,request.getId(),request.getLayoutType());
             return null;
         }
     }
@@ -95,10 +95,12 @@ public class LayoutServiceHandlerImpl implements LayoutServiceHandler {
 
     private boolean checkLayout(ArrayList<ArrayList<ArrayList<Long>>> layout, ArrayList<ArrayList<ArrayList<Long>>> newLayout) {
         HashSet set = new HashSet();
+        int s1 = 0, s2 = 0;
         for(int i = 0; i < layout.size(); i++) {
             for(int j = 0; j < layout.get(i).size(); j++) {
                 for(int k = 0; k < layout.get(i).get(j).size(); k++) {
                     set.add(layout.get(i).get(j).get(k));
+                    s1++;
                 }
             }
         }
@@ -107,10 +109,11 @@ public class LayoutServiceHandlerImpl implements LayoutServiceHandler {
             for(int j = 0; j < newLayout.get(i).size(); j++) {
                 for(int k = 0; k < newLayout.get(i).get(j).size(); k++) {
                     set.add(newLayout.get(i).get(j).get(k));
+                    s2++;
                 }
             }
         }
-        return size == set.size();
+        return size == set.size() && s1 == s2;
     }
 
     private boolean checkLayoutList(ArrayList<ArrayList<ArrayList<Long>>> layout, ArrayList<Long> newLayout) {
@@ -126,6 +129,6 @@ public class LayoutServiceHandlerImpl implements LayoutServiceHandler {
         for(int i = 0; i < newLayout.size(); i++) {
             set.add(newLayout.get(i));
         }
-        return size == set.size();
+        return size == set.size() && size == newLayout.size();
     }
 }

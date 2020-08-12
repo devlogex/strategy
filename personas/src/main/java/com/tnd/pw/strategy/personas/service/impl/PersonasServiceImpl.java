@@ -1,5 +1,6 @@
 package com.tnd.pw.strategy.personas.service.impl;
 
+import com.tnd.common.api.common.Utils.GenUID;
 import com.tnd.dbservice.common.exception.DBServiceException;
 import com.tnd.pw.strategy.dbservice.GsonUtils;
 import com.tnd.pw.strategy.personas.dao.PersonasDao;
@@ -19,7 +20,7 @@ public class PersonasServiceImpl implements PersonasService {
     @Override
     public Personas create(Long productId) throws IOException, DBServiceException {
         Personas entity = new Personas();
-        entity.setId(System.currentTimeMillis());
+        entity.setId(GenUID.genIdByProduct(productId));
         entity.setProductId(productId);
         entity.setName("Name");
         entity.setImage("");

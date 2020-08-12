@@ -1,6 +1,7 @@
 package com.tnd.pw.strategy.runner.service;
 
 import com.tnd.dbservice.common.exception.DBServiceException;
+import com.tnd.pw.strategy.common.representations.FilterInfoRepresentation;
 import com.tnd.pw.strategy.common.representations.GoalRepresentation;
 import com.tnd.pw.strategy.common.representations.ListGoalRepresentation;
 import com.tnd.pw.strategy.common.requests.StrategyRequest;
@@ -14,4 +15,6 @@ public interface GoalServiceHandler extends ServiceHandler {
     GoalRepresentation updateGoal(StrategyRequest request) throws DBServiceException, IOException, GoalNotFoundException;
     ListGoalRepresentation getGoal(StrategyRequest request) throws DBServiceException, IOException, LayoutNotFoundException;
     ListGoalRepresentation removeGoal(StrategyRequest request) throws IOException, DBServiceException, LayoutNotFoundException, GoalNotFoundException;
+
+    FilterInfoRepresentation getFilterInfos(StrategyRequest request) throws IOException, DBServiceException;
 }

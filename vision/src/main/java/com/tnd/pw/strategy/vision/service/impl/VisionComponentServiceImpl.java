@@ -1,6 +1,7 @@
 package com.tnd.pw.strategy.vision.service.impl;
 
 
+import com.tnd.common.api.common.Utils.GenUID;
 import com.tnd.dbservice.common.exception.DBServiceException;
 import com.tnd.pw.strategy.vision.dao.VisionComponentDao;
 import com.tnd.pw.strategy.vision.entity.VisionComponent;
@@ -18,7 +19,7 @@ public class VisionComponentServiceImpl implements VisionComponentService {
     @Override
     public VisionComponent create(Long visionId, String name, String summary, String color, String description, String files) throws IOException, DBServiceException {
         VisionComponent entity = new VisionComponent();
-        entity.setId(System.currentTimeMillis());
+        entity.setId(GenUID.genIdByParent(visionId));
         entity.setName(name == null ? "Strategy..." : name);
         entity.setVisionId(visionId);
         entity.setSummary(summary == null ? "Summary..." : summary);

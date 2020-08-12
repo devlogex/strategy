@@ -1,5 +1,6 @@
 package com.tnd.pw.strategy.competitor.service.impl;
 
+import com.tnd.common.api.common.Utils.GenUID;
 import com.tnd.dbservice.common.exception.DBServiceException;
 import com.tnd.pw.strategy.competitor.dao.CompetitorDao;
 import com.tnd.pw.strategy.competitor.entity.Competitor;
@@ -19,7 +20,7 @@ public class CompetitorServiceImpl implements CompetitorService {
     @Override
     public Competitor create(Long productId) throws IOException, DBServiceException {
         Competitor entity = new Competitor();
-        entity.setId(System.currentTimeMillis());
+        entity.setId(GenUID.genIdByProduct(productId));
         entity.setProductId(productId);
         entity.setName("Name");
         entity.setImage("");

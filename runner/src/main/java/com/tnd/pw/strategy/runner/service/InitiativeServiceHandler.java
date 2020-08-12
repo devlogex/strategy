@@ -1,6 +1,7 @@
 package com.tnd.pw.strategy.runner.service;
 
 import com.tnd.dbservice.common.exception.DBServiceException;
+import com.tnd.pw.strategy.common.representations.FilterInfoRepresentation;
 import com.tnd.pw.strategy.common.representations.InitiativeRepresentation;
 import com.tnd.pw.strategy.common.representations.ListInitiativeRepresentation;
 import com.tnd.pw.strategy.common.requests.StrategyRequest;
@@ -17,4 +18,6 @@ public interface InitiativeServiceHandler extends ServiceHandler {
     ListInitiativeRepresentation removeInitiative(StrategyRequest request) throws IOException, DBServiceException, LayoutNotFoundException, InitiativeNotFoundException;
     ListInitiativeRepresentation getInitiativeState(StrategyRequest request) throws IOException, DBServiceException, LayoutNotFoundException;
     ListInitiativeRepresentation updateInitiativeState(StrategyRequest request) throws DBServiceException, IOException, InitiativeNotFoundException, LayoutNotFoundException, InvalidDataRequestException;
+
+    FilterInfoRepresentation getFilterInfos(StrategyRequest request) throws IOException, DBServiceException;
 }

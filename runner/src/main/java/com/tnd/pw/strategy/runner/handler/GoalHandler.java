@@ -6,6 +6,7 @@ import com.tnd.common.api.server.BaseHandler;
 import com.tnd.common.api.server.service.annotation.HandlerService;
 import com.tnd.common.api.server.service.annotation.HandlerServiceClass;
 import com.tnd.dbservice.common.exception.DBServiceException;
+import com.tnd.pw.strategy.common.representations.FilterInfoRepresentation;
 import com.tnd.pw.strategy.common.representations.GoalRepresentation;
 import com.tnd.pw.strategy.common.representations.ListGoalRepresentation;
 import com.tnd.pw.strategy.common.requests.StrategyRequest;
@@ -25,39 +26,43 @@ public class GoalHandler implements BaseHandler {
     @Autowired
     private GoalServiceHandler goalServiceHandler;
 
-    @HandlerService(path = "/strategy/goal/add", protocol = "POST",
-            dataRequestType = "com.tnd.pw.strategy.common.requests.StrategyRequest")
-    public BaseResponse<ListGoalRepresentation> addGoal(BaseRequest<StrategyRequest> request) throws IOException, DBServiceException, GoalNotFoundException {
+    @HandlerService(path = "/strategy/goal/add", protocol = "POST")
+    public BaseResponse<ListGoalRepresentation> addGoal(StrategyRequest request) throws IOException, DBServiceException, GoalNotFoundException {
         LOGGER.info("[GoalHandler] addGoal() - request: {}", GsonUtils.convertToString(request));
-        ListGoalRepresentation response = goalServiceHandler.addGoal(request.getData());
+        ListGoalRepresentation response = goalServiceHandler.addGoal(request);
         LOGGER.info("[GoalHandler] addGoal() - response: {}", GsonUtils.convertToString(response));
         return new BaseResponse<>(response);
     }
 
-    @HandlerService(path = "/strategy/goal/update", protocol = "POST",
-            dataRequestType = "com.tnd.pw.strategy.common.requests.StrategyRequest")
-    public BaseResponse<GoalRepresentation> updateGoal(BaseRequest<StrategyRequest> request) throws DBServiceException, IOException, GoalNotFoundException {
+    @HandlerService(path = "/strategy/goal/update", protocol = "POST")
+    public BaseResponse<GoalRepresentation> updateGoal(StrategyRequest request) throws DBServiceException, IOException, GoalNotFoundException {
         LOGGER.info("[GoalHandler] updateGoal() - request: {}", GsonUtils.convertToString(request));
-        GoalRepresentation response = goalServiceHandler.updateGoal(request.getData());
+        GoalRepresentation response = goalServiceHandler.updateGoal(request);
         LOGGER.info("[GoalHandler] updateGoal() - response: {}", GsonUtils.convertToString(response));
         return new BaseResponse<>(response);
     }
 
-    @HandlerService(path = "/strategy/goal", protocol = "GET",
-            dataRequestType = "com.tnd.pw.strategy.common.requests.StrategyRequest")
-    public BaseResponse<ListGoalRepresentation> getGoal(BaseRequest<StrategyRequest> request) throws DBServiceException, IOException, LayoutNotFoundException {
+    @HandlerService(path = "/strategy/goal", protocol = "GET")
+    public BaseResponse<ListGoalRepresentation> getGoal(StrategyRequest request) throws DBServiceException, IOException, LayoutNotFoundException {
         LOGGER.info("[GoalHandler] getGoal() - request: {}", GsonUtils.convertToString(request));
-        ListGoalRepresentation response = goalServiceHandler.getGoal(request.getData());
+        ListGoalRepresentation response = goalServiceHandler.getGoal(request);
         LOGGER.info("[GoalHandler] getGoal() - response: {}", GsonUtils.convertToString(response));
         return new BaseResponse<>(response);
     }
 
-    @HandlerService(path = "/strategy/goal/delete", protocol = "POST",
-            dataRequestType = "com.tnd.pw.strategy.common.requests.StrategyRequest")
-    public BaseResponse<ListGoalRepresentation> removeGoal(BaseRequest<StrategyRequest> request) throws DBServiceException, IOException, LayoutNotFoundException, GoalNotFoundException {
+    @HandlerService(path = "/strategy/goal/delete", protocol = "POST")
+    public BaseResponse<ListGoalRepresentation> removeGoal(StrategyRequest request) throws DBServiceException, IOException, LayoutNotFoundException, GoalNotFoundException {
         LOGGER.info("[GoalHandler] removeGoal() - request: {}", GsonUtils.convertToString(request));
-        ListGoalRepresentation response = goalServiceHandler.removeGoal(request.getData());
+        ListGoalRepresentation response = goalServiceHandler.removeGoal(request);
         LOGGER.info("[GoalHandler] removeGoal() - response: {}", GsonUtils.convertToString(response));
+        return new BaseResponse<>(response);
+    }
+
+    @HandlerService(path = "/strategy/goal/filter_info", protocol = "GET")
+    public BaseResponse<FilterInfoRepresentation> getFilterInfos(StrategyRequest request) throws DBServiceException, IOException {
+        LOGGER.info("[GoalHandler] getFilterInfos() - request: {}", GsonUtils.convertToString(request));
+        FilterInfoRepresentation response = goalServiceHandler.getFilterInfos(request);
+        LOGGER.info("[GoalHandler] getFilterInfos() - response: {}", GsonUtils.convertToString(response));
         return new BaseResponse<>(response);
     }
 }

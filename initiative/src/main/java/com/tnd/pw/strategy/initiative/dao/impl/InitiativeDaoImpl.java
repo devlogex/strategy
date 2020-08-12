@@ -9,7 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class InitiativeDaoImpl  implements InitiativeDao {
     @Autowired
@@ -36,6 +38,10 @@ public class InitiativeDaoImpl  implements InitiativeDao {
             "SELECT * FROM initiative WHERE product_id = %d AND status = %d AND time_frame = '%s'";
     private static final String SQL_DELETE =
             "DELETE FROM initiative WHERE id = %d";
+
+    private static final String SQL_SELECT_TIME_FRAMES =
+            "SELECT DISTINCT time_frame FROM initiative WHERE product_id = %d AND NOT time_frame = ''";
+
     @Override
     public void create(Initiative entity) throws IOException, DBServiceException {
         String query = String.format(SQL_CREATE, entity.getId(), entity.getProductId(),
@@ -85,5 +91,12 @@ public class InitiativeDaoImpl  implements InitiativeDao {
     public void remove(Long initiativeId) throws IOException, DBServiceException {
         String query = String.format(SQL_DELETE, initiativeId);
         dataHelper.executeSQL(query);
+    }
+
+    @Override
+    public List<String> getTimeFrames(Long productId) throws IOException, DBServiceException {
+        String query = String.format(SQL_SELECT_TIME_FRAMES, productId);
+        List<Initiative> initiatives = dataHelper.querySQL(query, Initiative.class);
+        return initiatives == null ? new ArrayList<>() : initiatives.stream().map(initiative -> initiative.getTimeFrame()).collect(Collectors.toList());
     }
 }

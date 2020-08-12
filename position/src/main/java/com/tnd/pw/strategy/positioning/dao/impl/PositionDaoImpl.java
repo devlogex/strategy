@@ -9,7 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class PositionDaoImpl implements PositionDao {
     @Autowired
@@ -34,6 +36,11 @@ public class PositionDaoImpl implements PositionDao {
             "SELECT * FROM position WHERE product_id = %d AND buz_type = '%s' AND time_frame = '%s'";
     private static final String SQL_DELETE =
             "DELETE FROM position WHERE id = %d";
+
+    private static final String SQL_SELECT_BUZ_TYPES =
+            "SELECT DISTINCT buz_type FROM position WHERE product_id = %d AND NOT buz_type = ''";
+    private static final String SQL_SELECT_TIME_FRAMES =
+            "SELECT DISTINCT time_frame FROM position WHERE product_id = %d AND NOT time_frame = ''";
 
     @Override
     public void create(Position entity) throws IOException, DBServiceException {
@@ -82,5 +89,19 @@ public class PositionDaoImpl implements PositionDao {
     public void remove(Long positionId) throws IOException, DBServiceException {
         String query = String.format(SQL_DELETE, positionId);
         dataHelper.executeSQL(query);
+    }
+
+    @Override
+    public List<String> getBuzTypes(Long productId) throws IOException, DBServiceException {
+        String query = String.format(SQL_SELECT_BUZ_TYPES, productId);
+        List<Position> positions = dataHelper.querySQL(query, Position.class);
+        return positions == null ? new ArrayList<>() : positions.stream().map(position -> position.getBuzType()).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<String> getTimeFrames(Long productId) throws IOException, DBServiceException {
+        String query = String.format(SQL_SELECT_TIME_FRAMES, productId);
+        List<Position> positions = dataHelper.querySQL(query, Position.class);
+        return positions == null ? new ArrayList<>() : positions.stream().map(position -> position.getTimeFrame()).collect(Collectors.toList());
     }
 }

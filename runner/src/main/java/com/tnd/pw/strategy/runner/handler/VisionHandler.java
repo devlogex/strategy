@@ -27,65 +27,66 @@ public class VisionHandler implements BaseHandler {
     @Autowired
     private VisionServiceHandler visionServiceHandler;
 
-    @HandlerService(path = "/strategy/vision/add", protocol = "POST",
-            dataRequestType = "com.tnd.pw.strategy.common.requests.StrategyRequest")
-    public BaseResponse<VisionRepresentation> addVision(BaseRequest<StrategyRequest> request) throws IOException, DBServiceException {
+    @HandlerService(path = "/strategy/vision/add", protocol = "POST")
+    public BaseResponse<VisionRepresentation> addVision(StrategyRequest request) throws IOException, DBServiceException {
         LOGGER.info("[VisionHandler] addVision() - request: {}", GsonUtils.convertToString(request));
-        VisionRepresentation response = visionServiceHandler.addVision(request.getData());
+        VisionRepresentation response = visionServiceHandler.addVision(request);
         LOGGER.info("[VisionHandler] addVision() - response: {}", GsonUtils.convertToString(response));
         return new BaseResponse<>(response);
     }
 
-    @HandlerService(path = "/strategy/vision/update", protocol = "POST",
-            dataRequestType = "com.tnd.pw.strategy.common.requests.StrategyRequest")
-    public BaseResponse<VisionRepresentation> updateVision(BaseRequest<StrategyRequest> request) throws DBServiceException, VisionNotFoundException, IOException {
+    @HandlerService(path = "/strategy/vision/update", protocol = "POST")
+    public BaseResponse<VisionRepresentation> updateVision(StrategyRequest request) throws DBServiceException, VisionNotFoundException, IOException {
         LOGGER.info("[VisionHandler] updateVision() - request: {}", GsonUtils.convertToString(request));
-        VisionRepresentation response = visionServiceHandler.updateVision(request.getData());
+        VisionRepresentation response = visionServiceHandler.updateVision(request);
         LOGGER.info("[VisionHandler] updateVision() - response: {}", GsonUtils.convertToString(response));
         return new BaseResponse<>(response);
     }
 
-    @HandlerService(path = "/strategy/vision", protocol = "GET",
-            dataRequestType = "com.tnd.pw.strategy.common.requests.StrategyRequest")
-    public BaseResponse<VisionRepresentation> getVision(BaseRequest<StrategyRequest> request) throws DBServiceException, IOException {
+    @HandlerService(path = "/strategy/vision", protocol = "GET")
+    public BaseResponse<VisionRepresentation> getVision(StrategyRequest request) throws DBServiceException, IOException {
         LOGGER.info("[VisionHandler] getVision() - request: {}", GsonUtils.convertToString(request));
-        VisionRepresentation response = visionServiceHandler.getVision(request.getData());
+        VisionRepresentation response = visionServiceHandler.getVision(request);
         LOGGER.info("[VisionHandler] getVision() - response: {}", GsonUtils.convertToString(response));
         return new BaseResponse<>(response);
     }
 
-    @HandlerService(path = "/strategy/vision_component/add", protocol = "POST",
-            dataRequestType = "com.tnd.pw.strategy.common.requests.StrategyRequest")
-    public BaseResponse<ListVisionComponentRep> addVisionComponent(BaseRequest<StrategyRequest> request) throws IOException, DBServiceException, VisionNotFoundException, LayoutNotFoundException, VisionComponentNotFoundException {
+    @HandlerService(path = "/strategy/vision_component/add", protocol = "POST")
+    public BaseResponse<ListVisionComponentRep> addVisionComponent(StrategyRequest request) throws IOException, DBServiceException, VisionNotFoundException, LayoutNotFoundException, VisionComponentNotFoundException {
         LOGGER.info("[VisionHandler] addVisionComponent() - request: {}", GsonUtils.convertToString(request));
-        ListVisionComponentRep response = visionServiceHandler.addVisionComponent(request.getData());
+        ListVisionComponentRep response = visionServiceHandler.addVisionComponent(request);
         LOGGER.info("[VisionHandler] addVisionComponent() - response: {}", GsonUtils.convertToString(response));
         return new BaseResponse<>(response);
     }
 
-    @HandlerService(path = "/strategy/vision_component/update", protocol = "POST",
-            dataRequestType = "com.tnd.pw.strategy.common.requests.StrategyRequest")
-    public BaseResponse<VisionComponentRep> updateVisionComponent(BaseRequest<StrategyRequest> request) throws DBServiceException, IOException, VisionComponentNotFoundException {
+    @HandlerService(path = "/strategy/vision_component/update", protocol = "POST")
+    public BaseResponse<VisionComponentRep> updateVisionComponent(StrategyRequest request) throws DBServiceException, IOException, VisionComponentNotFoundException {
         LOGGER.info("[VisionHandler] updateVisionComponent() - request: {}", GsonUtils.convertToString(request));
-        VisionComponentRep response = visionServiceHandler.updateVisionComponent(request.getData());
+        VisionComponentRep response = visionServiceHandler.updateVisionComponent(request);
         LOGGER.info("[VisionHandler] updateVisionComponent() - response: {}", GsonUtils.convertToString(response));
         return new BaseResponse<>(response);
     }
 
-    @HandlerService(path = "/strategy/vision_component", protocol = "GET",
-            dataRequestType = "com.tnd.pw.strategy.common.requests.StrategyRequest")
-    public BaseResponse<ListVisionComponentRep> getVisionComponent(BaseRequest<StrategyRequest> request) throws DBServiceException, IOException {
-        LOGGER.info("[VisionHandler] getVisionComponent() - request: {}", GsonUtils.convertToString(request));
-        ListVisionComponentRep response = visionServiceHandler.getVisionComponent(request.getData());
-        LOGGER.info("[VisionHandler] getVisionComponent() - response: {}", GsonUtils.convertToString(response));
+    @HandlerService(path = "/strategy/vision_component/id", protocol = "GET")
+    public BaseResponse<ListVisionComponentRep> getVisionComponentById(StrategyRequest request) throws DBServiceException, IOException {
+        LOGGER.info("[VisionHandler] getVisionComponentById() - request: {}", GsonUtils.convertToString(request));
+        ListVisionComponentRep response = visionServiceHandler.getVisionComponentById(request);
+        LOGGER.info("[VisionHandler] getVisionComponentById() - response: {}", GsonUtils.convertToString(response));
         return new BaseResponse<>(response);
     }
 
-    @HandlerService(path = "/strategy/vision_component/delete", protocol = "POST",
-            dataRequestType = "com.tnd.pw.strategy.common.requests.StrategyRequest")
-    public BaseResponse<ListVisionComponentRep> removeVisionComponent(BaseRequest<StrategyRequest> request) throws DBServiceException, IOException, VisionComponentNotFoundException, LayoutNotFoundException {
+    @HandlerService(path = "/strategy/vision_component/vision_id", protocol = "GET")
+    public BaseResponse<ListVisionComponentRep> getVisionComponentByVisionId(StrategyRequest request) throws DBServiceException, IOException {
+        LOGGER.info("[VisionHandler] getVisionComponentByVisionId() - request: {}", GsonUtils.convertToString(request));
+        ListVisionComponentRep response = visionServiceHandler.getVisionComponentByVisionId(request);
+        LOGGER.info("[VisionHandler] getVisionComponentByVisionId() - response: {}", GsonUtils.convertToString(response));
+        return new BaseResponse<>(response);
+    }
+
+    @HandlerService(path = "/strategy/vision_component/delete", protocol = "POST")
+    public BaseResponse<ListVisionComponentRep> removeVisionComponent(StrategyRequest request) throws DBServiceException, IOException, VisionComponentNotFoundException, LayoutNotFoundException {
         LOGGER.info("[VisionHandler] removeVisionComponent() - request: {}", GsonUtils.convertToString(request));
-        ListVisionComponentRep response = visionServiceHandler.removeVisionComponent(request.getData());
+        ListVisionComponentRep response = visionServiceHandler.removeVisionComponent(request);
         LOGGER.info("[VisionHandler] removeVisionComponent() - response: {}", GsonUtils.convertToString(response));
         return new BaseResponse<>(response);
     }

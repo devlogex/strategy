@@ -37,7 +37,7 @@ public class VisionServiceHandlerImpl implements VisionServiceHandler {
     private static int num_comp_default = 9;
 
     public VisionRepresentation addVision(StrategyRequest request) throws IOException, DBServiceException {
-        Vision vision = visionService.create(request.getProductId());
+        Vision vision = visionService.create(request.getId());
         List<VisionComponent> visionComponents = createComponentDefaults(vision.getId());
         Layout layout = createLayout(vision.getId(), visionComponents);
         return RepresentationBuilder.buildVisionRepresentation(vision, visionComponents, layout);
@@ -54,7 +54,7 @@ public class VisionServiceHandlerImpl implements VisionServiceHandler {
     }
 
     public VisionRepresentation updateVision(StrategyRequest request) throws DBServiceException, VisionNotFoundException, IOException {
-        Vision vision = visionService.get(Vision.builder().id(request.getVisionId()).build()).get(0);
+        Vision vision = visionService.get(Vision.builder().id(request.getId()).build()).get(0);
         if(request.getFiles() != null) {
             vision.setFiles(request.getFiles());
         }
@@ -80,26 +80,31 @@ public class VisionServiceHandlerImpl implements VisionServiceHandler {
     public VisionRepresentation getVision(StrategyRequest request) throws DBServiceException, IOException {
         Vision vision = null;
         try {
-            vision = visionService.get(Vision.builder().id(request.getVisionId()).productId(request.getProductId()).build()).get(0);
+            vision = visionService.get(
+                    Vision.builder()
+                            .id(request.getId())
+                            .productId(request.getProductId())
+                            .build()
+            ).get(0);
             List<VisionComponent> visionComponents = visionComponentService.getByVisionId(vision.getId());
             Layout layout = layoutService.get(vision.getId(), LayoutType.VISION_COMPONENT.name());
             return RepresentationBuilder.buildVisionRepresentation(vision, visionComponents, layout);
         } catch (VisionNotFoundException e) {
-            LOGGER.error("[VisionHandlerBuz] VisionNotFoundException with id: {}", request.getVisionId());
+            LOGGER.error("[VisionHandlerBuz] VisionNotFoundException with id: {}", request.getId());
             return null;
         } catch (VisionComponentNotFoundException e) {
-            LOGGER.error("[VisionHandlerBuz] VisionComponentNotFoundException with vision_id: {}", request.getVisionId());
+            LOGGER.error("[VisionHandlerBuz] VisionComponentNotFoundException with vision_id: {}", request.getId());
             return RepresentationBuilder.buildVisionRepresentation(vision, null, null);
         } catch (LayoutNotFoundException e) {
-            LOGGER.error("[VisionHandlerBuz] LayoutNotFoundException with vision_id: {}", request.getVisionId());
+            LOGGER.error("[VisionHandlerBuz] LayoutNotFoundException with vision_id: {}", request.getId());
             return RepresentationBuilder.buildVisionRepresentation(vision, null, null);
         }
     }
 
     public ListVisionComponentRep addVisionComponent(StrategyRequest request) throws IOException, DBServiceException, VisionNotFoundException, LayoutNotFoundException, VisionComponentNotFoundException {
         try {
-            Vision vision = visionService.get(Vision.builder().id(request.getVisionId()).build()).get(0);
-            VisionComponent visionComponent = visionComponentService.create(request.getVisionId(), request.getName(), request.getSummary(), request.getColor(), request.getDescription(), request.getFiles());
+            Vision vision = visionService.get(Vision.builder().id(request.getId()).build()).get(0);
+            VisionComponent visionComponent = visionComponentService.create(request.getId(), request.getName(), request.getSummary(), request.getColor(), request.getDescription(), request.getFiles());
             Layout layout = layoutService.get(vision.getId(), LayoutType.VISION_COMPONENT.name());
             ArrayList<ArrayList<ArrayList<Long>>> layoutRep = GsonUtils.getGson().fromJson(layout.getLayout(), new TypeToken<ArrayList<ArrayList<ArrayList<Long>>>>(){}.getType());
             if (layoutRep != null && layoutRep.get(0) != null) {
@@ -111,19 +116,19 @@ public class VisionServiceHandlerImpl implements VisionServiceHandler {
             return RepresentationBuilder.buildListVisionComponentRep(components, layout);
         }
         catch (VisionNotFoundException e) {
-            LOGGER.error("[VisionHandlerBuz] VisionNotFoundException with id: {}", request.getVisionId());
+            LOGGER.error("[VisionHandlerBuz] VisionNotFoundException with id: {}", request.getId());
             throw e;
         } catch (LayoutNotFoundException e) {
-            LOGGER.error("[VisionHandlerBuz] LayoutNotFoundException with vision_id: {}", request.getVisionId());
+            LOGGER.error("[VisionHandlerBuz] LayoutNotFoundException with vision_id: {}", request.getId());
             throw e;
         } catch (VisionComponentNotFoundException e) {
-            LOGGER.error("[VisionHandlerBuz] VisionComponentNotFoundException after add component with vision_id: {}", request.getVisionId());
+            LOGGER.error("[VisionHandlerBuz] VisionComponentNotFoundException after add component with vision_id: {}", request.getId());
             throw e;
         }
     }
 
     public VisionComponentRep updateVisionComponent(StrategyRequest request) throws DBServiceException, IOException, VisionComponentNotFoundException {
-        VisionComponent visionComponent = visionComponentService.getById(request.getComponentId());
+        VisionComponent visionComponent = visionComponentService.getById(request.getId());
         if(request.getFiles() != null) {
             visionComponent.setFiles(request.getFiles());
         }
@@ -143,37 +148,15 @@ public class VisionServiceHandlerImpl implements VisionServiceHandler {
         return RepresentationBuilder.buildVisionComponentRep(newComponent);
     }
 
-    public ListVisionComponentRep getVisionComponent(StrategyRequest request) throws DBServiceException, IOException {
-        ListVisionComponentRep visionComponentReps = new ListVisionComponentRep();
-        try {
-            if (request.getComponentId() != null) {
-                VisionComponent visionComponent = visionComponentService.getById(request.getComponentId());
-                visionComponentReps.add(RepresentationBuilder.buildVisionComponentRep(visionComponent));
-            } else {
-                List<VisionComponent> visionComponents = visionComponentService.getByVisionId(request.getVisionId());
-                Vision vision = visionService.get(Vision.builder().id(request.getVisionId()).build()).get(0);
-                Layout layout = layoutService.get(vision.getId(), LayoutType.VISION_COMPONENT.name());
-                visionComponentReps = RepresentationBuilder.buildListVisionComponentRep(visionComponents, layout);
-            }
-        } catch (VisionComponentNotFoundException e) {
-            LOGGER.error("[VisionHandlerBuz] VisionComponentNotFoundException with request: {}", GsonUtils.convertToString(request));
-        } catch (VisionNotFoundException e) {
-            LOGGER.error("[VisionHandlerBuz] VisionNotFoundException with request: {}", GsonUtils.convertToString(request));
-        } catch (LayoutNotFoundException e) {
-            LOGGER.error("[VisionHandlerBuz] LayoutNotFoundException with request: {}", GsonUtils.convertToString(request));
-        }
-        return visionComponentReps;
-    }
-
     @Override
     public ListVisionComponentRep removeVisionComponent(StrategyRequest request) throws IOException, DBServiceException, VisionComponentNotFoundException, LayoutNotFoundException {
         Layout layout;
         VisionComponent component = null;
         try {
-            component = visionComponentService.getById(request.getComponentId());
+            component = visionComponentService.getById(request.getId());
             layout = layoutService.get(component.getVisionId(), LayoutType.VISION_COMPONENT.name());
         } catch (VisionComponentNotFoundException e) {
-            LOGGER.error("[VisionHandlerBuz] VisionComponentNotFoundException with component_id: {}", request.getComponentId());
+            LOGGER.error("[VisionHandlerBuz] VisionComponentNotFoundException with component_id: {}", request.getId());
             throw e;
         } catch (LayoutNotFoundException e) {
             LOGGER.error("[VisionHandlerBuz] LayoutNotFoundException with parent_id: {}, type: {}", component.getVisionId(), LayoutType.VISION_COMPONENT.name());
@@ -185,7 +168,7 @@ public class VisionServiceHandlerImpl implements VisionServiceHandler {
             for(int i = 0; i < layoutEntity.size(); i++) {
                 for(int j = 0; j < layoutEntity.get(i).size(); j++) {
                     for(int k = 0; k < layoutEntity.get(i).get(j).size(); k++) {
-                        if(layoutEntity.get(i).get(j).get(k).compareTo(request.getComponentId()) == 0) {
+                        if(layoutEntity.get(i).get(j).get(k).compareTo(request.getId()) == 0) {
                             layoutEntity.get(i).get(j).remove(k);
                             if(layoutEntity.get(i).get(j).size() == 0) {
                                 layoutEntity.get(i).remove(j);
@@ -200,9 +183,40 @@ public class VisionServiceHandlerImpl implements VisionServiceHandler {
             }
         layout.setLayout(GsonUtils.convertToString(layoutEntity));
         layoutService.update(layout);
-        visionComponentService.remove(request.getComponentId());
+        visionComponentService.remove(request.getId());
         List<VisionComponent> components = visionComponentService.getByVisionId(component.getVisionId());
         return RepresentationBuilder.buildListVisionComponentRep(components, layout);
+    }
+
+    @Override
+    public ListVisionComponentRep getVisionComponentById(StrategyRequest request) throws IOException, DBServiceException {
+        ListVisionComponentRep visionComponentReps = new ListVisionComponentRep();
+        try {
+            VisionComponent visionComponent = visionComponentService.getById(request.getId());
+            visionComponentReps.add(RepresentationBuilder.buildVisionComponentRep(visionComponent));
+
+        } catch (VisionComponentNotFoundException e) {
+            LOGGER.error("[VisionHandlerBuz] VisionComponentNotFoundException with request: {}", GsonUtils.convertToString(request));
+        }
+        return visionComponentReps;
+    }
+
+    @Override
+    public ListVisionComponentRep getVisionComponentByVisionId(StrategyRequest request) throws DBServiceException, IOException {
+        ListVisionComponentRep visionComponentReps = new ListVisionComponentRep();
+        try {
+            List<VisionComponent> visionComponents = visionComponentService.getByVisionId(request.getId());
+            Vision vision = visionService.get(Vision.builder().id(request.getId()).build()).get(0);
+            Layout layout = layoutService.get(vision.getId(), LayoutType.VISION_COMPONENT.name());
+            visionComponentReps = RepresentationBuilder.buildListVisionComponentRep(visionComponents, layout);
+        } catch (VisionComponentNotFoundException e) {
+            LOGGER.error("[VisionHandlerBuz] VisionComponentNotFoundException with request: {}", GsonUtils.convertToString(request));
+        } catch (VisionNotFoundException e) {
+            LOGGER.error("[VisionHandlerBuz] VisionNotFoundException with request: {}", GsonUtils.convertToString(request));
+        } catch (LayoutNotFoundException e) {
+            LOGGER.error("[VisionHandlerBuz] LayoutNotFoundException with request: {}", GsonUtils.convertToString(request));
+        }
+        return visionComponentReps;
     }
 
     private List<VisionComponent> createComponentDefaults(Long vision_id) throws IOException, DBServiceException {

@@ -36,10 +36,10 @@ public class PositionServiceHandlerImpl implements PositionServiceHandler {
 
     @Override
     public ListPositionRepresentation addPosition(StrategyRequest request) throws IOException, DBServiceException, PositionNotFoundException {
-        Position position = positionService.create(request.getProductId());
+        Position position = positionService.create(request.getId());
         Layout layout;
         try {
-            layout = layoutService.get(request.getProductId(), LayoutType.POSITION.name());
+            layout = layoutService.get(request.getId(), LayoutType.POSITION.name());
             ArrayList<ArrayList<ArrayList<Long>>> layoutEntity = GsonUtils.getGson().fromJson(layout.getLayout(), new TypeToken<ArrayList<ArrayList<ArrayList<Long>>>>(){}.getType());
             layoutEntity.add(new ArrayList<>());
             layoutEntity.get(layoutEntity.size() - 1).add(new ArrayList<>());
@@ -51,19 +51,19 @@ public class PositionServiceHandlerImpl implements PositionServiceHandler {
             layoutEntity.add(new ArrayList<>());
             layoutEntity.get(0).add(new ArrayList<>());
             layoutEntity.get(0).get(0).add(position.getId());
-            layout = layoutService.create(request.getProductId(), LayoutType.POSITION.name(), GsonUtils.convertToString(layoutEntity));
+            layout = layoutService.create(request.getId(), LayoutType.POSITION.name(), GsonUtils.convertToString(layoutEntity));
 
         }
         LayoutRepresentation layoutRepresentation = createPositionComponentDefaults(position);
-        List<Position> positions = positionService.get(Position.builder().productId(request.getProductId()).build());
+        List<Position> positions = positionService.get(Position.builder().productId(request.getId()).build());
         return RepresentationBuilder.buildListPositionRepresentation(positions, layout, layoutRepresentation.getLayout());
     }
 
     @Override
     public PositionRepresentation updatePosition(StrategyRequest request) throws DBServiceException, IOException, PositionNotFoundException {
-        Position position = positionService.get(Position.builder().id(request.getPositionId()).build()).get(0);
-        if(request.getPositionName() != null) {
-            position.setName(request.getPositionName());
+        Position position = positionService.get(Position.builder().id(request.getId()).build()).get(0);
+        if(request.getName() != null) {
+            position.setName(request.getName());
         }
         if(request.getFiles() != null) {
             position.setFiles(request.getFiles());
@@ -86,7 +86,7 @@ public class PositionServiceHandlerImpl implements PositionServiceHandler {
         try {
             List<Position> positions = positionService.get(
                     Position.builder()
-                            .id(request.getPositionId())
+                            .id(request.getId())
                             .productId(request.getProductId())
                             .buzType(request.getBuzType())
                             .timeFrame(request.getTimeFrame())
@@ -108,10 +108,10 @@ public class PositionServiceHandlerImpl implements PositionServiceHandler {
         Layout layout;
         Position position = null;
         try {
-            position = positionService.get(Position.builder().id(request.getPositionId()).build()).get(0);
+            position = positionService.get(Position.builder().id(request.getId()).build()).get(0);
             layout = layoutService.get(position.getProductId(), LayoutType.POSITION.name());
         } catch (PositionNotFoundException e) {
-            LOGGER.error("[PositionServiceHandlerImpl] PositionNotFoundException with id: {}", request.getPositionId());
+            LOGGER.error("[PositionServiceHandlerImpl] PositionNotFoundException with id: {}", request.getId());
             throw e;
         } catch (LayoutNotFoundException e) {
             LOGGER.error("[PositionServiceHandlerImpl] LayoutNotFoundException with parent_id: {}, type: {}", position.getProductId(), LayoutType.POSITION.name());
@@ -123,7 +123,7 @@ public class PositionServiceHandlerImpl implements PositionServiceHandler {
         for(int i = 0; i < layoutEntity.size(); i++) {
             for(int j = 0; j < layoutEntity.get(i).size(); j++) {
                 for(int k = 0; k < layoutEntity.get(i).get(j).size(); k++) {
-                    if(layoutEntity.get(i).get(j).get(k).compareTo(request.getPositionId()) == 0) {
+                    if(layoutEntity.get(i).get(j).get(k).compareTo(request.getId()) == 0) {
                         layoutEntity.get(i).get(j).remove(k);
                         if(layoutEntity.get(i).get(j).size() == 0) {
                             layoutEntity.get(i).remove(j);
@@ -154,7 +154,7 @@ public class PositionServiceHandlerImpl implements PositionServiceHandler {
     @Override
     public LayoutRepresentation addPositionComponent(StrategyRequest request) throws IOException, DBServiceException, LayoutNotFoundException, PositionComponentNotFoundException {
         try {
-            PositionComponent component = positionComponentService.create(request.getPositionId(), request.getName(), request.getColor(), request.getDescription(), request.getFiles());
+            PositionComponent component = positionComponentService.create(request.getId(), request.getName(), request.getColor(), request.getDescription(), request.getFiles());
             Layout layout = layoutService.get(component.getPositionId(), LayoutType.POSITION_COMPONENT.name());
             ArrayList<ArrayList<ArrayList<Long>>> layoutEntity = GsonUtils.getGson().fromJson(layout.getLayout(), new TypeToken<ArrayList<ArrayList<ArrayList<Long>>>>(){}.getType());
             if (layoutEntity.get(0) != null) {
@@ -169,17 +169,17 @@ public class PositionServiceHandlerImpl implements PositionServiceHandler {
             List<PositionComponent> components = positionComponentService.get(null, component.getPositionId());
             return RepresentationBuilder.buildListPositionComponentRep(layoutEntity, components);
         } catch (PositionComponentNotFoundException e) {
-            LOGGER.error("[PositionServiceHandlerImpl] PositionComponentNotFoundException with component_id: {}", request.getComponentId());
+            LOGGER.error("[PositionServiceHandlerImpl] PositionComponentNotFoundException with component_id: {}", request.getId());
             throw e;
         } catch (LayoutNotFoundException e) {
-            LOGGER.error("[PositionServiceHandlerImpl] LayoutNotFoundException with component_id: {}", request.getComponentId());
+            LOGGER.error("[PositionServiceHandlerImpl] LayoutNotFoundException with component_id: {}", request.getId());
             throw e;
         }
     }
 
     @Override
     public PositionComponentRep updatePositionComponent(StrategyRequest request) throws DBServiceException, IOException, PositionComponentNotFoundException {
-        PositionComponent positionComponent = positionComponentService.get(request.getComponentId(), null).get(0);
+        PositionComponent positionComponent = positionComponentService.get(request.getId(), null).get(0);
         if(request.getColor() != null) {
             positionComponent.setColor(request.getColor());
         }
@@ -197,17 +197,22 @@ public class PositionServiceHandlerImpl implements PositionServiceHandler {
     }
 
     @Override
-    public LayoutRepresentation getPositionComponent(StrategyRequest request) throws DBServiceException, IOException, LayoutNotFoundException {
+    public LayoutRepresentation getPositionComponentById(StrategyRequest request) throws IOException, DBServiceException {
         try{
-            if(request.getComponentId() != null) {
-                PositionComponent component = positionComponentService.get(request.getComponentId(), null).get(0);
-                return new LayoutRepresentation(component);
-            }
-            else {
-                List<PositionComponent> components = positionComponentService.get(null, request.getPositionId());
-                Layout layout = layoutService.get(request.getPositionId(), LayoutType.POSITION_COMPONENT.name());
-                return RepresentationBuilder.buildListPositionComponentRep(layout, components);
-            }
+            PositionComponent component = positionComponentService.get(request.getId(), null).get(0);
+            return new LayoutRepresentation(component);
+        } catch (PositionComponentNotFoundException e) {
+            LOGGER.error("[PositionServiceHandlerImpl] PositionComponentNotFoundException with request: {}", GsonUtils.convertToString(request));
+            return null;
+        }
+    }
+
+    @Override
+    public LayoutRepresentation getPositionComponentByPositionId(StrategyRequest request) throws DBServiceException, LayoutNotFoundException, IOException {
+        try{
+            List<PositionComponent> components = positionComponentService.get(null, request.getId());
+            Layout layout = layoutService.get(request.getId(), LayoutType.POSITION_COMPONENT.name());
+            return RepresentationBuilder.buildListPositionComponentRep(layout, components);
         } catch (PositionComponentNotFoundException e) {
             LOGGER.error("[PositionServiceHandlerImpl] PositionComponentNotFoundException with request: {}", GsonUtils.convertToString(request));
             return null;
@@ -219,10 +224,10 @@ public class PositionServiceHandlerImpl implements PositionServiceHandler {
         Layout layout;
         PositionComponent component = null;
         try {
-            component = positionComponentService.get(request.getComponentId(), null).get(0);
+            component = positionComponentService.get(request.getId(), null).get(0);
             layout = layoutService.get(component.getPositionId(), LayoutType.POSITION_COMPONENT.name());
         } catch (PositionComponentNotFoundException e) {
-            LOGGER.error("[PositionHandlerBuz] PositionComponentNotFoundException with component_id: {}", request.getComponentId());
+            LOGGER.error("[PositionHandlerBuz] PositionComponentNotFoundException with component_id: {}", request.getId());
             throw e;
         } catch (LayoutNotFoundException e) {
             LOGGER.error("[PositionHandlerBuz] LayoutNotFoundException with parent_id: {}, type: {}", component.getPositionId(), LayoutType.POSITION_COMPONENT.name());
@@ -234,7 +239,7 @@ public class PositionServiceHandlerImpl implements PositionServiceHandler {
         for(int i = 0; i < layoutEntity.size(); i++) {
             for(int j = 0; j < layoutEntity.get(i).size(); j++) {
                 for(int k = 0; k < layoutEntity.get(i).get(j).size(); k++) {
-                    if(layoutEntity.get(i).get(j).get(k).compareTo(request.getComponentId()) == 0) {
+                    if(layoutEntity.get(i).get(j).get(k).compareTo(request.getId()) == 0) {
                         layoutEntity.get(i).get(j).remove(k);
                         if(layoutEntity.get(i).get(j).size() == 0) {
                             layoutEntity.get(i).remove(j);
@@ -249,9 +254,16 @@ public class PositionServiceHandlerImpl implements PositionServiceHandler {
         }
         layout.setLayout(GsonUtils.convertToString(layoutEntity));
         layoutService.update(layout);
-        positionComponentService.remove(request.getComponentId(), null );
+        positionComponentService.remove(request.getId(), null );
         List<PositionComponent> components = positionComponentService.get(null, component.getPositionId());
         return RepresentationBuilder.buildListPositionComponentRep(layout, components);
+    }
+
+    @Override
+    public FilterInfoRepresentation getFilterInfos(StrategyRequest request) throws IOException, DBServiceException {
+        List<String> buzTypes = positionService.getBuzTypes(request.getId());
+        List<String> timeFrames = positionService.getTimeFrames(request.getId());
+        return new FilterInfoRepresentation(timeFrames, buzTypes);
     }
 
     @Override

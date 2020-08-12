@@ -12,4 +12,6 @@ public interface InitiativeService {
     void update(Initiative entity) throws IOException, DBServiceException;
     List<Initiative> get(Initiative entity) throws IOException, DBServiceException, InitiativeNotFoundException;
     void remove(Long initiativeId) throws IOException, DBServiceException;
+
+    List<String> getTimeFrames(Long productId) throws IOException, DBServiceException;
 }

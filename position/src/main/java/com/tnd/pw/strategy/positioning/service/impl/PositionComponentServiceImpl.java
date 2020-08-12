@@ -1,6 +1,7 @@
 package com.tnd.pw.strategy.positioning.service.impl;
 
 
+import com.tnd.common.api.common.Utils.GenUID;
 import com.tnd.dbservice.common.exception.DBServiceException;
 import com.tnd.pw.strategy.positioning.dao.PositionComponentDao;
 import com.tnd.pw.strategy.positioning.entity.Position;
@@ -19,7 +20,7 @@ public class PositionComponentServiceImpl implements PositionComponentService {
     @Override
     public PositionComponent create(Long positionId, String name, String color, String description, String files) throws IOException, DBServiceException {
         PositionComponent entity = new PositionComponent();
-        entity.setId(System.currentTimeMillis());
+        entity.setId(GenUID.genIdByParent(positionId));
         entity.setPositionId(positionId);
         entity.setColor(color == null ? "#E9644F": color);
         entity.setDescription(description == null ? "": description);

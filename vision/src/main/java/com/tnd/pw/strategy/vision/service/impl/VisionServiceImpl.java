@@ -1,5 +1,6 @@
 package com.tnd.pw.strategy.vision.service.impl;
 
+import com.tnd.common.api.common.Utils.GenUID;
 import com.tnd.dbservice.common.exception.DBServiceException;
 import com.tnd.pw.strategy.vision.dao.VisionDao;
 import com.tnd.pw.strategy.vision.entity.Vision;
@@ -18,7 +19,7 @@ public class VisionServiceImpl implements VisionService {
     @Override
     public Vision create( Long productId) throws IOException, DBServiceException {
         Vision entity = new Vision();
-        entity.setId(System.currentTimeMillis());
+        entity.setId(GenUID.genIdByProduct(productId));
         entity.setProductId(productId);
         entity.setFiles("");
         entity.setDescription("");

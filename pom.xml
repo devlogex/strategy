@@ -7,7 +7,7 @@
     <groupId>com.tnd.pw</groupId>
     <artifactId>strategy</artifactId>
     <packaging>pom</packaging>
-    <version>1.0.0</version>
+    <version>1.0-SNAPSHOT</version>
     <modules>
         <module>common</module>
         <module>runner</module>
@@ -23,14 +23,14 @@
     </modules>
 
     <properties>
-        <common.api.version>1.0.1</common.api.version>
-        <common.dbservice.version>1.0.0</common.dbservice.version>
+        <common.api.version>1.0-SNAPSHOT</common.api.version>
+        <common.dbservice.version>1.0-SNAPSHOT</common.dbservice.version>
         <log4j.version>2.13.2</log4j.version>
         <common.lang3.version>3.10</common.lang3.version>
         <gson.version>2.8.6</gson.version>
-        <strategy.version>1.0.0</strategy.version>
-        <common.ioc.version>1.0.0</common.ioc.version>
-        <dbservice.version>1.0.0</dbservice.version>
+        <strategy.version>1.0-SNAPSHOT</strategy.version>
+        <common.ioc.version>1.0-SNAPSHOT</common.ioc.version>
+        <dbservice.version>1.0-SNAPSHOT</dbservice.version>
         <lombok.version>1.18.12</lombok.version>
         <spring.version>5.2.6.RELEASE</spring.version>
     </properties>
@@ -111,6 +111,41 @@
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-context</artifactId>
                 <version>${spring.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.tnd.pw.strategy</groupId>
+                <artifactId>model</artifactId>
+                <version>${strategy.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.tnd.pw.strategy</groupId>
+                <artifactId>position</artifactId>
+                <version>${strategy.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.tnd.pw.strategy</groupId>
+                <artifactId>competitor</artifactId>
+                <version>${strategy.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.tnd.pw.strategy</groupId>
+                <artifactId>goal</artifactId>
+                <version>${strategy.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.tnd.pw.strategy</groupId>
+                <artifactId>initiative</artifactId>
+                <version>${strategy.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.tnd.pw.strategy</groupId>
+                <artifactId>layout</artifactId>
+                <version>${strategy.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.tnd.pw.strategy</groupId>
+                <artifactId>personas</artifactId>
+                <version>${strategy.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

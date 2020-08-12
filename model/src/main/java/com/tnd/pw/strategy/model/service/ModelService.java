@@ -12,4 +12,6 @@ public interface ModelService {
     void update(Model entity) throws IOException, DBServiceException;
     List<Model> get(Model entity) throws IOException, DBServiceException, ModelNotFoundException;
     void remove(Long modelId) throws IOException, DBServiceException;
+
+    List<String> getTimeFrames(Long productId) throws IOException, DBServiceException;
 }

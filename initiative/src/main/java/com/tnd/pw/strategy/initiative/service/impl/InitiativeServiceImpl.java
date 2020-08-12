@@ -1,5 +1,6 @@
 package com.tnd.pw.strategy.initiative.service.impl;
 
+import com.tnd.common.api.common.Utils.GenUID;
 import com.tnd.dbservice.common.exception.DBServiceException;
 import com.tnd.pw.strategy.initiative.dao.InitiativeDao;
 import com.tnd.pw.strategy.initiative.entity.Initiative;
@@ -16,7 +17,7 @@ public class InitiativeServiceImpl implements InitiativeService {
 
     @Override
     public Initiative create(Initiative entity) throws IOException, DBServiceException {
-        entity.setId(System.currentTimeMillis());
+        entity.setId(GenUID.genIdByProduct(entity.getProductId()));
         if(entity.getStatus() == null)
             entity.setStatus(0);
         entity.setName("Name...");
@@ -42,5 +43,10 @@ public class InitiativeServiceImpl implements InitiativeService {
     @Override
     public void remove(Long initiativeId) throws IOException, DBServiceException {
         initiativeDao.remove(initiativeId);
+    }
+
+    @Override
+    public List<String> getTimeFrames(Long productId) throws IOException, DBServiceException {
+        return initiativeDao.getTimeFrames(productId);
     }
 }

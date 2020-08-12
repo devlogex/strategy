@@ -1,5 +1,6 @@
 package com.tnd.pw.strategy.model.service.impl;
 
+import com.tnd.common.api.common.Utils.GenUID;
 import com.tnd.dbservice.common.exception.DBServiceException;
 import com.tnd.pw.strategy.model.dao.ModelComponentDao;
 import com.tnd.pw.strategy.model.entity.ModelComponent;
@@ -17,7 +18,7 @@ public class ModelComponentServiceImpl implements ModelComponentService {
     @Override
     public ModelComponent create(Long modelId, String name, String color, String description, String files) throws IOException, DBServiceException {
         ModelComponent entity = new ModelComponent();
-        entity.setId(System.currentTimeMillis());
+        entity.setId(GenUID.genIdByParent(modelId));
         entity.setModelId(modelId);
         entity.setColor(color==null ? "#E9644F" : color);
         entity.setDescription(description==null ? "" : description);

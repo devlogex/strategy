@@ -1,6 +1,5 @@
 package com.tnd.pw.strategy.runner.handler;
 
-import com.tnd.common.api.common.base.BaseRequest;
 import com.tnd.common.api.common.base.BaseResponse;
 import com.tnd.common.api.server.BaseHandler;
 import com.tnd.common.api.server.service.annotation.HandlerService;
@@ -25,38 +24,34 @@ public class CompetitorHandler implements BaseHandler {
     @Autowired
     private CompetitorServiceHandler competitorServiceHandler;
 
-    @HandlerService(path = "/strategy/competitor/add", protocol = "POST",
-            dataRequestType = "com.tnd.pw.strategy.common.requests.StrategyRequest")
-    public BaseResponse<ListCompetitorRepresentation> addCompetitor(BaseRequest<StrategyRequest> request) throws IOException, DBServiceException, CompetitorNotFoundException {
+    @HandlerService(path = "/strategy/competitor/add", protocol = "POST")
+    public BaseResponse<ListCompetitorRepresentation> addCompetitor(StrategyRequest request) throws IOException, DBServiceException, CompetitorNotFoundException {
         LOGGER.info("[CompetitorHandler] addCompetitor() - request: {}", GsonUtils.convertToString(request));
-        ListCompetitorRepresentation response = competitorServiceHandler.addCompetitor(request.getData());
+        ListCompetitorRepresentation response = competitorServiceHandler.addCompetitor(request);
         LOGGER.info("[CompetitorHandler] addCompetitor() - response: {}", GsonUtils.convertToString(response));
         return new BaseResponse<>(response);
     }
 
-    @HandlerService(path = "/strategy/competitor/update", protocol = "POST",
-            dataRequestType = "com.tnd.pw.strategy.common.requests.StrategyRequest")
-    public BaseResponse<CompetitorRepresentation> updateCompetitor(BaseRequest<StrategyRequest> request) throws DBServiceException, IOException, CompetitorNotFoundException {
+    @HandlerService(path = "/strategy/competitor/update", protocol = "POST")
+    public BaseResponse<CompetitorRepresentation> updateCompetitor(StrategyRequest request) throws DBServiceException, IOException, CompetitorNotFoundException {
         LOGGER.info("[CompetitorHandler] updateCompetitor() - request: {}", GsonUtils.convertToString(request));
-        CompetitorRepresentation response = competitorServiceHandler.updateCompetitor(request.getData());
+        CompetitorRepresentation response = competitorServiceHandler.updateCompetitor(request);
         LOGGER.info("[CompetitorHandler] updateCompetitor() - response: {}", GsonUtils.convertToString(response));
         return new BaseResponse<>(response);
     }
 
-    @HandlerService(path = "/strategy/competitor", protocol = "GET",
-            dataRequestType = "com.tnd.pw.strategy.common.requests.StrategyRequest")
-    public BaseResponse<ListCompetitorRepresentation> getCompetitor(BaseRequest<StrategyRequest> request) throws DBServiceException, IOException, LayoutNotFoundException {
+    @HandlerService(path = "/strategy/competitor", protocol = "GET")
+    public BaseResponse<ListCompetitorRepresentation> getCompetitor(StrategyRequest request) throws DBServiceException, IOException, LayoutNotFoundException {
         LOGGER.info("[CompetitorHandler] getCompetitor() - request: {}", GsonUtils.convertToString(request));
-        ListCompetitorRepresentation response = competitorServiceHandler.getCompetitor(request.getData());
+        ListCompetitorRepresentation response = competitorServiceHandler.getCompetitor(request);
         LOGGER.info("[CompetitorHandler] getCompetitor() - response: {}", GsonUtils.convertToString(response));
         return new BaseResponse<>(response);
     }
 
-    @HandlerService(path = "/strategy/competitor/delete", protocol = "POST",
-            dataRequestType = "com.tnd.pw.strategy.common.requests.StrategyRequest")
-    public BaseResponse<ListCompetitorRepresentation> removeCompetitor(BaseRequest<StrategyRequest> request) throws DBServiceException, IOException, LayoutNotFoundException, CompetitorNotFoundException {
+    @HandlerService(path = "/strategy/competitor/delete", protocol = "POST")
+    public BaseResponse<ListCompetitorRepresentation> removeCompetitor(StrategyRequest request) throws DBServiceException, IOException, LayoutNotFoundException, CompetitorNotFoundException {
         LOGGER.info("[CompetitorHandler] removeCompetitor() - request: {}", GsonUtils.convertToString(request));
-        ListCompetitorRepresentation response = competitorServiceHandler.removeCompetitor(request.getData());
+        ListCompetitorRepresentation response = competitorServiceHandler.removeCompetitor(request);
         LOGGER.info("[CompetitorHandler] removeCompetitor() - response: {}", GsonUtils.convertToString(response));
         return new BaseResponse<>(response);
     }

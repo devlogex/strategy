@@ -9,7 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class GoalDaoImpl implements GoalDao {
     @Autowired
@@ -36,6 +38,10 @@ public class GoalDaoImpl implements GoalDao {
             "SELECT * FROM goal WHERE product_id = %d AND status = %d AND time_frame = '%s'";
     private static final String SQL_DELETE =
             "DELETE FROM goal WHERE id = %d";
+
+    private static final String SQL_SELECT_TIME_FRAMES =
+            "SELECT DISTINCT time_frame FROM goal WHERE product_id = %d AND NOT time_frame = ''";
+
     @Override
     public void create(Goal entity) throws IOException, DBServiceException {
         String query = String.format(SQL_CREATE, entity.getId(), entity.getProductId(),
@@ -86,5 +92,12 @@ public class GoalDaoImpl implements GoalDao {
     public void remove(Long goalId) throws IOException, DBServiceException {
         String query = String.format(SQL_DELETE, goalId);
         dataHelper.executeSQL(query);
+    }
+
+    @Override
+    public List<String> getTimeFrames(Long productId) throws IOException, DBServiceException {
+        String query = String.format(SQL_SELECT_TIME_FRAMES, productId);
+        List<Goal> goals = dataHelper.querySQL(query, Goal.class);
+        return goals == null ? new ArrayList<>() : goals.stream().map(goal -> goal.getTimeFrame()).collect(Collectors.toList());
     }
 }

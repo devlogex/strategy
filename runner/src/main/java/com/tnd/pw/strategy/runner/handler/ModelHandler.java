@@ -1,6 +1,5 @@
 package com.tnd.pw.strategy.runner.handler;
 
-import com.tnd.common.api.common.base.BaseRequest;
 import com.tnd.common.api.common.base.BaseResponse;
 import com.tnd.common.api.server.BaseHandler;
 import com.tnd.common.api.server.service.annotation.HandlerService;
@@ -25,75 +24,83 @@ public class ModelHandler implements BaseHandler {
     @Autowired
     private ModelServiceHandler modelServiceHandler;
 
-    @HandlerService(path = "/strategy/model/add", protocol = "POST",
-            dataRequestType = "com.tnd.pw.strategy.common.requests.StrategyRequest")
-    public BaseResponse<ListModelRepresentation> addModel(BaseRequest<StrategyRequest> request) throws IOException, DBServiceException, ModelNotFoundException {
+    @HandlerService(path = "/strategy/model/add", protocol = "POST")
+    public BaseResponse<ListModelRepresentation> addModel(StrategyRequest request) throws IOException, DBServiceException, ModelNotFoundException {
         LOGGER.info("[ModelHandler] addModel() - request: {}", GsonUtils.convertToString(request));
-        ListModelRepresentation response = modelServiceHandler.addModel(request.getData());
+        ListModelRepresentation response = modelServiceHandler.addModel(request);
         LOGGER.info("[ModelHandler] addModel() - response: {}", GsonUtils.convertToString(response));
         return new BaseResponse<>(response);
     }
 
-    @HandlerService(path = "/strategy/model/update", protocol = "POST",
-            dataRequestType = "com.tnd.pw.strategy.common.requests.StrategyRequest")
-    public BaseResponse<ModelRepresentation> updateModel(BaseRequest<StrategyRequest> request) throws DBServiceException, IOException, ModelNotFoundException {
+    @HandlerService(path = "/strategy/model/update", protocol = "POST")
+    public BaseResponse<ModelRepresentation> updateModel(StrategyRequest request) throws DBServiceException, IOException, ModelNotFoundException {
         LOGGER.info("[ModelHandler] updateModel() - request: {}", GsonUtils.convertToString(request));
-        ModelRepresentation response = modelServiceHandler.updateModel(request.getData());
+        ModelRepresentation response = modelServiceHandler.updateModel(request);
         LOGGER.info("[ModelHandler] updateModel() - response: {}", GsonUtils.convertToString(response));
         return new BaseResponse<>(response);
     }
 
-    @HandlerService(path = "/strategy/model", protocol = "GET",
-            dataRequestType = "com.tnd.pw.strategy.common.requests.StrategyRequest")
-    public BaseResponse<ListModelRepresentation> getModel(BaseRequest<StrategyRequest> request) throws DBServiceException, IOException, LayoutNotFoundException {
+    @HandlerService(path = "/strategy/model", protocol = "GET")
+    public BaseResponse<ListModelRepresentation> getModel(StrategyRequest request) throws DBServiceException, IOException, LayoutNotFoundException {
         LOGGER.info("[ModelHandler] getModel() - request: {}", GsonUtils.convertToString(request));
-        ListModelRepresentation response = modelServiceHandler.getModel(request.getData());
+        ListModelRepresentation response = modelServiceHandler.getModel(request);
         LOGGER.info("[ModelHandler] getModel() - response: {}", GsonUtils.convertToString(response));
         return new BaseResponse<>(response);
     }
 
-    @HandlerService(path = "/strategy/model/delete", protocol = "POST",
-            dataRequestType = "com.tnd.pw.strategy.common.requests.StrategyRequest")
-    public BaseResponse<ListModelRepresentation> removeModel(BaseRequest<StrategyRequest> request) throws DBServiceException, IOException, ModelNotFoundException, LayoutNotFoundException {
+    @HandlerService(path = "/strategy/model/delete", protocol = "POST")
+    public BaseResponse<ListModelRepresentation> removeModel(StrategyRequest request) throws DBServiceException, IOException, ModelNotFoundException, LayoutNotFoundException {
         LOGGER.info("[ModelHandler] removeModel() - request: {}", GsonUtils.convertToString(request));
-        ListModelRepresentation response = modelServiceHandler.removeModel(request.getData());
+        ListModelRepresentation response = modelServiceHandler.removeModel(request);
         LOGGER.info("[ModelHandler] removeModel() - response: {}", GsonUtils.convertToString(response));
         return new BaseResponse<>(response);
     }
 
-    @HandlerService(path = "/strategy/model_component/add", protocol = "POST",
-            dataRequestType = "com.tnd.pw.strategy.common.requests.StrategyRequest")
-    public BaseResponse<LayoutRepresentation> addModelComponent(BaseRequest<StrategyRequest> request) throws IOException, DBServiceException, LayoutNotFoundException, ModelComponentNotFoundException {
+    @HandlerService(path = "/strategy/model_component/add", protocol = "POST")
+    public BaseResponse<LayoutRepresentation> addModelComponent(StrategyRequest request) throws IOException, DBServiceException, LayoutNotFoundException, ModelComponentNotFoundException {
         LOGGER.info("[ModelHandler] addModelComponent() - request: {}", GsonUtils.convertToString(request));
-        LayoutRepresentation response = modelServiceHandler.addModelComponent(request.getData());
+        LayoutRepresentation response = modelServiceHandler.addModelComponent(request);
         LOGGER.info("[ModelHandler] addModelComponent() - response: {}", GsonUtils.convertToString(response));
         return new BaseResponse<>(response);
     }
 
-    @HandlerService(path = "/strategy/model_component/update", protocol = "POST",
-            dataRequestType = "com.tnd.pw.strategy.common.requests.StrategyRequest")
-    public BaseResponse<ModelComponentRep> updateModelComponent(BaseRequest<StrategyRequest> request) throws DBServiceException, IOException, ModelComponentNotFoundException {
+    @HandlerService(path = "/strategy/model_component/update", protocol = "POST")
+    public BaseResponse<ModelComponentRep> updateModelComponent(StrategyRequest request) throws DBServiceException, IOException, ModelComponentNotFoundException {
         LOGGER.info("[ModelHandler] updateModelComponent() - request: {}", GsonUtils.convertToString(request));
-        ModelComponentRep response = modelServiceHandler.updateModelComponent(request.getData());
+        ModelComponentRep response = modelServiceHandler.updateModelComponent(request);
         LOGGER.info("[ModelHandler] updateModelComponent() - response: {}", GsonUtils.convertToString(response));
         return new BaseResponse<>(response);
     }
 
-    @HandlerService(path = "/strategy/model_component", protocol = "GET",
-            dataRequestType = "com.tnd.pw.strategy.common.requests.StrategyRequest")
-    public BaseResponse<LayoutRepresentation> getModelComponent(BaseRequest<StrategyRequest> request) throws DBServiceException, IOException, LayoutNotFoundException, ModelComponentNotFoundException {
-        LOGGER.info("[ModelHandler] getVisionComponent() - request: {}", GsonUtils.convertToString(request));
-        LayoutRepresentation response = modelServiceHandler.getModelComponent(request.getData());
-        LOGGER.info("[ModelHandler] getVisionComponent() - response: {}", GsonUtils.convertToString(response));
+    @HandlerService(path = "/strategy/model_component/id", protocol = "GET")
+    public BaseResponse<LayoutRepresentation> getModelComponentById(StrategyRequest request) throws DBServiceException, IOException, LayoutNotFoundException, ModelComponentNotFoundException {
+        LOGGER.info("[ModelHandler] getModelComponentById() - request: {}", GsonUtils.convertToString(request));
+        LayoutRepresentation response = modelServiceHandler.getModelComponentById(request);
+        LOGGER.info("[ModelHandler] getModelComponentById() - response: {}", GsonUtils.convertToString(response));
         return new BaseResponse<>(response);
     }
 
-    @HandlerService(path = "/strategy/model_component/delete", protocol = "POST",
-            dataRequestType = "com.tnd.pw.strategy.common.requests.StrategyRequest")
-    public BaseResponse<LayoutRepresentation> removeModelComponent(BaseRequest<StrategyRequest> request) throws DBServiceException, IOException, LayoutNotFoundException, ModelComponentNotFoundException {
+    @HandlerService(path = "/strategy/model_component/model_id", protocol = "GET")
+    public BaseResponse<LayoutRepresentation> getModelComponentByModelId(StrategyRequest request) throws DBServiceException, IOException, LayoutNotFoundException, ModelComponentNotFoundException {
+        LOGGER.info("[ModelHandler] getModelComponentByModelId() - request: {}", GsonUtils.convertToString(request));
+        LayoutRepresentation response = modelServiceHandler.getModelComponentByModelId(request);
+        LOGGER.info("[ModelHandler] getModelComponentByModelId() - response: {}", GsonUtils.convertToString(response));
+        return new BaseResponse<>(response);
+    }
+
+    @HandlerService(path = "/strategy/model_component/delete", protocol = "POST")
+    public BaseResponse<LayoutRepresentation> removeModelComponent(StrategyRequest request) throws DBServiceException, IOException, LayoutNotFoundException, ModelComponentNotFoundException {
         LOGGER.info("[ModelHandler] removeVisionComponent() - request: {}", GsonUtils.convertToString(request));
-        LayoutRepresentation response = modelServiceHandler.removeModelComponent(request.getData());
+        LayoutRepresentation response = modelServiceHandler.removeModelComponent(request);
         LOGGER.info("[ModelHandler] removeVisionComponent() - response: {}", GsonUtils.convertToString(response));
+        return new BaseResponse<>(response);
+    }
+
+    @HandlerService(path = "/strategy/model/filter_info", protocol = "GET")
+    public BaseResponse<FilterInfoRepresentation> getTimeFrames(StrategyRequest request) throws IOException, DBServiceException {
+        LOGGER.info("[ModelHandler] getTimeFrames() - request: {}", GsonUtils.convertToString(request));
+        FilterInfoRepresentation response = modelServiceHandler.getFilterInfos(request);
+        LOGGER.info("[ModelHandler] getTimeFrames() - response: {}", GsonUtils.convertToString(response));
         return new BaseResponse<>(response);
     }
 }

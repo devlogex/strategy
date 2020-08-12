@@ -20,29 +20,26 @@ public class LayoutHandler implements BaseHandler {
     @Autowired
     private LayoutServiceHandler layoutServiceHandler;
 
-    @HandlerService(path = "/strategy/layout/update", protocol = "POST",
-            dataRequestType = "com.tnd.pw.strategy.common.requests.StrategyRequest")
-    public BaseResponse<LayoutRepresentation> updateLayout(BaseRequest<StrategyRequest> request) throws Exception {
+    @HandlerService(path = "/strategy/layout/update", protocol = "POST")
+    public BaseResponse<LayoutRepresentation> updateLayout(StrategyRequest request) throws Exception {
         LOGGER.info("[LayoutHandler] updateLayout() - request: {}", GsonUtils.convertToString(request));
-        LayoutRepresentation response = layoutServiceHandler.updateLayout(request.getData());
+        LayoutRepresentation response = layoutServiceHandler.updateLayout(request);
         LOGGER.info("[LayoutHandler] updateLayout() - response: {}", GsonUtils.convertToString(response));
         return new BaseResponse<>(response);
     }
 
-    @HandlerService(path = "/strategy/layout/list", protocol = "POST",
-            dataRequestType = "com.tnd.pw.strategy.common.requests.StrategyRequest")
-    public BaseResponse<LayoutRepresentation> updateLayoutList(BaseRequest<StrategyRequest> request) throws Exception {
+    @HandlerService(path = "/strategy/layout/list", protocol = "POST")
+    public BaseResponse<LayoutRepresentation> updateLayoutList(StrategyRequest request) throws Exception {
         LOGGER.info("[LayoutHandler] updateLayoutList() - request: {}", GsonUtils.convertToString(request));
-        LayoutRepresentation response = layoutServiceHandler.updateLayoutList(request.getData());
+        LayoutRepresentation response = layoutServiceHandler.updateLayoutList(request);
         LOGGER.info("[LayoutHandler] updateLayoutList() - response: {}", GsonUtils.convertToString(response));
         return new BaseResponse<>(response);
     }
 
-    @HandlerService(path = "/strategy/layout", protocol = "GET",
-            dataRequestType = "com.tnd.pw.strategy.common.requests.StrategyRequest")
-    public BaseResponse<LayoutRepresentation> getLayout(BaseRequest<StrategyRequest> request) throws Exception {
+    @HandlerService(path = "/strategy/layout", protocol = "GET")
+    public BaseResponse<LayoutRepresentation> getLayout(StrategyRequest request) throws Exception {
         LOGGER.info("[LayoutHandler] getLayout() - request: {}", GsonUtils.convertToString(request));
-        LayoutRepresentation response = layoutServiceHandler.getLayout(request.getData());
+        LayoutRepresentation response = layoutServiceHandler.getLayout(request);
         LOGGER.info("[LayoutHandler] getLayout() - response: {}", GsonUtils.convertToString(response));
         return new BaseResponse<>(response);
     }

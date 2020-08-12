@@ -1,5 +1,6 @@
 package com.tnd.pw.strategy.layout.service.impl;
 
+import com.tnd.common.api.common.Utils.GenUID;
 import com.tnd.dbservice.common.exception.DBServiceException;
 import com.tnd.pw.strategy.layout.dao.LayoutDao;
 import com.tnd.pw.strategy.layout.entity.Layout;
@@ -16,7 +17,7 @@ public class LayoutServiceImpl implements LayoutService {
     @Override
     public Layout create(Long parentId, String type, String layout) throws IOException, DBServiceException {
         Layout entity = new Layout();
-        entity.setId(System.currentTimeMillis());
+        entity.setId(GenUID.genIdByParent(parentId));
         entity.setParentId(parentId);
         entity.setLayout(layout);
         entity.setType(type);

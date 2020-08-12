@@ -5,12 +5,12 @@
     <parent>
         <artifactId>strategy</artifactId>
         <groupId>com.tnd.pw</groupId>
-        <version>1.0.0</version>
+        <version>1.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.tnd.pw.strategy</groupId>
     <artifactId>dbservice</artifactId>
-    <version>1.0.0</version>
+    <version>1.0-SNAPSHOT</version>
 
     <dependencies>
         <dependency>
