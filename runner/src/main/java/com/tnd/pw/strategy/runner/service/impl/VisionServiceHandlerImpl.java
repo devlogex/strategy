@@ -107,9 +107,14 @@ public class VisionServiceHandlerImpl implements VisionServiceHandler {
             VisionComponent visionComponent = visionComponentService.create(request.getId(), request.getName(), request.getSummary(), request.getColor(), request.getDescription(), request.getFiles());
             Layout layout = layoutService.get(vision.getId(), LayoutType.VISION_COMPONENT.name());
             ArrayList<ArrayList<ArrayList<Long>>> layoutRep = GsonUtils.getGson().fromJson(layout.getLayout(), new TypeToken<ArrayList<ArrayList<ArrayList<Long>>>>(){}.getType());
-            if (layoutRep != null && layoutRep.get(0) != null) {
-                layoutRep.get(0).get(0).add(0, visionComponent.getId());
+
+            if (layoutRep == null) {
+                layoutRep = new ArrayList<>();
             }
+            layoutRep.add(0,new ArrayList<>());
+            layoutRep.get(0).add(new ArrayList<>());
+            layoutRep.get(0).get(0).add(visionComponent.getId());
+
             layout.setLayout(GsonUtils.convertToString(layoutRep));
             layoutService.update(layout);
             List<VisionComponent> components = visionComponentService.getByVisionId(vision.getId());
