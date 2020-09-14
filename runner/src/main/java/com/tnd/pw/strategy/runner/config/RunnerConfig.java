@@ -1,5 +1,7 @@
 package com.tnd.pw.strategy.runner.config;
 
+import com.tnd.pw.action.sdk.ActionSdkApi;
+import com.tnd.pw.strategy.call.api.CallActionApi;
 import com.tnd.pw.strategy.competitor.dao.CompetitorDao;
 import com.tnd.pw.strategy.competitor.dao.impl.CompetitorDaoImpl;
 import com.tnd.pw.strategy.competitor.service.CompetitorService;
@@ -49,6 +51,7 @@ import com.tnd.pw.strategy.vision.service.VisionComponentService;
 import com.tnd.pw.strategy.vision.service.VisionService;
 import com.tnd.pw.strategy.vision.service.impl.VisionComponentServiceImpl;
 import com.tnd.pw.strategy.vision.service.impl.VisionServiceImpl;
+import lombok.Builder;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -59,6 +62,18 @@ import org.springframework.context.annotation.PropertySource;
 public class RunnerConfig {
     @Value("${db.url}")
     private String db_url;
+    @Value("${action.domain}")
+    private String actionDomain;
+
+    @Bean
+    public ActionSdkApi actionSdkApi() {
+        return new ActionSdkApi(actionDomain);
+    }
+
+    @Bean
+    public CallActionApi callActionApi() {
+        return new CallActionApi();
+    }
 
     @Bean
     public DBServiceApiClient dbServiceApiClient() {

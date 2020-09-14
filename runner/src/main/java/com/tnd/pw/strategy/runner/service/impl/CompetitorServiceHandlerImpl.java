@@ -2,6 +2,9 @@ package com.tnd.pw.strategy.runner.service.impl;
 
 import com.google.common.reflect.TypeToken;
 import com.tnd.dbservice.common.exception.DBServiceException;
+import com.tnd.pw.action.common.representations.CsActionRepresentation;
+import com.tnd.pw.strategy.call.api.CallActionApi;
+import com.tnd.pw.strategy.call.api.exceptions.CallApiFailException;
 import com.tnd.pw.strategy.common.enums.LayoutType;
 import com.tnd.pw.strategy.common.representations.CompetitorRepresentation;
 import com.tnd.pw.strategy.common.representations.LayoutRepresentation;
@@ -30,6 +33,8 @@ public class CompetitorServiceHandlerImpl implements CompetitorServiceHandler {
     private CompetitorService competitorService;
     @Autowired
     private LayoutService layoutService;
+    @Autowired
+    private CallActionApi callActionApi;
 
     @Override
     public ListCompetitorRepresentation addCompetitor(StrategyRequest request) throws IOException, DBServiceException, CompetitorNotFoundException {
@@ -56,7 +61,7 @@ public class CompetitorServiceHandlerImpl implements CompetitorServiceHandler {
     }
 
     @Override
-    public CompetitorRepresentation updateCompetitor(StrategyRequest request) throws DBServiceException, IOException, CompetitorNotFoundException {
+    public CompetitorRepresentation updateCompetitor(StrategyRequest request) throws DBServiceException, IOException, CompetitorNotFoundException, CallApiFailException {
         Competitor competitor = competitorService.get(Competitor.builder().id(request.getId()).build()).get(0);
         if(request.getName() != null) {
             competitor.setName(request.getName());
@@ -77,7 +82,8 @@ public class CompetitorServiceHandlerImpl implements CompetitorServiceHandler {
             competitor.setUrl(request.getUrl());
         }
         competitorService.update(competitor);
-        return RepresentationBuilder.buildCompetitorRepresentation(competitor);
+        CsActionRepresentation actionRep = callActionApi.call(competitor.getId(), request);
+        return RepresentationBuilder.buildCompetitorRepresentation(competitor, actionRep);
     }
 
     @Override
@@ -98,6 +104,17 @@ public class CompetitorServiceHandlerImpl implements CompetitorServiceHandler {
             LOGGER.error("[CompetitorServiceHandlerImpl] LayoutNotFoundException with request: {}", GsonUtils.convertToString(request));
             throw e;
         }
+    }
+
+    @Override
+    public CompetitorRepresentation getCompetitorInfo(StrategyRequest request) throws IOException, CallApiFailException, DBServiceException, CompetitorNotFoundException {
+        Competitor competitor = competitorService.get(
+                Competitor.builder()
+                        .id(request.getId())
+                        .build()
+        ).get(0);
+        CsActionRepresentation actionRep = callActionApi.call(competitor.getId(), request);
+        return RepresentationBuilder.buildCompetitorRepresentation(competitor, actionRep);
     }
 
     @Override

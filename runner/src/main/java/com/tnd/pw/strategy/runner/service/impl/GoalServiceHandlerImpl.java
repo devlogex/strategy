@@ -2,6 +2,9 @@ package com.tnd.pw.strategy.runner.service.impl;
 
 import com.google.common.reflect.TypeToken;
 import com.tnd.dbservice.common.exception.DBServiceException;
+import com.tnd.pw.action.common.representations.CsActionRepresentation;
+import com.tnd.pw.strategy.call.api.CallActionApi;
+import com.tnd.pw.strategy.call.api.exceptions.CallApiFailException;
 import com.tnd.pw.strategy.common.enums.GoalState;
 import com.tnd.pw.strategy.common.enums.LayoutType;
 import com.tnd.pw.strategy.common.representations.FilterInfoRepresentation;
@@ -32,6 +35,8 @@ public class GoalServiceHandlerImpl implements GoalServiceHandler {
     private GoalService goalServiceService;
     @Autowired
     private LayoutService layoutService;
+    @Autowired
+    private CallActionApi callActionApi;
 
     @Override
     public ListGoalRepresentation addGoal(StrategyRequest request) throws IOException, DBServiceException, GoalNotFoundException {
@@ -58,7 +63,7 @@ public class GoalServiceHandlerImpl implements GoalServiceHandler {
     }
 
     @Override
-    public GoalRepresentation updateGoal(StrategyRequest request) throws DBServiceException, IOException, GoalNotFoundException {
+    public GoalRepresentation updateGoal(StrategyRequest request) throws DBServiceException, IOException, GoalNotFoundException, CallApiFailException {
         Goal goal = goalServiceService.get(Goal.builder().id(request.getId()).build()).get(0);
         if(request.getName() != null) {
             goal.setName(request.getName());
@@ -91,7 +96,8 @@ public class GoalServiceHandlerImpl implements GoalServiceHandler {
             goal.setMetricFile(request.getMetricFile());
         }
         goalServiceService.update(goal);
-        return RepresentationBuilder.buildGoalRepresentation(goal);
+        CsActionRepresentation actionRep = callActionApi.call(goal.getId(), request);
+        return RepresentationBuilder.buildGoalRepresentation(goal, actionRep);
     }
 
     @Override
@@ -118,6 +124,17 @@ public class GoalServiceHandlerImpl implements GoalServiceHandler {
             LOGGER.error("[GoalServiceHandlerImpl] LayoutNotFoundException with request: {}", GsonUtils.convertToString(request));
             throw e;
         }
+    }
+
+    @Override
+    public GoalRepresentation getGoalInfo(StrategyRequest request) throws IOException, CallApiFailException, DBServiceException, GoalNotFoundException {
+        Goal goal = goalServiceService.get(
+                Goal.builder()
+                        .id(request.getId())
+                        .timeFrame(request.getTimeFrame()).build()
+        ).get(0);
+        CsActionRepresentation actionRep = callActionApi.call(goal.getId(), request);
+        return RepresentationBuilder.buildGoalRepresentation(goal, actionRep);
     }
 
     @Override

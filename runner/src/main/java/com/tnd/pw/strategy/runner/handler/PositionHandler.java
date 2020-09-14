@@ -6,6 +6,7 @@ import com.tnd.common.api.server.BaseHandler;
 import com.tnd.common.api.server.service.annotation.HandlerService;
 import com.tnd.common.api.server.service.annotation.HandlerServiceClass;
 import com.tnd.dbservice.common.exception.DBServiceException;
+import com.tnd.pw.strategy.call.api.exceptions.CallApiFailException;
 import com.tnd.pw.strategy.common.representations.*;
 import com.tnd.pw.strategy.common.requests.StrategyRequest;
 import com.tnd.pw.strategy.common.utils.GsonUtils;
@@ -34,7 +35,7 @@ public class PositionHandler  implements BaseHandler {
     }
 
     @HandlerService(path = "/strategy/position/update", protocol = "POST")
-    public BaseResponse<PositionRepresentation> updatePosition(StrategyRequest request) throws DBServiceException, IOException, PositionNotFoundException {
+    public BaseResponse<PositionRepresentation> updatePosition(StrategyRequest request) throws DBServiceException, IOException, PositionNotFoundException, CallApiFailException {
         LOGGER.info("[PositionHandler] updatePosition() - request: {}", GsonUtils.convertToString(request));
         PositionRepresentation response = positionServiceHandler.updatePosition(request);
         LOGGER.info("[PositionHandler] updatePosition() - response: {}", GsonUtils.convertToString(response));
@@ -46,6 +47,14 @@ public class PositionHandler  implements BaseHandler {
         LOGGER.info("[PositionHandler] getPosition() - request: {}", GsonUtils.convertToString(request));
         ListPositionRepresentation response = positionServiceHandler.getPosition(request);
         LOGGER.info("[PositionHandler] getPosition() - response: {}", GsonUtils.convertToString(response));
+        return new BaseResponse<>(response);
+    }
+
+    @HandlerService(path = "/strategy/position/info", protocol = "GET")
+    public BaseResponse<PositionRepresentation> getPositionInfo(StrategyRequest request) throws DBServiceException, IOException, PositionNotFoundException, CallApiFailException {
+        LOGGER.info("[PositionHandler] getPositionInfo() - request: {}", GsonUtils.convertToString(request));
+        PositionRepresentation response = positionServiceHandler.getPositionInfo(request);
+        LOGGER.info("[PositionHandler] getPositionInfo() - response: {}", GsonUtils.convertToString(response));
         return new BaseResponse<>(response);
     }
 

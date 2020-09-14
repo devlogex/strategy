@@ -5,6 +5,7 @@ import com.tnd.common.api.server.BaseHandler;
 import com.tnd.common.api.server.service.annotation.HandlerService;
 import com.tnd.common.api.server.service.annotation.HandlerServiceClass;
 import com.tnd.dbservice.common.exception.DBServiceException;
+import com.tnd.pw.strategy.call.api.exceptions.CallApiFailException;
 import com.tnd.pw.strategy.common.representations.CompetitorRepresentation;
 import com.tnd.pw.strategy.common.representations.ListCompetitorRepresentation;
 import com.tnd.pw.strategy.common.requests.StrategyRequest;
@@ -33,7 +34,7 @@ public class CompetitorHandler implements BaseHandler {
     }
 
     @HandlerService(path = "/strategy/competitor/update", protocol = "POST")
-    public BaseResponse<CompetitorRepresentation> updateCompetitor(StrategyRequest request) throws DBServiceException, IOException, CompetitorNotFoundException {
+    public BaseResponse<CompetitorRepresentation> updateCompetitor(StrategyRequest request) throws DBServiceException, IOException, CompetitorNotFoundException, CallApiFailException {
         LOGGER.info("[CompetitorHandler] updateCompetitor() - request: {}", GsonUtils.convertToString(request));
         CompetitorRepresentation response = competitorServiceHandler.updateCompetitor(request);
         LOGGER.info("[CompetitorHandler] updateCompetitor() - response: {}", GsonUtils.convertToString(response));
@@ -45,6 +46,14 @@ public class CompetitorHandler implements BaseHandler {
         LOGGER.info("[CompetitorHandler] getCompetitor() - request: {}", GsonUtils.convertToString(request));
         ListCompetitorRepresentation response = competitorServiceHandler.getCompetitor(request);
         LOGGER.info("[CompetitorHandler] getCompetitor() - response: {}", GsonUtils.convertToString(response));
+        return new BaseResponse<>(response);
+    }
+
+    @HandlerService(path = "/strategy/competitor/info", protocol = "GET")
+    public BaseResponse<CompetitorRepresentation> getCompetitorInfo(StrategyRequest request) throws DBServiceException, IOException, LayoutNotFoundException, CompetitorNotFoundException, CallApiFailException {
+        LOGGER.info("[CompetitorHandler] getCompetitorInfo() - request: {}", GsonUtils.convertToString(request));
+        CompetitorRepresentation response = competitorServiceHandler.getCompetitorInfo(request);
+        LOGGER.info("[CompetitorHandler] getCompetitorInfo() - response: {}", GsonUtils.convertToString(response));
         return new BaseResponse<>(response);
     }
 

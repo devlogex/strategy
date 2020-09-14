@@ -1,6 +1,7 @@
 package com.tnd.pw.strategy.common.utils;
 
 import com.google.common.reflect.TypeToken;
+import com.tnd.pw.action.common.representations.CsActionRepresentation;
 import com.tnd.pw.strategy.common.enums.GoalState;
 import com.tnd.pw.strategy.common.enums.ModelType;
 import com.tnd.pw.strategy.common.representations.*;
@@ -22,7 +23,7 @@ import java.util.List;
 
 public class RepresentationBuilder {
 
-    public static VisionRepresentation buildVisionRepresentation(Vision vision, List<VisionComponent> components, Layout layout) {
+    public static VisionRepresentation buildVisionRepresentation(Vision vision, List<VisionComponent> components, Layout layout, CsActionRepresentation actionRep) {
         VisionRepresentation visionRepresentation = new VisionRepresentation();
         visionRepresentation.setId(vision.getId());
         visionRepresentation.setProductId(vision.getProductId());
@@ -44,6 +45,10 @@ public class RepresentationBuilder {
                 }
             }
             visionRepresentation.setListComponent(componentReps);
+        }
+        if(actionRep != null) {
+            visionRepresentation.setTodoReps(actionRep.getTodoReps());
+            visionRepresentation.setCommentReps(actionRep.getCommentReps());
         }
         return visionRepresentation;
     }
@@ -98,6 +103,23 @@ public class RepresentationBuilder {
         }
         modelRepresentations.setListComponent(components);
         return modelRepresentations;
+    }
+
+    public static ModelRepresentation buildModelRepresentation(Model model, CsActionRepresentation actionRep) {
+        ModelRepresentation modelRepresentation = new ModelRepresentation();
+        modelRepresentation.setId(model.getId());
+        modelRepresentation.setName(model.getName());
+        modelRepresentation.setProductId(model.getProductId());
+        modelRepresentation.setType(ModelType.values()[model.getType()].name());
+        modelRepresentation.setTimeFrame(model.getTimeFrame());
+        modelRepresentation.setDescription(model.getDescription());
+        modelRepresentation.setFiles(model.getFiles());
+        modelRepresentation.setBuzType(model.getBuzType());
+        if(actionRep != null) {
+            modelRepresentation.setTodoReps(actionRep.getTodoReps());
+            modelRepresentation.setCommentReps(actionRep.getCommentReps());
+        }
+        return modelRepresentation;
     }
 
     public static ModelRepresentation buildModelRepresentation(Model model) {
@@ -178,6 +200,21 @@ public class RepresentationBuilder {
         return positionRepresentation;
     }
 
+    public static PositionRepresentation buildPositionRepresentation(Position position, CsActionRepresentation actionRep) {
+        PositionRepresentation positionRepresentation = new PositionRepresentation();
+        positionRepresentation.setId(position.getId());
+        positionRepresentation.setName(position.getName());
+        positionRepresentation.setTimeFrame(position.getTimeFrame());
+        positionRepresentation.setBuzType(position.getBuzType());
+        positionRepresentation.setDescription(position.getDescription());
+        positionRepresentation.setFiles(position.getFiles());
+        if(actionRep != null) {
+            positionRepresentation.setTodoReps(actionRep.getTodoReps());
+            positionRepresentation.setCommentReps(actionRep.getCommentReps());
+        }
+        return positionRepresentation;
+    }
+
     public static PositionComponentRep buildPositionComponentRep(PositionComponent positionComponent) {
         PositionComponentRep positionComponentRep = new PositionComponentRep();
         positionComponentRep.setId(positionComponent.getId());
@@ -243,6 +280,22 @@ public class RepresentationBuilder {
         return personasRepresentation;
     }
 
+    public static PersonasRepresentation buildPersonasRepresentation(Personas personas, CsActionRepresentation actionRep) {
+        PersonasRepresentation personasRepresentation = new PersonasRepresentation();
+        personasRepresentation.setId(personas.getId());
+        personasRepresentation.setProductId(personas.getProductId());
+        personasRepresentation.setName(personas.getName());
+        personasRepresentation.setColor(personas.getColor());
+        personasRepresentation.setImage(personas.getImage());
+        HashMap<String, HashMap<String, String>> content = GsonUtils.getGson().fromJson(personas.getContent(), new TypeToken<HashMap<String, HashMap<String,String>>>(){}.getType());
+        personasRepresentation.setContent(content);
+        if(actionRep != null) {
+            personasRepresentation.setTodoReps(actionRep.getTodoReps());
+            personasRepresentation.setCommentReps(actionRep.getCommentReps());
+        }
+        return personasRepresentation;
+    }
+
     public static ListCompetitorRepresentation buildListCompetitorRepresentation(List<Competitor> competitors, Layout layout) {
         ListCompetitorRepresentation list = new ListCompetitorRepresentation();
         ArrayList<ArrayList<ArrayList<Long>>> layoutEntity = GsonUtils.getGson().fromJson(layout.getLayout(), new TypeToken<ArrayList<ArrayList<ArrayList<Long>>>>(){}.getType());
@@ -273,6 +326,25 @@ public class RepresentationBuilder {
         competitorRepresentation.setUrl(competitor.getUrl());
         HashMap<String, Integer> score = GsonUtils.getGson().fromJson(competitor.getScore(), new TypeToken<HashMap<String, Integer>>(){}.getType());
         competitorRepresentation.setScore(score);
+        return competitorRepresentation;
+    }
+
+    public static CompetitorRepresentation buildCompetitorRepresentation(Competitor competitor, CsActionRepresentation actionRep) {
+        CompetitorRepresentation competitorRepresentation = new CompetitorRepresentation();
+        competitorRepresentation.setId(competitor.getId());
+        competitorRepresentation.setProductId(competitor.getProductId());
+        competitorRepresentation.setName(competitor.getName());
+        competitorRepresentation.setColor(competitor.getColor());
+        competitorRepresentation.setImage(competitor.getImage());
+        HashMap<String, HashMap<String, String>> content = GsonUtils.getGson().fromJson(competitor.getContent(), new TypeToken<HashMap<String, HashMap<String,String>>>(){}.getType());
+        competitorRepresentation.setContent(content);
+        competitorRepresentation.setUrl(competitor.getUrl());
+        HashMap<String, Integer> score = GsonUtils.getGson().fromJson(competitor.getScore(), new TypeToken<HashMap<String, Integer>>(){}.getType());
+        competitorRepresentation.setScore(score);
+        if(actionRep != null) {
+            competitorRepresentation.setTodoReps(actionRep.getTodoReps());
+            competitorRepresentation.setCommentReps(actionRep.getCommentReps());
+        }
         return competitorRepresentation;
     }
 
@@ -308,6 +380,27 @@ public class RepresentationBuilder {
         goalRepresentation.setMetric(goal.getMetric());
         goalRepresentation.setMetricDescription(goal.getMetricDescription());
         goalRepresentation.setMetricFile(goal.getMetricFile());
+        return goalRepresentation;
+    }
+
+    public static GoalRepresentation buildGoalRepresentation(Goal goal, CsActionRepresentation actionRep) {
+        GoalRepresentation goalRepresentation = new GoalRepresentation();
+        goalRepresentation.setId(goal.getId());
+        goalRepresentation.setProductId(goal.getProductId());
+        goalRepresentation.setName(goal.getName());
+        goalRepresentation.setDescription(goal.getDescription());
+        goalRepresentation.setFiles(goal.getFiles());
+        goalRepresentation.setParentGoal(goal.getParentGoal());
+        goalRepresentation.setStatus(GoalState.values()[goal.getStatus()].name());
+        goalRepresentation.setTimeFrame(goal.getTimeFrame());
+        goalRepresentation.setColor(goal.getColor());
+        goalRepresentation.setMetric(goal.getMetric());
+        goalRepresentation.setMetricDescription(goal.getMetricDescription());
+        goalRepresentation.setMetricFile(goal.getMetricFile());
+        if(actionRep != null) {
+            goalRepresentation.setTodoReps(actionRep.getTodoReps());
+            goalRepresentation.setCommentReps(actionRep.getCommentReps());
+        }
         return goalRepresentation;
     }
 
@@ -360,6 +453,27 @@ public class RepresentationBuilder {
         initiativeRepresentation.setStartAt(initiative.getStartAt());
         initiativeRepresentation.setEndAt(initiative.getEndAt());
         initiativeRepresentation.setVisible(initiative.getVisible());
+        return initiativeRepresentation;
+    }
+
+    public static InitiativeRepresentation buildInitiativeRepresentation(Initiative initiative, CsActionRepresentation actionRep) {
+        InitiativeRepresentation initiativeRepresentation = new InitiativeRepresentation();
+        initiativeRepresentation.setId(initiative.getId());
+        initiativeRepresentation.setProductId(initiative.getProductId());
+        initiativeRepresentation.setName(initiative.getName());
+        initiativeRepresentation.setDescription(initiative.getDescription());
+        initiativeRepresentation.setFiles(initiative.getFiles());
+        initiativeRepresentation.setParentInitiative(initiative.getParentInitiative());
+        initiativeRepresentation.setStatus(GoalState.values()[initiative.getStatus()].name());
+        initiativeRepresentation.setTimeFrame(initiative.getTimeFrame());
+        initiativeRepresentation.setColor(initiative.getColor());
+        initiativeRepresentation.setStartAt(initiative.getStartAt());
+        initiativeRepresentation.setEndAt(initiative.getEndAt());
+        initiativeRepresentation.setVisible(initiative.getVisible());
+        if(actionRep != null) {
+            initiativeRepresentation.setTodoReps(actionRep.getTodoReps());
+            initiativeRepresentation.setCommentReps(actionRep.getCommentReps());
+        }
         return initiativeRepresentation;
     }
 }

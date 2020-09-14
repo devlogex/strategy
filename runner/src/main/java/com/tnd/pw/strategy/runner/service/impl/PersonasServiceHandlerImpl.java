@@ -2,6 +2,9 @@ package com.tnd.pw.strategy.runner.service.impl;
 
 import com.google.common.reflect.TypeToken;
 import com.tnd.dbservice.common.exception.DBServiceException;
+import com.tnd.pw.action.common.representations.CsActionRepresentation;
+import com.tnd.pw.strategy.call.api.CallActionApi;
+import com.tnd.pw.strategy.call.api.exceptions.CallApiFailException;
 import com.tnd.pw.strategy.common.enums.LayoutType;
 import com.tnd.pw.strategy.common.representations.LayoutRepresentation;
 import com.tnd.pw.strategy.common.representations.ListPersonasRepresentation;
@@ -30,6 +33,8 @@ public class PersonasServiceHandlerImpl implements PersonasServiceHandler {
     private PersonasService personasService;
     @Autowired
     private LayoutService layoutService;
+    @Autowired
+    private CallActionApi callActionApi;
 
     @Override
     public ListPersonasRepresentation addPersonas(StrategyRequest request) throws IOException, DBServiceException, PersonasNotFoundException {
@@ -56,7 +61,7 @@ public class PersonasServiceHandlerImpl implements PersonasServiceHandler {
     }
 
     @Override
-    public PersonasRepresentation updatePersonas(StrategyRequest request) throws DBServiceException, IOException, PersonasNotFoundException {
+    public PersonasRepresentation updatePersonas(StrategyRequest request) throws DBServiceException, IOException, PersonasNotFoundException, CallApiFailException {
         Personas personas = personasService.get(Personas.builder().id(request.getId()).build()).get(0);
         if(request.getName() != null) {
             personas.setName(request.getName());
@@ -71,7 +76,8 @@ public class PersonasServiceHandlerImpl implements PersonasServiceHandler {
             personas.setContent(GsonUtils.convertToString(request.getContent()));
         }
         personasService.update(personas);
-        return RepresentationBuilder.buildPersonasRepresentation(personas);
+        CsActionRepresentation actionRep = callActionApi.call(personas.getId(), request);
+        return RepresentationBuilder.buildPersonasRepresentation(personas, actionRep);
     }
 
     @Override
@@ -92,6 +98,17 @@ public class PersonasServiceHandlerImpl implements PersonasServiceHandler {
             LOGGER.error("[PersonasServiceHandlerImpl] LayoutNotFoundException with request: {}", GsonUtils.convertToString(request));
             throw e;
         }
+    }
+
+    @Override
+    public PersonasRepresentation getPersonasInfo(StrategyRequest request) throws DBServiceException, PersonasNotFoundException, IOException, CallApiFailException {
+        Personas personas = personasService.get(
+                Personas.builder()
+                        .id(request.getId())
+                        .build()
+        ).get(0);
+        CsActionRepresentation actionRep = callActionApi.call(personas.getId(), request);
+        return RepresentationBuilder.buildPersonasRepresentation(personas, actionRep);
     }
 
     @Override

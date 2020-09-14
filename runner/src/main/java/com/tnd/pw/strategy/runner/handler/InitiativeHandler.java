@@ -6,6 +6,7 @@ import com.tnd.common.api.server.BaseHandler;
 import com.tnd.common.api.server.service.annotation.HandlerService;
 import com.tnd.common.api.server.service.annotation.HandlerServiceClass;
 import com.tnd.dbservice.common.exception.DBServiceException;
+import com.tnd.pw.strategy.call.api.exceptions.CallApiFailException;
 import com.tnd.pw.strategy.common.representations.FilterInfoRepresentation;
 import com.tnd.pw.strategy.common.representations.InitiativeRepresentation;
 import com.tnd.pw.strategy.common.representations.ListInitiativeRepresentation;
@@ -36,7 +37,7 @@ public class InitiativeHandler implements BaseHandler {
     }
 
     @HandlerService(path = "/strategy/initiative/update", protocol = "POST")
-    public BaseResponse<InitiativeRepresentation> updateInitiative(StrategyRequest request) throws DBServiceException, IOException, InitiativeNotFoundException, LayoutNotFoundException {
+    public BaseResponse<InitiativeRepresentation> updateInitiative(StrategyRequest request) throws DBServiceException, IOException, InitiativeNotFoundException, LayoutNotFoundException, CallApiFailException {
         LOGGER.info("[InitiativeHandler] updateInitiative() - request: {}", GsonUtils.convertToString(request));
         InitiativeRepresentation response = initiativeServiceHandler.updateInitiative(request);
         LOGGER.info("[InitiativeHandler] updateInitiative() - response: {}", GsonUtils.convertToString(response));
@@ -56,6 +57,14 @@ public class InitiativeHandler implements BaseHandler {
         LOGGER.info("[InitiativeHandler] getInitiative() - request: {}", GsonUtils.convertToString(request));
         ListInitiativeRepresentation response = initiativeServiceHandler.getInitiative(request);
         LOGGER.info("[InitiativeHandler] getInitiative() - response: {}", GsonUtils.convertToString(response));
+        return new BaseResponse<>(response);
+    }
+
+    @HandlerService(path = "/strategy/initiative/info", protocol = "GET")
+    public BaseResponse<InitiativeRepresentation> getInitiativeInfo(StrategyRequest request) throws DBServiceException, IOException, LayoutNotFoundException, InitiativeNotFoundException, CallApiFailException {
+        LOGGER.info("[InitiativeHandler] getInitiativeInfo() - request: {}", GsonUtils.convertToString(request));
+        InitiativeRepresentation response = initiativeServiceHandler.getInitiativeInfo(request);
+        LOGGER.info("[InitiativeHandler] getInitiativeInfo() - response: {}", GsonUtils.convertToString(response));
         return new BaseResponse<>(response);
     }
 

@@ -2,6 +2,9 @@ package com.tnd.pw.strategy.runner.service.impl;
 
 import com.google.common.reflect.TypeToken;
 import com.tnd.dbservice.common.exception.DBServiceException;
+import com.tnd.pw.action.common.representations.CsActionRepresentation;
+import com.tnd.pw.strategy.call.api.CallActionApi;
+import com.tnd.pw.strategy.call.api.exceptions.CallApiFailException;
 import com.tnd.pw.strategy.common.enums.LayoutType;
 import com.tnd.pw.strategy.common.representations.*;
 import com.tnd.pw.strategy.common.requests.StrategyRequest;
@@ -33,6 +36,8 @@ public class PositionServiceHandlerImpl implements PositionServiceHandler {
     private PositionComponentService positionComponentService;
     @Autowired
     private LayoutService layoutService;
+    @Autowired
+    private CallActionApi callActionApi;
 
     @Override
     public ListPositionRepresentation addPosition(StrategyRequest request) throws IOException, DBServiceException, PositionNotFoundException {
@@ -52,7 +57,6 @@ public class PositionServiceHandlerImpl implements PositionServiceHandler {
             layoutEntity.get(0).add(new ArrayList<>());
             layoutEntity.get(0).get(0).add(position.getId());
             layout = layoutService.create(request.getId(), LayoutType.POSITION.name(), GsonUtils.convertToString(layoutEntity));
-
         }
         LayoutRepresentation layoutRepresentation = createPositionComponentDefaults(position);
         List<Position> positions = positionService.get(Position.builder().productId(request.getId()).build());
@@ -60,7 +64,7 @@ public class PositionServiceHandlerImpl implements PositionServiceHandler {
     }
 
     @Override
-    public PositionRepresentation updatePosition(StrategyRequest request) throws DBServiceException, IOException, PositionNotFoundException {
+    public PositionRepresentation updatePosition(StrategyRequest request) throws DBServiceException, IOException, PositionNotFoundException, CallApiFailException {
         Position position = positionService.get(Position.builder().id(request.getId()).build()).get(0);
         if(request.getName() != null) {
             position.setName(request.getName());
@@ -78,7 +82,8 @@ public class PositionServiceHandlerImpl implements PositionServiceHandler {
             position.setBuzType(request.getBuzType());
         }
         positionService.update(position);
-        return RepresentationBuilder.buildPositionRepresentation(position);
+        CsActionRepresentation actionRep = callActionApi.call(position.getId(), request);
+        return RepresentationBuilder.buildPositionRepresentation(position, actionRep);
     }
 
     @Override
@@ -102,6 +107,16 @@ public class PositionServiceHandlerImpl implements PositionServiceHandler {
             throw e;
         }
     }
+
+    @Override
+    public PositionRepresentation getPositionInfo(StrategyRequest request) throws DBServiceException, PositionNotFoundException, IOException, CallApiFailException {
+        Position position = positionService.get(
+                Position.builder()
+                        .id(request.getId())
+                        .build()
+        ).get(0);
+        CsActionRepresentation actionRep = callActionApi.call(position.getId(), request);
+        return RepresentationBuilder.buildPositionRepresentation(position, actionRep);    }
 
     @Override
     public ListPositionRepresentation removePosition(StrategyRequest request) throws IOException, DBServiceException, LayoutNotFoundException, PositionNotFoundException {

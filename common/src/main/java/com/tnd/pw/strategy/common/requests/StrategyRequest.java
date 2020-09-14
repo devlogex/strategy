@@ -1,15 +1,13 @@
 package com.tnd.pw.strategy.common.requests;
 
 import com.google.gson.annotations.SerializedName;
-import com.tnd.common.api.common.base.authens.UserTokenRequest;
+import com.tnd.common.api.common.base.authens.ProductTokenRequest;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.io.Serializable;
-
 @Setter
 @Getter
-public class StrategyRequest extends UserTokenRequest {
+public class StrategyRequest extends ProductTokenRequest {
 
     @SerializedName("start_at")
     private Long startAt;

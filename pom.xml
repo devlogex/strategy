@@ -20,6 +20,7 @@
         <module>competitor</module>
         <module>goal</module>
         <module>initiative</module>
+        <module>call-api</module>
     </modules>
 
     <properties>
@@ -31,6 +32,7 @@
         <strategy.version>1.0-SNAPSHOT</strategy.version>
         <common.ioc.version>1.0-SNAPSHOT</common.ioc.version>
         <dbservice.version>1.0-SNAPSHOT</dbservice.version>
+        <action.service.version>1.0-SNAPSHOT</action.service.version>
         <lombok.version>1.18.12</lombok.version>
         <spring.version>5.2.6.RELEASE</spring.version>
     </properties>
@@ -146,6 +148,21 @@
                 <groupId>com.tnd.pw.strategy</groupId>
                 <artifactId>personas</artifactId>
                 <version>${strategy.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.tnd.pw.strategy</groupId>
+                <artifactId>call-api</artifactId>
+                <version>${strategy.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.tnd.pw.action</groupId>
+                <artifactId>common</artifactId>
+                <version>${action.service.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.tnd.pw.action</groupId>
+                <artifactId>sdk</artifactId>
+                <version>${action.service.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

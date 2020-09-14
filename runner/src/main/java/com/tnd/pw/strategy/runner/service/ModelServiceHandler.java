@@ -1,6 +1,7 @@
 package com.tnd.pw.strategy.runner.service;
 
 import com.tnd.dbservice.common.exception.DBServiceException;
+import com.tnd.pw.strategy.call.api.exceptions.CallApiFailException;
 import com.tnd.pw.strategy.common.representations.*;
 import com.tnd.pw.strategy.common.requests.StrategyRequest;
 import com.tnd.pw.strategy.layout.exception.LayoutNotFoundException;
@@ -11,7 +12,7 @@ import java.io.IOException;
 
 public interface ModelServiceHandler extends ServiceHandler{
     ListModelRepresentation addModel(StrategyRequest request) throws IOException, DBServiceException, ModelNotFoundException;
-    ModelRepresentation updateModel(StrategyRequest request) throws DBServiceException, IOException, ModelNotFoundException;
+    ModelRepresentation updateModel(StrategyRequest request) throws DBServiceException, IOException, ModelNotFoundException, CallApiFailException;
     ListModelRepresentation getModel(StrategyRequest request) throws DBServiceException, IOException, LayoutNotFoundException;
     ListModelRepresentation removeModel(StrategyRequest request) throws IOException, DBServiceException, ModelNotFoundException, LayoutNotFoundException;
 
@@ -22,4 +23,6 @@ public interface ModelServiceHandler extends ServiceHandler{
     LayoutRepresentation removeModelComponent(StrategyRequest request) throws IOException, DBServiceException, ModelComponentNotFoundException, LayoutNotFoundException;
 
     FilterInfoRepresentation getFilterInfos(StrategyRequest request) throws IOException, DBServiceException;
+
+    ModelRepresentation getModelInfo(StrategyRequest request) throws DBServiceException, ModelNotFoundException, IOException, CallApiFailException;
 }

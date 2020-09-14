@@ -1,6 +1,7 @@
 package com.tnd.pw.strategy.runner.service;
 
 import com.tnd.dbservice.common.exception.DBServiceException;
+import com.tnd.pw.strategy.call.api.exceptions.CallApiFailException;
 import com.tnd.pw.strategy.common.representations.FilterInfoRepresentation;
 import com.tnd.pw.strategy.common.representations.InitiativeRepresentation;
 import com.tnd.pw.strategy.common.representations.ListInitiativeRepresentation;
@@ -13,8 +14,9 @@ import java.io.IOException;
 
 public interface InitiativeServiceHandler extends ServiceHandler {
     ListInitiativeRepresentation addInitiative(StrategyRequest request) throws IOException, DBServiceException, InitiativeNotFoundException;
-    InitiativeRepresentation updateInitiative(StrategyRequest request) throws DBServiceException, IOException, InitiativeNotFoundException, LayoutNotFoundException;
+    InitiativeRepresentation updateInitiative(StrategyRequest request) throws DBServiceException, IOException, InitiativeNotFoundException, LayoutNotFoundException, CallApiFailException;
     ListInitiativeRepresentation getInitiative(StrategyRequest request) throws DBServiceException, IOException, LayoutNotFoundException;
+    InitiativeRepresentation getInitiativeInfo(StrategyRequest request) throws IOException, CallApiFailException, DBServiceException, InitiativeNotFoundException;
     ListInitiativeRepresentation removeInitiative(StrategyRequest request) throws IOException, DBServiceException, LayoutNotFoundException, InitiativeNotFoundException;
     ListInitiativeRepresentation getInitiativeState(StrategyRequest request) throws IOException, DBServiceException, LayoutNotFoundException;
     ListInitiativeRepresentation updateInitiativeState(StrategyRequest request) throws DBServiceException, IOException, InitiativeNotFoundException, LayoutNotFoundException, InvalidDataRequestException;

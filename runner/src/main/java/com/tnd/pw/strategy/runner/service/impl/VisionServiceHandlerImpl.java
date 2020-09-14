@@ -1,7 +1,13 @@
 package com.tnd.pw.strategy.runner.service.impl;
 
 import com.google.common.reflect.TypeToken;
+import com.tnd.common.api.common.base.BaseResponse;
 import com.tnd.dbservice.common.exception.DBServiceException;
+import com.tnd.pw.action.common.representations.CsActionRepresentation;
+import com.tnd.pw.action.common.requests.ActionRequest;
+import com.tnd.pw.action.sdk.ActionSdkApi;
+import com.tnd.pw.strategy.call.api.CallActionApi;
+import com.tnd.pw.strategy.call.api.exceptions.CallApiFailException;
 import com.tnd.pw.strategy.common.enums.LayoutType;
 import com.tnd.pw.strategy.common.representations.*;
 import com.tnd.pw.strategy.common.requests.StrategyRequest;
@@ -33,14 +39,16 @@ public class VisionServiceHandlerImpl implements VisionServiceHandler {
     private VisionComponentService visionComponentService;
     @Autowired
     private LayoutService layoutService;
+    @Autowired
+    private CallActionApi callActionApi;
 
     private static int num_comp_default = 9;
 
-    public VisionRepresentation addVision(StrategyRequest request) throws IOException, DBServiceException {
+    public VisionRepresentation addVision(StrategyRequest request) throws IOException, DBServiceException, CallApiFailException {
         Vision vision = visionService.create(request.getId());
         List<VisionComponent> visionComponents = createComponentDefaults(vision.getId());
         Layout layout = createLayout(vision.getId(), visionComponents);
-        return RepresentationBuilder.buildVisionRepresentation(vision, visionComponents, layout);
+        return RepresentationBuilder.buildVisionRepresentation(vision, visionComponents, layout, null);
     }
 
     private Layout createLayout(Long visionId, List<VisionComponent> visionComponents) throws IOException, DBServiceException {
@@ -53,7 +61,7 @@ public class VisionServiceHandlerImpl implements VisionServiceHandler {
         return layoutService.create(visionId, LayoutType.VISION_COMPONENT.name(), GsonUtils.convertToString(layout));
     }
 
-    public VisionRepresentation updateVision(StrategyRequest request) throws DBServiceException, VisionNotFoundException, IOException {
+    public VisionRepresentation updateVision(StrategyRequest request) throws DBServiceException, VisionNotFoundException, IOException, CallApiFailException {
         Vision vision = visionService.get(Vision.builder().id(request.getId()).build()).get(0);
         if(request.getFiles() != null) {
             vision.setFiles(request.getFiles());
@@ -62,6 +70,7 @@ public class VisionServiceHandlerImpl implements VisionServiceHandler {
             vision.setDescription(request.getDescription());
         }
         Vision newVision = visionService.update(vision);
+        CsActionRepresentation actionRep = callActionApi.call(newVision.getId(), request);
         List<VisionComponent> visionComponents;
         Layout layout;
         try {
@@ -69,16 +78,17 @@ public class VisionServiceHandlerImpl implements VisionServiceHandler {
             layout = layoutService.get(vision.getId(), LayoutType.VISION_COMPONENT.name());
         } catch (VisionComponentNotFoundException e) {
             LOGGER.error("[VisionHandlerBuz] VisionComponentNotFoundException with visionId: {}", newVision.getId());
-            return RepresentationBuilder.buildVisionRepresentation(newVision, null, null);
+            return RepresentationBuilder.buildVisionRepresentation(newVision, null, null, actionRep);
         } catch (LayoutNotFoundException e) {
             LOGGER.error("[VisionHandlerBuz] LayoutNotFoundException with visionId: {}", newVision.getId());
-            return RepresentationBuilder.buildVisionRepresentation(newVision, null, null);
+            return RepresentationBuilder.buildVisionRepresentation(newVision, null, null, actionRep);
         }
-        return RepresentationBuilder.buildVisionRepresentation(newVision, visionComponents, layout);
+        return RepresentationBuilder.buildVisionRepresentation(newVision, visionComponents, layout, actionRep);
     }
 
-    public VisionRepresentation getVision(StrategyRequest request) throws DBServiceException, IOException {
+    public VisionRepresentation getVision(StrategyRequest request) throws DBServiceException, IOException, CallApiFailException {
         Vision vision = null;
+        CsActionRepresentation actionRep = null;
         try {
             vision = visionService.get(
                     Vision.builder()
@@ -86,18 +96,19 @@ public class VisionServiceHandlerImpl implements VisionServiceHandler {
                             .productId(request.getProductId())
                             .build()
             ).get(0);
+            actionRep = callActionApi.call(vision.getId(), request);
             List<VisionComponent> visionComponents = visionComponentService.getByVisionId(vision.getId());
             Layout layout = layoutService.get(vision.getId(), LayoutType.VISION_COMPONENT.name());
-            return RepresentationBuilder.buildVisionRepresentation(vision, visionComponents, layout);
+            return RepresentationBuilder.buildVisionRepresentation(vision, visionComponents, layout, actionRep);
         } catch (VisionNotFoundException e) {
             LOGGER.error("[VisionHandlerBuz] VisionNotFoundException with id: {}", request.getId());
             return null;
         } catch (VisionComponentNotFoundException e) {
             LOGGER.error("[VisionHandlerBuz] VisionComponentNotFoundException with vision_id: {}", request.getId());
-            return RepresentationBuilder.buildVisionRepresentation(vision, null, null);
+            return RepresentationBuilder.buildVisionRepresentation(vision, null, null, actionRep);
         } catch (LayoutNotFoundException e) {
             LOGGER.error("[VisionHandlerBuz] LayoutNotFoundException with vision_id: {}", request.getId());
-            return RepresentationBuilder.buildVisionRepresentation(vision, null, null);
+            return RepresentationBuilder.buildVisionRepresentation(vision, null, null, actionRep);
         }
     }
 

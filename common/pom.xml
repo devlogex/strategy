@@ -53,6 +53,14 @@
             <groupId>com.tnd.pw.strategy</groupId>
             <artifactId>initiative</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.tnd.pw.action</groupId>
+            <artifactId>common</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.tnd.pw.action</groupId>
+            <artifactId>sdk</artifactId>
+        </dependency>
     </dependencies>
 
 </project>

@@ -5,6 +5,7 @@ import com.tnd.common.api.server.BaseHandler;
 import com.tnd.common.api.server.service.annotation.HandlerService;
 import com.tnd.common.api.server.service.annotation.HandlerServiceClass;
 import com.tnd.dbservice.common.exception.DBServiceException;
+import com.tnd.pw.strategy.call.api.exceptions.CallApiFailException;
 import com.tnd.pw.strategy.common.representations.*;
 import com.tnd.pw.strategy.common.requests.StrategyRequest;
 import com.tnd.pw.strategy.common.utils.GsonUtils;
@@ -33,7 +34,7 @@ public class ModelHandler implements BaseHandler {
     }
 
     @HandlerService(path = "/strategy/model/update", protocol = "POST")
-    public BaseResponse<ModelRepresentation> updateModel(StrategyRequest request) throws DBServiceException, IOException, ModelNotFoundException {
+    public BaseResponse<ModelRepresentation> updateModel(StrategyRequest request) throws DBServiceException, IOException, ModelNotFoundException, CallApiFailException {
         LOGGER.info("[ModelHandler] updateModel() - request: {}", GsonUtils.convertToString(request));
         ModelRepresentation response = modelServiceHandler.updateModel(request);
         LOGGER.info("[ModelHandler] updateModel() - response: {}", GsonUtils.convertToString(response));
@@ -45,6 +46,14 @@ public class ModelHandler implements BaseHandler {
         LOGGER.info("[ModelHandler] getModel() - request: {}", GsonUtils.convertToString(request));
         ListModelRepresentation response = modelServiceHandler.getModel(request);
         LOGGER.info("[ModelHandler] getModel() - response: {}", GsonUtils.convertToString(response));
+        return new BaseResponse<>(response);
+    }
+
+    @HandlerService(path = "/strategy/model/info", protocol = "GET")
+    public BaseResponse<ModelRepresentation> getModelInfo(StrategyRequest request) throws DBServiceException, IOException, LayoutNotFoundException, ModelNotFoundException, CallApiFailException {
+        LOGGER.info("[ModelHandler] getModelInfo() - request: {}", GsonUtils.convertToString(request));
+        ModelRepresentation response = modelServiceHandler.getModelInfo(request);
+        LOGGER.info("[ModelHandler] getModelInfo() - response: {}", GsonUtils.convertToString(response));
         return new BaseResponse<>(response);
     }
 

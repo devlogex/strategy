@@ -2,6 +2,9 @@ package com.tnd.pw.strategy.runner.service.impl;
 
 import com.google.common.reflect.TypeToken;
 import com.tnd.dbservice.common.exception.DBServiceException;
+import com.tnd.pw.action.common.representations.CsActionRepresentation;
+import com.tnd.pw.strategy.call.api.CallActionApi;
+import com.tnd.pw.strategy.call.api.exceptions.CallApiFailException;
 import com.tnd.pw.strategy.common.enums.LayoutType;
 import com.tnd.pw.strategy.common.enums.ModelType;
 import com.tnd.pw.strategy.common.representations.*;
@@ -34,6 +37,8 @@ public class ModelServiceHandlerImpl implements ModelServiceHandler {
     private ModelComponentService modelComponentService;
     @Autowired
     private LayoutService layoutService;
+    @Autowired
+    private CallActionApi callActionApi;
 
     @Override
     public ListModelRepresentation addModel(StrategyRequest request) throws IOException, DBServiceException, ModelNotFoundException {
@@ -61,7 +66,7 @@ public class ModelServiceHandlerImpl implements ModelServiceHandler {
     }
 
     @Override
-    public ModelRepresentation updateModel(StrategyRequest request) throws DBServiceException, IOException, ModelNotFoundException {
+    public ModelRepresentation updateModel(StrategyRequest request) throws DBServiceException, IOException, ModelNotFoundException, CallApiFailException {
         Model model = modelService.get(Model.builder().id(request.getId()).build()).get(0);
         if(request.getName() != null) {
             model.setName(request.getName());
@@ -79,7 +84,8 @@ public class ModelServiceHandlerImpl implements ModelServiceHandler {
             model.setBuzType(request.getBuzType());
         }
         modelService.update(model);
-        return RepresentationBuilder.buildModelRepresentation(model);
+        CsActionRepresentation actionRep = callActionApi.call(model.getId(), request);
+        return RepresentationBuilder.buildModelRepresentation(model, actionRep);
     }
 
     @Override
@@ -107,6 +113,17 @@ public class ModelServiceHandlerImpl implements ModelServiceHandler {
             LOGGER.error("[ModelServiceHandlerImpl] LayoutNotFoundException with request: {}", GsonUtils.convertToString(request));
             throw e;
         }
+    }
+
+    @Override
+    public ModelRepresentation getModelInfo(StrategyRequest request) throws DBServiceException, ModelNotFoundException, IOException, CallApiFailException {
+        Model model = modelService.get(
+                Model.builder()
+                        .id(request.getId())
+                        .build()
+        ).get(0);
+        CsActionRepresentation actionRep = callActionApi.call(model.getId(), request);
+        return RepresentationBuilder.buildModelRepresentation(model, actionRep);
     }
 
     @Override

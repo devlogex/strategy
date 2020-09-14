@@ -6,6 +6,7 @@ import com.tnd.common.api.server.BaseHandler;
 import com.tnd.common.api.server.service.annotation.HandlerService;
 import com.tnd.common.api.server.service.annotation.HandlerServiceClass;
 import com.tnd.dbservice.common.exception.DBServiceException;
+import com.tnd.pw.strategy.call.api.exceptions.CallApiFailException;
 import com.tnd.pw.strategy.common.representations.FilterInfoRepresentation;
 import com.tnd.pw.strategy.common.representations.GoalRepresentation;
 import com.tnd.pw.strategy.common.representations.ListGoalRepresentation;
@@ -35,7 +36,7 @@ public class GoalHandler implements BaseHandler {
     }
 
     @HandlerService(path = "/strategy/goal/update", protocol = "POST")
-    public BaseResponse<GoalRepresentation> updateGoal(StrategyRequest request) throws DBServiceException, IOException, GoalNotFoundException {
+    public BaseResponse<GoalRepresentation> updateGoal(StrategyRequest request) throws DBServiceException, IOException, GoalNotFoundException, CallApiFailException {
         LOGGER.info("[GoalHandler] updateGoal() - request: {}", GsonUtils.convertToString(request));
         GoalRepresentation response = goalServiceHandler.updateGoal(request);
         LOGGER.info("[GoalHandler] updateGoal() - response: {}", GsonUtils.convertToString(response));
@@ -47,6 +48,14 @@ public class GoalHandler implements BaseHandler {
         LOGGER.info("[GoalHandler] getGoal() - request: {}", GsonUtils.convertToString(request));
         ListGoalRepresentation response = goalServiceHandler.getGoal(request);
         LOGGER.info("[GoalHandler] getGoal() - response: {}", GsonUtils.convertToString(response));
+        return new BaseResponse<>(response);
+    }
+
+    @HandlerService(path = "/strategy/goal/info", protocol = "GET")
+    public BaseResponse<GoalRepresentation> getGoalInfo(StrategyRequest request) throws DBServiceException, IOException, LayoutNotFoundException, CallApiFailException, GoalNotFoundException {
+        LOGGER.info("[GoalHandler] getGoalInfo() - request: {}", GsonUtils.convertToString(request));
+        GoalRepresentation response = goalServiceHandler.getGoalInfo(request);
+        LOGGER.info("[GoalHandler] getGoalInfo() - response: {}", GsonUtils.convertToString(response));
         return new BaseResponse<>(response);
     }
 
