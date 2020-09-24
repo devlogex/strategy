@@ -16,9 +16,9 @@ public class CallActionApi {
     @Autowired
     private ActionSdkApi actionSdkApiClient;
 
-    public CsActionRepresentation call(Long visionId, StrategyRequest request) throws IOException, CallApiFailException {
+    public CsActionRepresentation call(Long id, StrategyRequest request) throws IOException, CallApiFailException {
         ActionRequest actionRequest = new ActionRequest();
-        actionRequest.setId(visionId);
+        actionRequest.setId(id);
         actionRequest.setToken(request.getToken());
         BaseResponse<CsActionRepresentation> response = actionSdkApiClient.getCsActionRep(actionRequest);
         if(response.getStatusCode() != 200) {
