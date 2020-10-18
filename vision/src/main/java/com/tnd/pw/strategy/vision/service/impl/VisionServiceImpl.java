@@ -17,7 +17,7 @@ public class VisionServiceImpl implements VisionService {
 
 
     @Override
-    public Vision create( Long productId) throws IOException, DBServiceException {
+    public Vision create( Long productId) throws DBServiceException {
         Vision entity = new Vision();
         entity.setId(GenUID.genIdByProduct(productId));
         entity.setProductId(productId);
@@ -28,13 +28,13 @@ public class VisionServiceImpl implements VisionService {
     }
 
     @Override
-    public Vision update(Vision entity) throws IOException, DBServiceException {
+    public Vision update(Vision entity) throws DBServiceException {
         visionDao.update(entity);
         return entity;
     }
 
     @Override
-    public List<Vision> get(Vision entity) throws IOException, DBServiceException, VisionNotFoundException {
+    public List<Vision> get(Vision entity) throws DBServiceException, VisionNotFoundException {
         return visionDao.get(entity);
     }
 

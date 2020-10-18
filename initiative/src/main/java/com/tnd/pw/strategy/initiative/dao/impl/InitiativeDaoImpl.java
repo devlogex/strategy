@@ -43,7 +43,7 @@ public class InitiativeDaoImpl  implements InitiativeDao {
             "SELECT DISTINCT time_frame FROM initiative WHERE product_id = %d AND NOT time_frame = ''";
 
     @Override
-    public void create(Initiative entity) throws IOException, DBServiceException {
+    public void create(Initiative entity) throws DBServiceException {
         String query = String.format(SQL_CREATE, entity.getId(), entity.getProductId(),
                 entity.getName(), entity.getDescription(), entity.getFiles(), entity.getParentInitiative(),
                 entity.getStatus(), entity.getTimeFrame(), entity.getColor());
@@ -51,7 +51,7 @@ public class InitiativeDaoImpl  implements InitiativeDao {
     }
 
     @Override
-    public void update(Initiative entity) throws IOException, DBServiceException {
+    public void update(Initiative entity) throws DBServiceException {
         String query = String.format(SQL_UPDATE, entity.getName(),entity.getDescription(),
                 entity.getFiles(), entity.getParentInitiative(), entity.getStatus(),
                 entity.getTimeFrame(), entity.getColor(), entity.getStartAt(),
@@ -60,7 +60,7 @@ public class InitiativeDaoImpl  implements InitiativeDao {
     }
 
     @Override
-    public List<Initiative> get(Initiative entity) throws IOException, DBServiceException, InitiativeNotFoundException {
+    public List<Initiative> get(Initiative entity) throws DBServiceException, InitiativeNotFoundException {
         String query;
         if(entity.getId() != null) {
             query = String.format(SQL_SELECT_BY_ID, entity.getId());
@@ -88,13 +88,13 @@ public class InitiativeDaoImpl  implements InitiativeDao {
     }
 
     @Override
-    public void remove(Long initiativeId) throws IOException, DBServiceException {
+    public void remove(Long initiativeId) throws DBServiceException {
         String query = String.format(SQL_DELETE, initiativeId);
         dataHelper.executeSQL(query);
     }
 
     @Override
-    public List<String> getTimeFrames(Long productId) throws IOException, DBServiceException {
+    public List<String> getTimeFrames(Long productId) throws DBServiceException {
         String query = String.format(SQL_SELECT_TIME_FRAMES, productId);
         List<Initiative> initiatives = dataHelper.querySQL(query, Initiative.class);
         return initiatives == null ? new ArrayList<>() : initiatives.stream().map(initiative -> initiative.getTimeFrame()).collect(Collectors.toList());

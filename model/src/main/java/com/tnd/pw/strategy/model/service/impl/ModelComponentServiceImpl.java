@@ -16,7 +16,7 @@ public class ModelComponentServiceImpl implements ModelComponentService {
     private ModelComponentDao modelComponentDao;
 
     @Override
-    public ModelComponent create(Long modelId, String name, String color, String description, String files) throws IOException, DBServiceException {
+    public ModelComponent create(Long modelId, String name, String color, String description, String files) throws DBServiceException {
         ModelComponent entity = new ModelComponent();
         entity.setId(GenUID.genIdByParent(modelId));
         entity.setModelId(modelId);
@@ -29,17 +29,17 @@ public class ModelComponentServiceImpl implements ModelComponentService {
     }
 
     @Override
-    public void update(ModelComponent entity) throws IOException, DBServiceException {
+    public void update(ModelComponent entity) throws DBServiceException {
         modelComponentDao.update(entity);
     }
 
     @Override
-    public List<ModelComponent> get(ModelComponent entity) throws IOException, DBServiceException, ModelComponentNotFoundException {
+    public List<ModelComponent> get(ModelComponent entity) throws DBServiceException, ModelComponentNotFoundException {
         return modelComponentDao.get(entity);
     }
 
     @Override
-    public void remove(Long id, Long modelId) throws IOException, DBServiceException {
+    public void remove(Long id, Long modelId) throws DBServiceException {
         ModelComponent entity = new ModelComponent();
         entity.setId(id);
         entity.setModelId(modelId);

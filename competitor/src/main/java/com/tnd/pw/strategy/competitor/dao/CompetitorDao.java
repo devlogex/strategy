@@ -8,8 +8,8 @@ import java.io.IOException;
 import java.util.List;
 
 public interface CompetitorDao {
-    void create(Competitor entity) throws IOException, DBServiceException;
-    void update(Competitor entity) throws IOException, DBServiceException;
-    List<Competitor> get(Competitor entity) throws IOException, DBServiceException, CompetitorNotFoundException;
-    void remove(Long competitorId) throws IOException, DBServiceException;
+    void create(Competitor entity) throws DBServiceException;
+    void update(Competitor entity) throws DBServiceException;
+    List<Competitor> get(Competitor entity) throws DBServiceException, CompetitorNotFoundException;
+    void remove(Long competitorId) throws DBServiceException;
 }

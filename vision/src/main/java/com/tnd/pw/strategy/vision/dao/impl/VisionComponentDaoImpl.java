@@ -22,19 +22,19 @@ public class VisionComponentDaoImpl implements VisionComponentDao {
     private static final String SQL_DELETE = "DELETE FROM vision_component WHERE id = %d";
 
     @Override
-    public void create(VisionComponent entity) throws IOException, DBServiceException {
+    public void create(VisionComponent entity) throws DBServiceException {
         String query = String.format(SQL_CREATE, entity.getId(), entity.getVisionId(), entity.getName(), entity.getSummary(), entity.getColor(), entity.getDescription(), entity.getFiles());
         dataHelper.executeSQL(query);
     }
 
     @Override
-    public void update(VisionComponent entity) throws IOException, DBServiceException {
+    public void update(VisionComponent entity) throws DBServiceException {
         String query = String.format(SQL_UPDATE, entity.getName(), entity.getSummary(), entity.getColor(), entity.getDescription(), entity.getFiles(), entity.getId());
         dataHelper.executeSQL(query);
     }
 
     @Override
-    public List<VisionComponent> get(VisionComponent entity) throws IOException, DBServiceException, VisionComponentNotFoundException {
+    public List<VisionComponent> get(VisionComponent entity) throws DBServiceException, VisionComponentNotFoundException {
         String query = "";
         if(entity.getId() != null) {
             query = String.format(SQL_SELECT_BY_ID, entity.getId());
@@ -50,7 +50,7 @@ public class VisionComponentDaoImpl implements VisionComponentDao {
     }
 
     @Override
-    public void remove(VisionComponent entity) throws IOException, DBServiceException {
+    public void remove(VisionComponent entity) throws DBServiceException {
         String query = String.format(SQL_DELETE, entity.getId());
         dataHelper.executeSQL(query);
     }

@@ -43,21 +43,21 @@ public class PositionDaoImpl implements PositionDao {
             "SELECT DISTINCT time_frame FROM position WHERE product_id = %d AND NOT time_frame = ''";
 
     @Override
-    public void create(Position entity) throws IOException, DBServiceException {
+    public void create(Position entity) throws DBServiceException {
         String query = String.format(SQL_CREATE, entity.getId(), entity.getProductId(), entity.getName(),
                 entity.getBuzType(), entity.getTimeFrame(), entity.getDescription(), entity.getFiles());
         dataHelper.executeSQL(query);
     }
 
     @Override
-    public void update(Position entity) throws IOException, DBServiceException {
+    public void update(Position entity) throws DBServiceException {
         String query = String.format(SQL_UPDATE, entity.getName(),
                 entity.getTimeFrame(), entity.getBuzType(), entity.getDescription(), entity.getFiles(), entity.getId());
         dataHelper.executeSQL(query);
     }
 
     @Override
-    public List<Position> get(Position entity) throws IOException, DBServiceException, PositionNotFoundException {
+    public List<Position> get(Position entity) throws DBServiceException, PositionNotFoundException {
         String query;
         if(entity.getId() != null) {
             query = String.format(SQL_SELECT_BY_ID, entity.getId());
@@ -86,20 +86,20 @@ public class PositionDaoImpl implements PositionDao {
     }
 
     @Override
-    public void remove(Long positionId) throws IOException, DBServiceException {
+    public void remove(Long positionId) throws DBServiceException {
         String query = String.format(SQL_DELETE, positionId);
         dataHelper.executeSQL(query);
     }
 
     @Override
-    public List<String> getBuzTypes(Long productId) throws IOException, DBServiceException {
+    public List<String> getBuzTypes(Long productId) throws DBServiceException {
         String query = String.format(SQL_SELECT_BUZ_TYPES, productId);
         List<Position> positions = dataHelper.querySQL(query, Position.class);
         return positions == null ? new ArrayList<>() : positions.stream().map(position -> position.getBuzType()).collect(Collectors.toList());
     }
 
     @Override
-    public List<String> getTimeFrames(Long productId) throws IOException, DBServiceException {
+    public List<String> getTimeFrames(Long productId) throws DBServiceException {
         String query = String.format(SQL_SELECT_TIME_FRAMES, productId);
         List<Position> positions = dataHelper.querySQL(query, Position.class);
         return positions == null ? new ArrayList<>() : positions.stream().map(position -> position.getTimeFrame()).collect(Collectors.toList());

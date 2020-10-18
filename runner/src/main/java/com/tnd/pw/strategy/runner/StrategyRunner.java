@@ -22,14 +22,9 @@ public class StrategyRunner {
         commonServer.register(SpringApplicationContext.getBean(CompetitorHandler.class));
         commonServer.register(SpringApplicationContext.getBean(GoalHandler.class));
         commonServer.register(SpringApplicationContext.getBean(InitiativeHandler.class));
+        commonServer.register(SpringApplicationContext.getBean(StrategyHandler.class));
 
-        String port = System.getenv("PORT");
-        if(port == null) {
-            commonServer.initServlet(8002);
-        }
-        else {
-            commonServer.initServlet(Integer.parseInt(port));
-        }
+        commonServer.initServlet(8002);
         commonServer.startServer();
     }
 }

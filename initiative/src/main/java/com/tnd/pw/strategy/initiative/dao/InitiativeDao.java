@@ -8,10 +8,10 @@ import java.io.IOException;
 import java.util.List;
 
 public interface InitiativeDao {
-    void create(Initiative entity) throws IOException, DBServiceException;
-    void update(Initiative entity) throws IOException, DBServiceException;
-    List<Initiative> get(Initiative entity) throws IOException, DBServiceException, InitiativeNotFoundException;
-    void remove(Long initiativeId) throws IOException, DBServiceException;
+    void create(Initiative entity) throws DBServiceException;
+    void update(Initiative entity) throws DBServiceException;
+    List<Initiative> get(Initiative entity) throws DBServiceException, InitiativeNotFoundException;
+    void remove(Long initiativeId) throws DBServiceException;
 
-    List<String> getTimeFrames(Long productId) throws IOException, DBServiceException;
+    List<String> getTimeFrames(Long productId) throws DBServiceException;
 }

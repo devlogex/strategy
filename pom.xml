@@ -20,7 +20,6 @@
         <module>competitor</module>
         <module>goal</module>
         <module>initiative</module>
-        <module>call-api</module>
     </modules>
 
     <properties>
@@ -150,11 +149,6 @@
                 <version>${strategy.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.tnd.pw.strategy</groupId>
-                <artifactId>call-api</artifactId>
-                <version>${strategy.version}</version>
-            </dependency>
-            <dependency>
                 <groupId>com.tnd.pw.action</groupId>
                 <artifactId>common</artifactId>
                 <version>${action.service.version}</version>
@@ -163,6 +157,11 @@
                 <groupId>com.tnd.pw.action</groupId>
                 <artifactId>sdk</artifactId>
                 <version>${action.service.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.tnd.dbservice</groupId>
+                <artifactId>sdk</artifactId>
+                <version>${dbservice.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

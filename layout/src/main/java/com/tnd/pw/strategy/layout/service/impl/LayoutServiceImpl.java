@@ -15,7 +15,7 @@ public class LayoutServiceImpl implements LayoutService {
     private LayoutDao layoutDao;
 
     @Override
-    public Layout create(Long parentId, String type, String layout) throws IOException, DBServiceException {
+    public Layout create(Long parentId, String type, String layout) throws DBServiceException {
         Layout entity = new Layout();
         entity.setId(GenUID.genIdByParent(parentId));
         entity.setParentId(parentId);
@@ -26,13 +26,13 @@ public class LayoutServiceImpl implements LayoutService {
     }
 
     @Override
-    public Layout update(Layout entity) throws IOException, DBServiceException {
+    public Layout update(Layout entity) throws DBServiceException {
         layoutDao.update(entity);
         return entity;
     }
 
     @Override
-    public Layout get(Long parentId, String type) throws IOException, DBServiceException, LayoutNotFoundException {
+    public Layout get(Long parentId, String type) throws DBServiceException, LayoutNotFoundException {
         Layout entity = new Layout();
         entity.setParentId(parentId);
         entity.setType(type);
@@ -40,7 +40,7 @@ public class LayoutServiceImpl implements LayoutService {
     }
 
     @Override
-    public void remove(Long parentId, String type) throws IOException, DBServiceException {
+    public void remove(Long parentId, String type) throws DBServiceException {
         Layout entity = new Layout();
         entity.setParentId(parentId);
         entity.setType(type);

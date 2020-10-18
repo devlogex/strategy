@@ -3,8 +3,6 @@ package com.tnd.pw.strategy.runner.service.impl;
 import com.google.common.reflect.TypeToken;
 import com.tnd.dbservice.common.exception.DBServiceException;
 import com.tnd.pw.action.common.representations.CsActionRepresentation;
-import com.tnd.pw.strategy.call.api.CallActionApi;
-import com.tnd.pw.strategy.call.api.exceptions.CallApiFailException;
 import com.tnd.pw.strategy.common.enums.LayoutType;
 import com.tnd.pw.strategy.common.representations.CompetitorRepresentation;
 import com.tnd.pw.strategy.common.representations.LayoutRepresentation;
@@ -18,12 +16,12 @@ import com.tnd.pw.strategy.competitor.service.CompetitorService;
 import com.tnd.pw.strategy.layout.entity.Layout;
 import com.tnd.pw.strategy.layout.exception.LayoutNotFoundException;
 import com.tnd.pw.strategy.layout.service.LayoutService;
+import com.tnd.pw.strategy.runner.exception.ActionServiceFailedException;
 import com.tnd.pw.strategy.runner.service.CompetitorServiceHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,10 +32,10 @@ public class CompetitorServiceHandlerImpl implements CompetitorServiceHandler {
     @Autowired
     private LayoutService layoutService;
     @Autowired
-    private CallActionApi callActionApi;
+    private SdkService sdkService;
 
     @Override
-    public ListCompetitorRepresentation addCompetitor(StrategyRequest request) throws IOException, DBServiceException, CompetitorNotFoundException {
+    public ListCompetitorRepresentation addCompetitor(StrategyRequest request) throws DBServiceException, CompetitorNotFoundException {
         Competitor competitor = competitorService.create(request.getId());
         Layout layout;
         try {
@@ -61,7 +59,7 @@ public class CompetitorServiceHandlerImpl implements CompetitorServiceHandler {
     }
 
     @Override
-    public CompetitorRepresentation updateCompetitor(StrategyRequest request) throws DBServiceException, IOException, CompetitorNotFoundException, CallApiFailException {
+    public CompetitorRepresentation updateCompetitor(StrategyRequest request) throws DBServiceException, CompetitorNotFoundException, ActionServiceFailedException {
         Competitor competitor = competitorService.get(Competitor.builder().id(request.getId()).build()).get(0);
         if(request.getName() != null) {
             competitor.setName(request.getName());
@@ -82,12 +80,12 @@ public class CompetitorServiceHandlerImpl implements CompetitorServiceHandler {
             competitor.setUrl(request.getUrl());
         }
         competitorService.update(competitor);
-        CsActionRepresentation actionRep = callActionApi.call(competitor.getId(), request);
+        CsActionRepresentation actionRep = sdkService.getTodoComment(competitor.getId());
         return RepresentationBuilder.buildCompetitorRepresentation(competitor, actionRep);
     }
 
     @Override
-    public ListCompetitorRepresentation getCompetitor(StrategyRequest request) throws DBServiceException, IOException, LayoutNotFoundException {
+    public ListCompetitorRepresentation getCompetitor(StrategyRequest request) throws DBServiceException, LayoutNotFoundException {
         try {
             List<Competitor> competitors = competitorService.get(
                     Competitor.builder()
@@ -107,18 +105,18 @@ public class CompetitorServiceHandlerImpl implements CompetitorServiceHandler {
     }
 
     @Override
-    public CompetitorRepresentation getCompetitorInfo(StrategyRequest request) throws IOException, CallApiFailException, DBServiceException, CompetitorNotFoundException {
+    public CompetitorRepresentation getCompetitorInfo(StrategyRequest request) throws DBServiceException, CompetitorNotFoundException, ActionServiceFailedException {
         Competitor competitor = competitorService.get(
                 Competitor.builder()
                         .id(request.getId())
                         .build()
         ).get(0);
-        CsActionRepresentation actionRep = callActionApi.call(competitor.getId(), request);
+        CsActionRepresentation actionRep = sdkService.getTodoComment(competitor.getId());
         return RepresentationBuilder.buildCompetitorRepresentation(competitor, actionRep);
     }
 
     @Override
-    public ListCompetitorRepresentation removeCompetitor(StrategyRequest request) throws IOException, DBServiceException, LayoutNotFoundException, CompetitorNotFoundException {
+    public ListCompetitorRepresentation removeCompetitor(StrategyRequest request) throws DBServiceException, LayoutNotFoundException, CompetitorNotFoundException {
         Layout layout;
         Competitor competitor = null;
         try {

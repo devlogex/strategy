@@ -3,8 +3,7 @@ package com.tnd.pw.strategy.runner.service.impl;
 import com.google.common.reflect.TypeToken;
 import com.tnd.dbservice.common.exception.DBServiceException;
 import com.tnd.pw.action.common.representations.CsActionRepresentation;
-import com.tnd.pw.strategy.call.api.CallActionApi;
-import com.tnd.pw.strategy.call.api.exceptions.CallApiFailException;
+import com.tnd.pw.action.sdk.ActionServiceSdkClient;
 import com.tnd.pw.strategy.common.enums.LayoutType;
 import com.tnd.pw.strategy.common.enums.ModelType;
 import com.tnd.pw.strategy.common.representations.*;
@@ -20,6 +19,7 @@ import com.tnd.pw.strategy.model.exception.ModelComponentNotFoundException;
 import com.tnd.pw.strategy.model.exception.ModelNotFoundException;
 import com.tnd.pw.strategy.model.service.ModelComponentService;
 import com.tnd.pw.strategy.model.service.ModelService;
+import com.tnd.pw.strategy.runner.exception.ActionServiceFailedException;
 import com.tnd.pw.strategy.runner.service.ModelServiceHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,10 +38,10 @@ public class ModelServiceHandlerImpl implements ModelServiceHandler {
     @Autowired
     private LayoutService layoutService;
     @Autowired
-    private CallActionApi callActionApi;
+    private SdkService sdkService;
 
     @Override
-    public ListModelRepresentation addModel(StrategyRequest request) throws IOException, DBServiceException, ModelNotFoundException {
+    public ListModelRepresentation addModel(StrategyRequest request) throws DBServiceException, ModelNotFoundException {
         Model model = modelService.create(request.getId(), ModelType.valueOf(request.getModelType()).ordinal());
         Layout layout;
         try {
@@ -66,7 +66,7 @@ public class ModelServiceHandlerImpl implements ModelServiceHandler {
     }
 
     @Override
-    public ModelRepresentation updateModel(StrategyRequest request) throws DBServiceException, IOException, ModelNotFoundException, CallApiFailException {
+    public ModelRepresentation updateModel(StrategyRequest request) throws DBServiceException, ModelNotFoundException, ActionServiceFailedException {
         Model model = modelService.get(Model.builder().id(request.getId()).build()).get(0);
         if(request.getName() != null) {
             model.setName(request.getName());
@@ -84,12 +84,12 @@ public class ModelServiceHandlerImpl implements ModelServiceHandler {
             model.setBuzType(request.getBuzType());
         }
         modelService.update(model);
-        CsActionRepresentation actionRep = callActionApi.call(model.getId(), request);
+        CsActionRepresentation actionRep = sdkService.getTodoComment(model.getId());
         return RepresentationBuilder.buildModelRepresentation(model, actionRep);
     }
 
     @Override
-    public ListModelRepresentation getModel(StrategyRequest request) throws DBServiceException, IOException, LayoutNotFoundException {
+    public ListModelRepresentation getModel(StrategyRequest request) throws DBServiceException, LayoutNotFoundException {
         try {
             List<Model> models = modelService.get(
                     request.getModelType() == null ?
@@ -116,18 +116,18 @@ public class ModelServiceHandlerImpl implements ModelServiceHandler {
     }
 
     @Override
-    public ModelRepresentation getModelInfo(StrategyRequest request) throws DBServiceException, ModelNotFoundException, IOException, CallApiFailException {
+    public ModelRepresentation getModelInfo(StrategyRequest request) throws DBServiceException, ModelNotFoundException, ActionServiceFailedException {
         Model model = modelService.get(
                 Model.builder()
                         .id(request.getId())
                         .build()
         ).get(0);
-        CsActionRepresentation actionRep = callActionApi.call(model.getId(), request);
+        CsActionRepresentation actionRep = sdkService.getTodoComment(model.getId());
         return RepresentationBuilder.buildModelRepresentation(model, actionRep);
     }
 
     @Override
-    public ListModelRepresentation removeModel(StrategyRequest request) throws IOException, DBServiceException, LayoutNotFoundException, ModelNotFoundException {
+    public ListModelRepresentation removeModel(StrategyRequest request) throws DBServiceException, LayoutNotFoundException, ModelNotFoundException {
         Layout layout;
         Model model = null;
         try {
@@ -175,7 +175,7 @@ public class ModelServiceHandlerImpl implements ModelServiceHandler {
     }
 
     @Override
-    public LayoutRepresentation addModelComponent(StrategyRequest request) throws IOException, DBServiceException, ModelComponentNotFoundException, LayoutNotFoundException {
+    public LayoutRepresentation addModelComponent(StrategyRequest request) throws DBServiceException, ModelComponentNotFoundException, LayoutNotFoundException {
         try {
             ModelComponent component = modelComponentService.create(request.getId(), request.getName(), request.getColor(), request.getDescription(), request.getFiles());
             Layout layout = layoutService.get(component.getModelId(), LayoutType.MODEL_COMPONENT.name());
@@ -201,7 +201,7 @@ public class ModelServiceHandlerImpl implements ModelServiceHandler {
     }
 
     @Override
-    public ModelComponentRep updateModelComponent(StrategyRequest request) throws DBServiceException, IOException, ModelComponentNotFoundException {
+    public ModelComponentRep updateModelComponent(StrategyRequest request) throws DBServiceException, ModelComponentNotFoundException {
         ModelComponent modelComponent = modelComponentService.get(ModelComponent.builder().id(request.getId()).build()).get(0);
         if(request.getColor() != null) {
             modelComponent.setColor(request.getColor());
@@ -220,7 +220,7 @@ public class ModelServiceHandlerImpl implements ModelServiceHandler {
     }
 
     @Override
-    public LayoutRepresentation removeModelComponent(StrategyRequest request) throws IOException, DBServiceException, ModelComponentNotFoundException, LayoutNotFoundException {
+    public LayoutRepresentation removeModelComponent(StrategyRequest request) throws DBServiceException, ModelComponentNotFoundException, LayoutNotFoundException {
         Layout layout;
         ModelComponent component = null;
         try {
@@ -260,13 +260,13 @@ public class ModelServiceHandlerImpl implements ModelServiceHandler {
     }
 
     @Override
-    public FilterInfoRepresentation getFilterInfos(StrategyRequest request) throws IOException, DBServiceException {
+    public FilterInfoRepresentation getFilterInfos(StrategyRequest request) throws DBServiceException {
         List<String> timeFrames = modelService.getTimeFrames(request.getId());
         return new FilterInfoRepresentation(timeFrames, null);
     }
 
     @Override
-    public LayoutRepresentation getModelComponentById(StrategyRequest request) throws IOException, DBServiceException {
+    public LayoutRepresentation getModelComponentById(StrategyRequest request) throws DBServiceException {
         try{
             ModelComponent component = modelComponentService.get(ModelComponent.builder().id(request.getId()).build()).get(0);
             return new LayoutRepresentation(component);
@@ -277,7 +277,7 @@ public class ModelServiceHandlerImpl implements ModelServiceHandler {
     }
 
     @Override
-    public LayoutRepresentation getModelComponentByModelId(StrategyRequest request) throws IOException, DBServiceException, LayoutNotFoundException {
+    public LayoutRepresentation getModelComponentByModelId(StrategyRequest request) throws DBServiceException, LayoutNotFoundException {
         try{
             List<ModelComponent> components = modelComponentService.get(ModelComponent.builder().modelId(request.getId()).build());
             Layout layout = layoutService.get(request.getId(), LayoutType.MODEL_COMPONENT.name());
@@ -302,7 +302,7 @@ public class ModelServiceHandlerImpl implements ModelServiceHandler {
         }
     }
 
-    private LayoutRepresentation createModelComponentDefaults(Model model) throws IOException, DBServiceException {
+    private LayoutRepresentation createModelComponentDefaults(Model model) throws DBServiceException {
         switch (ModelType.values()[model.getType()]) {
             case MODEL_CANVAS:
                 return createModelCanvasComponent(model);
@@ -321,7 +321,7 @@ public class ModelServiceHandlerImpl implements ModelServiceHandler {
         }
     }
 
-    private LayoutRepresentation createMarketingMatrixComponent(Model model) throws IOException, DBServiceException {
+    private LayoutRepresentation createMarketingMatrixComponent(Model model) throws DBServiceException {
         ArrayList<ArrayList<ArrayList<Long>>> layoutEntity = new ArrayList<>();
         ArrayList<ArrayList<ArrayList<ModelComponentRep>>> layout = new ArrayList<>();
         layout.add(new ArrayList<>());
@@ -372,7 +372,7 @@ public class ModelServiceHandlerImpl implements ModelServiceHandler {
         return new LayoutRepresentation(layout);
     }
 
-    private LayoutRepresentation createSegmentComponent(Model model) throws IOException, DBServiceException {
+    private LayoutRepresentation createSegmentComponent(Model model) throws DBServiceException {
         ArrayList<ArrayList<ArrayList<Long>>> layoutEntity = new ArrayList<>();
         ArrayList<ArrayList<ArrayList<ModelComponentRep>>> layout = new ArrayList<>();
         layout.add(new ArrayList<>());
@@ -420,7 +420,7 @@ public class ModelServiceHandlerImpl implements ModelServiceHandler {
         return new LayoutRepresentation(layout);
     }
 
-    private LayoutRepresentation createPorterComponent(Model model) throws IOException, DBServiceException {
+    private LayoutRepresentation createPorterComponent(Model model) throws DBServiceException {
         ArrayList<ArrayList<ArrayList<Long>>> layoutEntity = new ArrayList<>();
         ArrayList<ArrayList<ArrayList<ModelComponentRep>>> layout = new ArrayList<>();
         layout.add(new ArrayList<>());
@@ -453,7 +453,7 @@ public class ModelServiceHandlerImpl implements ModelServiceHandler {
         return new LayoutRepresentation(layout);
     }
 
-    private LayoutRepresentation createSwotComponent(Model model) throws IOException, DBServiceException {
+    private LayoutRepresentation createSwotComponent(Model model) throws DBServiceException {
         ArrayList<ArrayList<ArrayList<Long>>> layoutEntity = new ArrayList<>();
         ArrayList<ArrayList<ArrayList<ModelComponentRep>>> layout = new ArrayList<>();
         layout.add(new ArrayList<>());
@@ -484,7 +484,7 @@ public class ModelServiceHandlerImpl implements ModelServiceHandler {
         return new LayoutRepresentation(layout);
     }
 
-    private LayoutRepresentation createLeanCanvasComponent(Model model) throws IOException, DBServiceException {
+    private LayoutRepresentation createLeanCanvasComponent(Model model) throws DBServiceException {
         ArrayList<ArrayList<ArrayList<Long>>> layoutEntity = new ArrayList<>();
         ArrayList<ArrayList<ArrayList<ModelComponentRep>>> layout = new ArrayList<>();
         layout.add(new ArrayList<>());
@@ -528,7 +528,7 @@ public class ModelServiceHandlerImpl implements ModelServiceHandler {
         return new LayoutRepresentation(layout);
     }
 
-    private LayoutRepresentation createModelCanvasComponent(Model model) throws IOException, DBServiceException {
+    private LayoutRepresentation createModelCanvasComponent(Model model) throws DBServiceException {
         ArrayList<ArrayList<ArrayList<Long>>> layoutEntity = new ArrayList<>();
         ArrayList<ArrayList<ArrayList<ModelComponentRep>>> layout = new ArrayList<>();
         layout.add(new ArrayList<>());

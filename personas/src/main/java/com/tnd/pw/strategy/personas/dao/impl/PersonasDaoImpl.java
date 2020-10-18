@@ -27,21 +27,21 @@ public class PersonasDaoImpl implements PersonasDao {
     private static final String SQL_DELETE =
             "DELETE FROM personas WHERE id = %d";
     @Override
-    public void create(Personas entity) throws IOException, DBServiceException {
+    public void create(Personas entity) throws DBServiceException {
         String query = String.format(SQL_CREATE, entity.getId(), entity.getProductId(), entity.getName(),
                 entity.getImage(), entity.getColor(), entity.getContent());
         dataHelper.executeSQL(query);
     }
 
     @Override
-    public void update(Personas entity) throws IOException, DBServiceException {
+    public void update(Personas entity) throws DBServiceException {
         String query = String.format(SQL_UPDATE, entity.getName(),
                 entity.getImage(), entity.getColor(), entity.getContent(), entity.getId());
         dataHelper.executeSQL(query);
     }
 
     @Override
-    public List<Personas> get(Personas entity) throws IOException, DBServiceException, PersonasNotFoundException {
+    public List<Personas> get(Personas entity) throws DBServiceException, PersonasNotFoundException {
         String query;
         if(entity.getId() != null) {
             query = String.format(SQL_SELECT_BY_ID, entity.getId());
@@ -57,7 +57,7 @@ public class PersonasDaoImpl implements PersonasDao {
     }
 
     @Override
-    public void remove(Long personasId) throws IOException, DBServiceException {
+    public void remove(Long personasId) throws DBServiceException {
         String query = String.format(SQL_DELETE, personasId);
         dataHelper.executeSQL(query);
     }

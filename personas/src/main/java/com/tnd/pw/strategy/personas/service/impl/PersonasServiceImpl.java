@@ -18,7 +18,7 @@ public class PersonasServiceImpl implements PersonasService {
     private PersonasDao personasDao;
 
     @Override
-    public Personas create(Long productId) throws IOException, DBServiceException {
+    public Personas create(Long productId) throws DBServiceException {
         Personas entity = new Personas();
         entity.setId(GenUID.genIdByProduct(productId));
         entity.setProductId(productId);
@@ -89,17 +89,17 @@ public class PersonasServiceImpl implements PersonasService {
     }
 
     @Override
-    public void update(Personas entity) throws IOException, DBServiceException {
+    public void update(Personas entity) throws DBServiceException {
         personasDao.update(entity);
     }
 
     @Override
-    public List<Personas> get(Personas entity) throws IOException, DBServiceException, PersonasNotFoundException {
+    public List<Personas> get(Personas entity) throws DBServiceException, PersonasNotFoundException {
         return personasDao.get(entity);
     }
 
     @Override
-    public void remove(Long personasId) throws IOException, DBServiceException {
+    public void remove(Long personasId) throws DBServiceException {
         personasDao.remove(personasId);
     }
 }

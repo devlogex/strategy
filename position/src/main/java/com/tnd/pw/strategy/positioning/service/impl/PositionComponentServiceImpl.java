@@ -18,7 +18,7 @@ public class PositionComponentServiceImpl implements PositionComponentService {
     private PositionComponentDao positionComponentDao;
 
     @Override
-    public PositionComponent create(Long positionId, String name, String color, String description, String files) throws IOException, DBServiceException {
+    public PositionComponent create(Long positionId, String name, String color, String description, String files) throws DBServiceException {
         PositionComponent entity = new PositionComponent();
         entity.setId(GenUID.genIdByParent(positionId));
         entity.setPositionId(positionId);
@@ -31,12 +31,12 @@ public class PositionComponentServiceImpl implements PositionComponentService {
     }
 
     @Override
-    public void update(PositionComponent entity) throws IOException, DBServiceException {
+    public void update(PositionComponent entity) throws DBServiceException {
         positionComponentDao.update(entity);
     }
 
     @Override
-    public List<PositionComponent> get(Long id, Long modelId) throws IOException, DBServiceException, PositionComponentNotFoundException {
+    public List<PositionComponent> get(Long id, Long modelId) throws DBServiceException, PositionComponentNotFoundException {
         PositionComponent entity = new PositionComponent();
         entity.setId(id);
         entity.setPositionId(modelId);
@@ -44,7 +44,7 @@ public class PositionComponentServiceImpl implements PositionComponentService {
     }
 
     @Override
-    public void remove(Long id, Long positionId) throws IOException, DBServiceException {
+    public void remove(Long id, Long positionId) throws DBServiceException {
         PositionComponent entity = new PositionComponent();
         entity.setId(id);
         entity.setPositionId(positionId);

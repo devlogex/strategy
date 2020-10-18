@@ -8,8 +8,8 @@ import java.io.IOException;
 import java.util.List;
 
 public interface PersonasDao {
-    void create(Personas entity) throws IOException, DBServiceException;
-    void update(Personas entity) throws IOException, DBServiceException;
-    List<Personas> get(Personas entity) throws IOException, DBServiceException, PersonasNotFoundException;
-    void remove(Long personasId) throws IOException, DBServiceException;
+    void create(Personas entity) throws DBServiceException;
+    void update(Personas entity) throws DBServiceException;
+    List<Personas> get(Personas entity) throws DBServiceException, PersonasNotFoundException;
+    void remove(Long personasId) throws DBServiceException;
 }

@@ -30,21 +30,21 @@ public class ModelComponentDaoImpl  implements ModelComponentDao {
             "DELETE FROM model_component WHERE model_id = %d";
 
     @Override
-    public void create(ModelComponent entity) throws IOException, DBServiceException {
+    public void create(ModelComponent entity) throws DBServiceException {
         String query = String.format(SQL_CREATE, entity.getId(), entity.getName(),
                 entity.getModelId(), entity.getColor(), entity.getDescription(), entity.getFiles());
         dataHelper.executeSQL(query);
     }
 
     @Override
-    public void update(ModelComponent entity) throws IOException, DBServiceException {
+    public void update(ModelComponent entity) throws DBServiceException {
         String query = String.format(SQL_UPDATE, entity.getName(),
                 entity.getColor(), entity.getDescription(), entity.getFiles(), entity.getId());
         dataHelper.executeSQL(query);
     }
 
     @Override
-    public List<ModelComponent> get(ModelComponent entity) throws IOException, DBServiceException, ModelComponentNotFoundException {
+    public List<ModelComponent> get(ModelComponent entity) throws DBServiceException, ModelComponentNotFoundException {
         String query;
         if(entity.getId() != null) {
             query = String.format(SQL_SELECT_BY_ID, entity.getId());
@@ -60,7 +60,7 @@ public class ModelComponentDaoImpl  implements ModelComponentDao {
     }
 
     @Override
-    public void remove(ModelComponent entity) throws IOException, DBServiceException {
+    public void remove(ModelComponent entity) throws DBServiceException {
         String query;
         if(entity.getId() != null) {
             query = String.format(SQL_DELETE_BY_ID, entity.getId());

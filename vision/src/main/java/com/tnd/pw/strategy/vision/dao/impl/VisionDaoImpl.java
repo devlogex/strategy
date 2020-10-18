@@ -26,19 +26,19 @@ public class VisionDaoImpl implements VisionDao {
 
 
     @Override
-    public void create(Vision entity) throws IOException, DBServiceException {
+    public void create(Vision entity) throws DBServiceException {
         String query = String.format(SQL_CREATE, entity.getId(), entity.getProductId(), entity.getDescription(), entity.getFiles());
         dataHelper.executeSQL(query);
     }
 
     @Override
-    public void update(Vision entity) throws IOException, DBServiceException {
+    public void update(Vision entity) throws DBServiceException {
         String query = String.format(SQL_UPDATE, entity.getDescription(), entity.getFiles(), entity.getId());
         dataHelper.executeSQL(query);
     }
 
     @Override
-    public List<Vision> get(Vision entity) throws IOException, DBServiceException, VisionNotFoundException {
+    public List<Vision> get(Vision entity) throws DBServiceException, VisionNotFoundException {
         String query = "";
         if(entity.getId() != null) {
             query = String.format(SQL_SELECT_BY_ID, entity.getId());

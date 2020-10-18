@@ -75,10 +75,8 @@
             <artifactId>sdk</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.tnd.pw</groupId>
-            <artifactId>call-api</artifactId>
-            <version>1.0-SNAPSHOT</version>
-            <scope>compile</scope>
+            <groupId>com.tnd.dbservice</groupId>
+            <artifactId>sdk</artifactId>
         </dependency>
     </dependencies>
 

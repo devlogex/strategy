@@ -17,7 +17,7 @@ public class VisionComponentServiceImpl implements VisionComponentService {
     private VisionComponentDao visionComponentDao;
 
     @Override
-    public VisionComponent create(Long visionId, String name, String summary, String color, String description, String files) throws IOException, DBServiceException {
+    public VisionComponent create(Long visionId, String name, String summary, String color, String description, String files) throws DBServiceException {
         VisionComponent entity = new VisionComponent();
         entity.setId(GenUID.genIdByParent(visionId));
         entity.setName(name == null ? "Strategy..." : name);
@@ -31,27 +31,27 @@ public class VisionComponentServiceImpl implements VisionComponentService {
     }
 
     @Override
-    public VisionComponent update(VisionComponent entity) throws IOException, DBServiceException {
+    public VisionComponent update(VisionComponent entity) throws DBServiceException {
         visionComponentDao.update(entity);
         return entity;
     }
 
     @Override
-    public VisionComponent getById(Long id) throws IOException, DBServiceException, VisionComponentNotFoundException {
+    public VisionComponent getById(Long id) throws DBServiceException, VisionComponentNotFoundException {
         VisionComponent entity = new VisionComponent();
         entity.setId(id);
         return visionComponentDao.get(entity).get(0);
     }
 
     @Override
-    public List<VisionComponent> getByVisionId(Long visionId) throws DBServiceException, IOException, VisionComponentNotFoundException {
+    public List<VisionComponent> getByVisionId(Long visionId) throws DBServiceException, VisionComponentNotFoundException {
         VisionComponent entity = new VisionComponent();
         entity.setVisionId(visionId);
         return visionComponentDao.get(entity);
     }
 
     @Override
-    public void remove(Long id) throws IOException, DBServiceException {
+    public void remove(Long id) throws DBServiceException {
         VisionComponent entity = new VisionComponent();
         entity.setId(id);
         visionComponentDao.remove(entity);

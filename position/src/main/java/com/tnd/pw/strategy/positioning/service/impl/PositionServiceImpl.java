@@ -17,7 +17,7 @@ public class PositionServiceImpl implements PositionService {
     private PositionDao positionDao;
 
     @Override
-    public Position create(Long productId) throws IOException, DBServiceException {
+    public Position create(Long productId) throws DBServiceException {
         Position entity = new Position();
         entity.setId(GenUID.genIdByProduct(productId));
         entity.setProductId(productId);
@@ -31,27 +31,27 @@ public class PositionServiceImpl implements PositionService {
     }
 
     @Override
-    public void update(Position entity) throws IOException, DBServiceException {
+    public void update(Position entity) throws DBServiceException {
         positionDao.update(entity);
     }
 
     @Override
-    public List<Position> get(Position entity) throws IOException, DBServiceException, PositionNotFoundException {
+    public List<Position> get(Position entity) throws DBServiceException, PositionNotFoundException {
         return positionDao.get(entity);
     }
 
     @Override
-    public void remove(Long positionId) throws IOException, DBServiceException {
+    public void remove(Long positionId) throws DBServiceException {
         positionDao.remove(positionId);
     }
 
     @Override
-    public List<String> getBuzTypes(Long productId) throws IOException, DBServiceException {
+    public List<String> getBuzTypes(Long productId) throws DBServiceException {
         return positionDao.getBuzTypes(productId);
     }
 
     @Override
-    public List<String> getTimeFrames(Long productId) throws IOException, DBServiceException {
+    public List<String> getTimeFrames(Long productId) throws DBServiceException {
         return positionDao.getTimeFrames(productId);
     }
 }

@@ -1,12 +1,13 @@
 package com.tnd.pw.strategy.runner.config;
 
-import com.tnd.pw.action.sdk.ActionSdkApi;
-import com.tnd.pw.strategy.call.api.CallActionApi;
+import com.tnd.dbservice.sdk.api.DBServiceSdkClient;
+import com.tnd.dbservice.sdk.api.impl.DBServiceSdkClientImpl;
+import com.tnd.pw.action.sdk.ActionServiceSdkClient;
+import com.tnd.pw.action.sdk.impl.ActionServiceSdkClientImpl;
 import com.tnd.pw.strategy.competitor.dao.CompetitorDao;
 import com.tnd.pw.strategy.competitor.dao.impl.CompetitorDaoImpl;
 import com.tnd.pw.strategy.competitor.service.CompetitorService;
 import com.tnd.pw.strategy.competitor.service.impl.CompetitorServiceImpl;
-import com.tnd.pw.strategy.dbservice.DBServiceApiClient;
 import com.tnd.pw.strategy.dbservice.DataHelper;
 import com.tnd.pw.strategy.goal.dao.GoalDao;
 import com.tnd.pw.strategy.goal.dao.impl.GoalDaoImpl;
@@ -51,7 +52,6 @@ import com.tnd.pw.strategy.vision.service.VisionComponentService;
 import com.tnd.pw.strategy.vision.service.VisionService;
 import com.tnd.pw.strategy.vision.service.impl.VisionComponentServiceImpl;
 import com.tnd.pw.strategy.vision.service.impl.VisionServiceImpl;
-import lombok.Builder;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -60,29 +60,33 @@ import org.springframework.context.annotation.PropertySource;
 @Configuration
 @PropertySource("classpath:application.properties")
 public class RunnerConfig {
-    @Value("${db.url}")
-    private String db_url;
-    @Value("${action.domain}")
-    private String actionDomain;
+    @Value("${db.host}")
+    private String db_host;
+    @Value("${db.port}")
+    private String db_port;
+    @Value("${action.service.host}")
+    private String action_service_host;
+    @Value("${action.service.port}")
+    private String action_service_port;
 
     @Bean
-    public ActionSdkApi actionSdkApi() {
-        return new ActionSdkApi(actionDomain);
+    public ActionServiceSdkClient actionServiceSdkClient() {
+        return new ActionServiceSdkClientImpl(action_service_host, Integer.parseInt(action_service_port), 2);
     }
 
     @Bean
-    public CallActionApi callActionApi() {
-        return new CallActionApi();
+    public DBServiceSdkClient dbServiceSdkClient() {
+        return new DBServiceSdkClientImpl(db_host,Integer.parseInt(db_port), 1);
     }
 
     @Bean
-    public DBServiceApiClient dbServiceApiClient() {
-        return new DBServiceApiClient();
+    public DataHelper dataHelper(DBServiceSdkClient dbServiceSdkClient) {
+        return new DataHelper(dbServiceSdkClient);
     }
 
     @Bean
-    public DataHelper dataHelper(DBServiceApiClient dbServiceApiClient) {
-        return new DataHelper(db_url, dbServiceApiClient);
+    public SdkService sdkService() {
+        return new SdkService();
     }
 
     @Bean
@@ -276,5 +280,10 @@ public class RunnerConfig {
     @Bean
     public InitiativeHandler initiativeHandler() {
         return new InitiativeHandler();
+    }
+
+    @Bean
+    public StrategyHandler strategyHandler() {
+        return new StrategyHandler();
     }
 }

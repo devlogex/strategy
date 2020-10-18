@@ -3,8 +3,6 @@ package com.tnd.pw.strategy.runner.service.impl;
 import com.google.common.reflect.TypeToken;
 import com.tnd.dbservice.common.exception.DBServiceException;
 import com.tnd.pw.action.common.representations.CsActionRepresentation;
-import com.tnd.pw.strategy.call.api.CallActionApi;
-import com.tnd.pw.strategy.call.api.exceptions.CallApiFailException;
 import com.tnd.pw.strategy.common.enums.LayoutType;
 import com.tnd.pw.strategy.common.representations.LayoutRepresentation;
 import com.tnd.pw.strategy.common.representations.ListPersonasRepresentation;
@@ -18,12 +16,12 @@ import com.tnd.pw.strategy.layout.service.LayoutService;
 import com.tnd.pw.strategy.personas.entity.Personas;
 import com.tnd.pw.strategy.personas.exception.PersonasNotFoundException;
 import com.tnd.pw.strategy.personas.service.PersonasService;
+import com.tnd.pw.strategy.runner.exception.ActionServiceFailedException;
 import com.tnd.pw.strategy.runner.service.PersonasServiceHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,10 +32,10 @@ public class PersonasServiceHandlerImpl implements PersonasServiceHandler {
     @Autowired
     private LayoutService layoutService;
     @Autowired
-    private CallActionApi callActionApi;
+    private SdkService sdkService;
 
     @Override
-    public ListPersonasRepresentation addPersonas(StrategyRequest request) throws IOException, DBServiceException, PersonasNotFoundException {
+    public ListPersonasRepresentation addPersonas(StrategyRequest request) throws DBServiceException, PersonasNotFoundException {
         Personas personas = personasService.create(request.getId());
         Layout layout;
         try {
@@ -61,7 +59,7 @@ public class PersonasServiceHandlerImpl implements PersonasServiceHandler {
     }
 
     @Override
-    public PersonasRepresentation updatePersonas(StrategyRequest request) throws DBServiceException, IOException, PersonasNotFoundException, CallApiFailException {
+    public PersonasRepresentation updatePersonas(StrategyRequest request) throws DBServiceException, PersonasNotFoundException, ActionServiceFailedException {
         Personas personas = personasService.get(Personas.builder().id(request.getId()).build()).get(0);
         if(request.getName() != null) {
             personas.setName(request.getName());
@@ -76,12 +74,12 @@ public class PersonasServiceHandlerImpl implements PersonasServiceHandler {
             personas.setContent(GsonUtils.convertToString(request.getContent()));
         }
         personasService.update(personas);
-        CsActionRepresentation actionRep = callActionApi.call(personas.getId(), request);
+        CsActionRepresentation actionRep = sdkService.getTodoComment(personas.getId());
         return RepresentationBuilder.buildPersonasRepresentation(personas, actionRep);
     }
 
     @Override
-    public ListPersonasRepresentation getPersonas(StrategyRequest request) throws DBServiceException, IOException, LayoutNotFoundException {
+    public ListPersonasRepresentation getPersonas(StrategyRequest request) throws DBServiceException, LayoutNotFoundException {
         try {
             List<Personas> personasList = personasService.get(
                     Personas.builder()
@@ -101,18 +99,18 @@ public class PersonasServiceHandlerImpl implements PersonasServiceHandler {
     }
 
     @Override
-    public PersonasRepresentation getPersonasInfo(StrategyRequest request) throws DBServiceException, PersonasNotFoundException, IOException, CallApiFailException {
+    public PersonasRepresentation getPersonasInfo(StrategyRequest request) throws DBServiceException, PersonasNotFoundException, ActionServiceFailedException {
         Personas personas = personasService.get(
                 Personas.builder()
                         .id(request.getId())
                         .build()
         ).get(0);
-        CsActionRepresentation actionRep = callActionApi.call(personas.getId(), request);
+        CsActionRepresentation actionRep = sdkService.getTodoComment(personas.getId());
         return RepresentationBuilder.buildPersonasRepresentation(personas, actionRep);
     }
 
     @Override
-    public ListPersonasRepresentation removePersonas(StrategyRequest request) throws IOException, DBServiceException, LayoutNotFoundException, PersonasNotFoundException {
+    public ListPersonasRepresentation removePersonas(StrategyRequest request) throws DBServiceException, LayoutNotFoundException, PersonasNotFoundException {
         Layout layout;
         Personas personas = null;
         try {

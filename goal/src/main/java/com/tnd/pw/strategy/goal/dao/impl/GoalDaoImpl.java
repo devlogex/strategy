@@ -43,7 +43,7 @@ public class GoalDaoImpl implements GoalDao {
             "SELECT DISTINCT time_frame FROM goal WHERE product_id = %d AND NOT time_frame = ''";
 
     @Override
-    public void create(Goal entity) throws IOException, DBServiceException {
+    public void create(Goal entity) throws DBServiceException {
         String query = String.format(SQL_CREATE, entity.getId(), entity.getProductId(),
                 entity.getName(), entity.getDescription(), entity.getFiles(),
                 entity.getParentGoal(), entity.getStatus(), entity.getTimeFrame(),
@@ -52,7 +52,7 @@ public class GoalDaoImpl implements GoalDao {
     }
 
     @Override
-    public void update(Goal entity) throws IOException, DBServiceException {
+    public void update(Goal entity) throws DBServiceException {
         String query = String.format(SQL_UPDATE, entity.getName(),entity.getDescription(),
                 entity.getFiles(), entity.getParentGoal(), entity.getStatus(),
                 entity.getTimeFrame(), entity.getColor(), entity.getMetric(),
@@ -61,7 +61,7 @@ public class GoalDaoImpl implements GoalDao {
     }
 
     @Override
-    public List<Goal> get(Goal entity) throws IOException, DBServiceException, GoalNotFoundException {
+    public List<Goal> get(Goal entity) throws DBServiceException, GoalNotFoundException {
         String query;
         if(entity.getId() != null) {
             query = String.format(SQL_SELECT_BY_ID, entity.getId());
@@ -89,13 +89,13 @@ public class GoalDaoImpl implements GoalDao {
     }
 
     @Override
-    public void remove(Long goalId) throws IOException, DBServiceException {
+    public void remove(Long goalId) throws DBServiceException {
         String query = String.format(SQL_DELETE, goalId);
         dataHelper.executeSQL(query);
     }
 
     @Override
-    public List<String> getTimeFrames(Long productId) throws IOException, DBServiceException {
+    public List<String> getTimeFrames(Long productId) throws DBServiceException {
         String query = String.format(SQL_SELECT_TIME_FRAMES, productId);
         List<Goal> goals = dataHelper.querySQL(query, Goal.class);
         return goals == null ? new ArrayList<>() : goals.stream().map(goal -> goal.getTimeFrame()).collect(Collectors.toList());

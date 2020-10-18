@@ -8,10 +8,10 @@ import java.io.IOException;
 import java.util.List;
 
 public interface GoalDao {
-    void create(Goal entity) throws IOException, DBServiceException;
-    void update(Goal entity) throws IOException, DBServiceException;
-    List<Goal> get(Goal entity) throws IOException, DBServiceException, GoalNotFoundException;
-    void remove(Long goalId) throws IOException, DBServiceException;
+    void create(Goal entity) throws DBServiceException;
+    void update(Goal entity) throws DBServiceException;
+    List<Goal> get(Goal entity) throws DBServiceException, GoalNotFoundException;
+    void remove(Long goalId) throws DBServiceException;
 
-    List<String> getTimeFrames(Long productId) throws IOException, DBServiceException;
+    List<String> getTimeFrames(Long productId) throws DBServiceException;
 }

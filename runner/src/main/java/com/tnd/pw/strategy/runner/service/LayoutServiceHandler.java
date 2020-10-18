@@ -10,5 +10,5 @@ public interface LayoutServiceHandler {
     LayoutRepresentation updateLayout(StrategyRequest request) throws Exception;
     LayoutRepresentation updateLayoutList(StrategyRequest request) throws Exception;
 
-    LayoutRepresentation getLayout(StrategyRequest request) throws IOException, DBServiceException;
+    LayoutRepresentation getLayout(StrategyRequest request) throws DBServiceException;
 }

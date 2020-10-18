@@ -3,8 +3,6 @@ package com.tnd.pw.strategy.runner.service.impl;
 import com.google.common.reflect.TypeToken;
 import com.tnd.dbservice.common.exception.DBServiceException;
 import com.tnd.pw.action.common.representations.CsActionRepresentation;
-import com.tnd.pw.strategy.call.api.CallActionApi;
-import com.tnd.pw.strategy.call.api.exceptions.CallApiFailException;
 import com.tnd.pw.strategy.common.enums.InitiativeState;
 import com.tnd.pw.strategy.common.enums.LayoutType;
 import com.tnd.pw.strategy.common.representations.FilterInfoRepresentation;
@@ -20,6 +18,7 @@ import com.tnd.pw.strategy.initiative.service.InitiativeService;
 import com.tnd.pw.strategy.layout.entity.Layout;
 import com.tnd.pw.strategy.layout.exception.LayoutNotFoundException;
 import com.tnd.pw.strategy.layout.service.LayoutService;
+import com.tnd.pw.strategy.runner.exception.ActionServiceFailedException;
 import com.tnd.pw.strategy.runner.exception.InvalidDataRequestException;
 import com.tnd.pw.strategy.runner.service.InitiativeServiceHandler;
 import org.slf4j.Logger;
@@ -39,10 +38,10 @@ public class InitiativeServiceHandlerImpl implements InitiativeServiceHandler {
     @Autowired
     private LayoutService layoutService;
     @Autowired
-    private CallActionApi callActionApi;
+    private SdkService sdkService;
 
     @Override
-    public ListInitiativeRepresentation addInitiative(StrategyRequest request) throws IOException, DBServiceException, InitiativeNotFoundException {
+    public ListInitiativeRepresentation addInitiative(StrategyRequest request) throws DBServiceException, InitiativeNotFoundException {
         Initiative initiative = initiativeService.create(
                 Initiative.builder()
                         .productId(request.getId())
@@ -93,7 +92,7 @@ public class InitiativeServiceHandlerImpl implements InitiativeServiceHandler {
     }
 
     @Override
-    public InitiativeRepresentation updateInitiative(StrategyRequest request) throws DBServiceException, IOException, InitiativeNotFoundException, LayoutNotFoundException, CallApiFailException {
+    public InitiativeRepresentation updateInitiative(StrategyRequest request) throws DBServiceException, InitiativeNotFoundException, LayoutNotFoundException, ActionServiceFailedException {
         Initiative initiative = initiativeService.get(Initiative.builder().id(request.getId()).build()).get(0);
         if(request.getName() != null) {
             initiative.setName(request.getName());
@@ -134,12 +133,12 @@ public class InitiativeServiceHandlerImpl implements InitiativeServiceHandler {
             initiative.setStatus(InitiativeState.valueOf(request.getStatus()).ordinal());
         }
         initiativeService.update(initiative);
-        CsActionRepresentation actionRep = callActionApi.call(initiative.getId(), request);
+        CsActionRepresentation actionRep = sdkService.getTodoComment(initiative.getId());
         return RepresentationBuilder.buildInitiativeRepresentation(initiative, actionRep);
     }
 
     @Override
-    public ListInitiativeRepresentation getInitiative(StrategyRequest request) throws DBServiceException, IOException, LayoutNotFoundException {
+    public ListInitiativeRepresentation getInitiative(StrategyRequest request) throws DBServiceException, LayoutNotFoundException {
         try {
             List<Initiative> initiatives = initiativeService.get(
                     request.getStatus() == null ?
@@ -166,18 +165,18 @@ public class InitiativeServiceHandlerImpl implements InitiativeServiceHandler {
     }
 
     @Override
-    public InitiativeRepresentation getInitiativeInfo(StrategyRequest request) throws IOException, CallApiFailException, DBServiceException, InitiativeNotFoundException {
+    public InitiativeRepresentation getInitiativeInfo(StrategyRequest request) throws DBServiceException, InitiativeNotFoundException, ActionServiceFailedException {
         Initiative initiative = initiativeService.get(
                 Initiative.builder()
                         .id(request.getId())
                         .build()
         ).get(0);
-        CsActionRepresentation actionRep = callActionApi.call(initiative.getId(), request);
+        CsActionRepresentation actionRep = sdkService.getTodoComment(initiative.getId());
         return RepresentationBuilder.buildInitiativeRepresentation(initiative, actionRep);
     }
 
     @Override
-    public ListInitiativeRepresentation removeInitiative(StrategyRequest request) throws IOException, DBServiceException, LayoutNotFoundException, InitiativeNotFoundException {
+    public ListInitiativeRepresentation removeInitiative(StrategyRequest request) throws DBServiceException, LayoutNotFoundException, InitiativeNotFoundException {
         Layout layout;
         Layout layoutState;
         Initiative initiative = null;
@@ -245,7 +244,7 @@ public class InitiativeServiceHandlerImpl implements InitiativeServiceHandler {
     }
 
     @Override
-    public ListInitiativeRepresentation getInitiativeState(StrategyRequest request) throws IOException, DBServiceException, LayoutNotFoundException {
+    public ListInitiativeRepresentation getInitiativeState(StrategyRequest request) throws DBServiceException, LayoutNotFoundException {
         try {
             List<Initiative> initiatives = initiativeService.get(
                     request.getStatus() == null ?
@@ -272,7 +271,7 @@ public class InitiativeServiceHandlerImpl implements InitiativeServiceHandler {
     }
 
     @Override
-    public ListInitiativeRepresentation updateInitiativeState(StrategyRequest request) throws DBServiceException, IOException, InitiativeNotFoundException, LayoutNotFoundException, InvalidDataRequestException {
+    public ListInitiativeRepresentation updateInitiativeState(StrategyRequest request) throws DBServiceException, InitiativeNotFoundException, LayoutNotFoundException, InvalidDataRequestException {
         Initiative initiative = initiativeService.get(Initiative.builder().id(request.getId()).build()).get(0);
 
         Layout layout = layoutService.get(initiative.getProductId(), LayoutType.INITIATIVE_STATE.name());
@@ -293,7 +292,7 @@ public class InitiativeServiceHandlerImpl implements InitiativeServiceHandler {
     }
 
     @Override
-    public FilterInfoRepresentation getFilterInfos(StrategyRequest request) throws IOException, DBServiceException {
+    public FilterInfoRepresentation getFilterInfos(StrategyRequest request) throws DBServiceException {
         List<String> timeFrames = initiativeService.getTimeFrames(request.getId());
         return new FilterInfoRepresentation(timeFrames, null);
     }

@@ -26,19 +26,19 @@ public class LayoutDaoImpl implements LayoutDao {
             "DELETE FROM layout WHERE parent_id = %d AND type = '%s'";
 
     @Override
-    public void create(Layout entity) throws IOException, DBServiceException {
+    public void create(Layout entity) throws DBServiceException {
         String query = String.format(SQL_CREATE, entity.getId(), entity.getParentId(), entity.getType(), entity.getLayout());
         dataHelper.executeSQL(query);
     }
 
     @Override
-    public void update(Layout entity) throws IOException, DBServiceException {
+    public void update(Layout entity) throws DBServiceException {
         String query = String.format(SQL_UPDATE, entity.getLayout(), entity.getId());
         dataHelper.executeSQL(query);
     }
 
     @Override
-    public Layout get(Layout entity) throws IOException, DBServiceException, LayoutNotFoundException {
+    public Layout get(Layout entity) throws DBServiceException, LayoutNotFoundException {
         String query = String.format(SQL_SELECT, entity.getParentId(), entity.getType());
         List<Layout> entities = dataHelper.querySQL(query, Layout.class);
         if(CollectionUtils.isEmpty(entities)) {
@@ -48,7 +48,7 @@ public class LayoutDaoImpl implements LayoutDao {
     }
 
     @Override
-    public void remove(Layout entity) throws IOException, DBServiceException {
+    public void remove(Layout entity) throws DBServiceException {
         String query = String.format(SQL_DELETE, entity.getParentId(), entity.getType());
         dataHelper.executeSQL(query);
     }

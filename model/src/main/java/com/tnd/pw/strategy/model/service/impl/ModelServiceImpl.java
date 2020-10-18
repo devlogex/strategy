@@ -16,7 +16,7 @@ public class ModelServiceImpl implements ModelService {
     private ModelDao modelDao;
 
     @Override
-    public Model create(Long productId, Integer type) throws IOException, DBServiceException {
+    public Model create(Long productId, Integer type) throws DBServiceException {
         Model entity = new Model();
         entity.setId(GenUID.genIdByProduct(productId));
         entity.setProductId(productId);
@@ -31,22 +31,22 @@ public class ModelServiceImpl implements ModelService {
     }
 
     @Override
-    public void update(Model entity) throws IOException, DBServiceException {
+    public void update(Model entity) throws DBServiceException {
         modelDao.update(entity);
     }
 
     @Override
-    public List<Model> get(Model entity) throws IOException, DBServiceException, ModelNotFoundException {
+    public List<Model> get(Model entity) throws DBServiceException, ModelNotFoundException {
         return modelDao.get(entity);
     }
 
     @Override
-    public void remove(Long modelId) throws IOException, DBServiceException {
+    public void remove(Long modelId) throws DBServiceException {
         modelDao.remove(modelId);
     }
 
     @Override
-    public List<String> getTimeFrames(Long productId) throws IOException, DBServiceException {
+    public List<String> getTimeFrames(Long productId) throws DBServiceException {
         return modelDao.getTimeFrames(productId);
     }
 }

@@ -16,7 +16,7 @@ public class InitiativeServiceImpl implements InitiativeService {
     private InitiativeDao initiativeDao;
 
     @Override
-    public Initiative create(Initiative entity) throws IOException, DBServiceException {
+    public Initiative create(Initiative entity) throws DBServiceException {
         entity.setId(GenUID.genIdByProduct(entity.getProductId()));
         if(entity.getStatus() == null)
             entity.setStatus(0);
@@ -31,22 +31,22 @@ public class InitiativeServiceImpl implements InitiativeService {
     }
 
     @Override
-    public void update(Initiative entity) throws IOException, DBServiceException {
+    public void update(Initiative entity) throws DBServiceException {
         initiativeDao.update(entity);
     }
 
     @Override
-    public List<Initiative> get(Initiative entity) throws IOException, DBServiceException, InitiativeNotFoundException {
+    public List<Initiative> get(Initiative entity) throws DBServiceException, InitiativeNotFoundException {
         return initiativeDao.get(entity);
     }
 
     @Override
-    public void remove(Long initiativeId) throws IOException, DBServiceException {
+    public void remove(Long initiativeId) throws DBServiceException {
         initiativeDao.remove(initiativeId);
     }
 
     @Override
-    public List<String> getTimeFrames(Long productId) throws IOException, DBServiceException {
+    public List<String> getTimeFrames(Long productId) throws DBServiceException {
         return initiativeDao.getTimeFrames(productId);
     }
 }

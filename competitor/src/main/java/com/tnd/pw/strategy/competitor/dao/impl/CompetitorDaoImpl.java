@@ -28,7 +28,7 @@ public class CompetitorDaoImpl implements CompetitorDao {
     private static final String SQL_DELETE =
             "DELETE FROM competitor WHERE id = %d";
     @Override
-    public void create(Competitor entity) throws IOException, DBServiceException {
+    public void create(Competitor entity) throws DBServiceException {
         String query = String.format(SQL_CREATE, entity.getId(), entity.getProductId(),
                 entity.getName(), entity.getImage(), entity.getColor(),
                 entity.getScore(), entity.getUrl(), entity.getContent());
@@ -36,7 +36,7 @@ public class CompetitorDaoImpl implements CompetitorDao {
     }
 
     @Override
-    public void update(Competitor entity) throws IOException, DBServiceException {
+    public void update(Competitor entity) throws DBServiceException {
         String query = String.format(SQL_UPDATE, entity.getName(),entity.getImage(),
                 entity.getColor(), entity.getScore(), entity.getUrl(),
                 entity.getContent(), entity.getId());
@@ -44,7 +44,7 @@ public class CompetitorDaoImpl implements CompetitorDao {
     }
 
     @Override
-    public List<Competitor> get(Competitor entity) throws IOException, DBServiceException, CompetitorNotFoundException {
+    public List<Competitor> get(Competitor entity) throws DBServiceException, CompetitorNotFoundException {
         String query;
         if(entity.getId() != null) {
             query = String.format(SQL_SELECT_BY_ID, entity.getId());
@@ -60,7 +60,7 @@ public class CompetitorDaoImpl implements CompetitorDao {
     }
 
     @Override
-    public void remove(Long competitorId) throws IOException, DBServiceException {
+    public void remove(Long competitorId) throws DBServiceException {
         String query = String.format(SQL_DELETE, competitorId);
         dataHelper.executeSQL(query);
     }

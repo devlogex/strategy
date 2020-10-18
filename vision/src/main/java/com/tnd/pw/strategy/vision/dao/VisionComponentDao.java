@@ -8,8 +8,8 @@ import java.io.IOException;
 import java.util.List;
 
 public interface VisionComponentDao {
-    void create(VisionComponent entity) throws IOException, DBServiceException;
-    void update(VisionComponent entity) throws IOException, DBServiceException;
-    List<VisionComponent> get(VisionComponent entity) throws IOException, DBServiceException, VisionComponentNotFoundException;
-    void remove(VisionComponent entity) throws IOException, DBServiceException;
+    void create(VisionComponent entity) throws DBServiceException;
+    void update(VisionComponent entity) throws DBServiceException;
+    List<VisionComponent> get(VisionComponent entity) throws DBServiceException, VisionComponentNotFoundException;
+    void remove(VisionComponent entity) throws DBServiceException;
 }

@@ -60,7 +60,7 @@ public class LayoutServiceHandlerImpl implements LayoutServiceHandler {
     }
 
     @Override
-    public LayoutRepresentation getLayout(StrategyRequest request) throws IOException, DBServiceException {
+    public LayoutRepresentation getLayout(StrategyRequest request) throws DBServiceException {
         try {
             Layout layout = layoutService.get(request.getId(), request.getLayoutType());
             return new LayoutRepresentation(layout);

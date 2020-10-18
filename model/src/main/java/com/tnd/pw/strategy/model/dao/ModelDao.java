@@ -8,11 +8,11 @@ import java.io.IOException;
 import java.util.List;
 
 public interface ModelDao {
-    void create(Model entity) throws IOException, DBServiceException;
-    void update(Model entity) throws IOException, DBServiceException;
-    List<Model> get(Model entity) throws IOException, DBServiceException, ModelNotFoundException;
+    void create(Model entity) throws DBServiceException;
+    void update(Model entity) throws DBServiceException;
+    List<Model> get(Model entity) throws DBServiceException, ModelNotFoundException;
 
-    void remove(Long modelId) throws IOException, DBServiceException;
+    void remove(Long modelId) throws DBServiceException;
 
-    List<String> getTimeFrames(Long productId) throws IOException, DBServiceException;
+    List<String> getTimeFrames(Long productId) throws DBServiceException;
 }

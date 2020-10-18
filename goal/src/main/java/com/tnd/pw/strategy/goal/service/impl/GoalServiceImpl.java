@@ -16,7 +16,7 @@ public class GoalServiceImpl implements GoalService {
     private GoalDao goalDao;
 
     @Override
-    public Goal create(Long productId) throws IOException, DBServiceException {
+    public Goal create(Long productId) throws DBServiceException {
         Goal entity = new Goal();
         entity.setId(GenUID.genIdByProduct(productId));
         entity.setProductId(productId);
@@ -35,22 +35,22 @@ public class GoalServiceImpl implements GoalService {
     }
 
     @Override
-    public void update(Goal entity) throws IOException, DBServiceException {
+    public void update(Goal entity) throws DBServiceException {
         goalDao.update(entity);
     }
 
     @Override
-    public List<Goal> get(Goal entity) throws IOException, DBServiceException, GoalNotFoundException {
+    public List<Goal> get(Goal entity) throws DBServiceException, GoalNotFoundException {
         return goalDao.get(entity);
     }
 
     @Override
-    public void remove(Long goalId) throws IOException, DBServiceException {
+    public void remove(Long goalId) throws DBServiceException {
         goalDao.remove(goalId);
     }
 
     @Override
-    public List<String> getTimeFrames(Long productId) throws IOException, DBServiceException {
+    public List<String> getTimeFrames(Long productId) throws DBServiceException {
         return goalDao.getTimeFrames(productId);
     }
 }

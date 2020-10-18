@@ -8,8 +8,8 @@ import java.io.IOException;
 import java.util.List;
 
 public interface PositionComponentDao {
-    void create(PositionComponent entity) throws IOException, DBServiceException;
-    void update(PositionComponent entity) throws IOException, DBServiceException;
-    List<PositionComponent> get(PositionComponent entity) throws IOException, DBServiceException, PositionComponentNotFoundException;
-    void remove(PositionComponent entity) throws IOException, DBServiceException;
+    void create(PositionComponent entity) throws DBServiceException;
+    void update(PositionComponent entity) throws DBServiceException;
+    List<PositionComponent> get(PositionComponent entity) throws DBServiceException, PositionComponentNotFoundException;
+    void remove(PositionComponent entity) throws DBServiceException;
 }

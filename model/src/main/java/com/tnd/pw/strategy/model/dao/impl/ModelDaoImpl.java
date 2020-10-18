@@ -47,21 +47,21 @@ public class ModelDaoImpl implements ModelDao {
             "SELECT DISTINCT time_frame FROM model WHERE product_id = %d AND NOT time_frame = ''";
 
     @Override
-    public void create(Model entity) throws IOException, DBServiceException {
+    public void create(Model entity) throws DBServiceException {
         String query = String.format(SQL_CREATE, entity.getId(), entity.getProductId(), entity.getName(),
                 entity.getType(), entity.getBuzType(), entity.getTimeFrame(), entity.getDescription(), entity.getFiles());
         dataHelper.executeSQL(query);
     }
 
     @Override
-    public void update(Model entity) throws IOException, DBServiceException {
+    public void update(Model entity) throws DBServiceException {
         String query = String.format(SQL_UPDATE, entity.getName(),
                 entity.getTimeFrame(), entity.getBuzType(), entity.getDescription(), entity.getFiles(), entity.getId());
         dataHelper.executeSQL(query);
     }
 
     @Override
-    public List<Model> get(Model entity) throws IOException, DBServiceException, ModelNotFoundException {
+    public List<Model> get(Model entity) throws DBServiceException, ModelNotFoundException {
         String query;
         if(entity.getId() != null) {
             query = String.format(SQL_SELECT_BY_ID, entity.getId());
@@ -110,13 +110,13 @@ public class ModelDaoImpl implements ModelDao {
     }
 
     @Override
-    public void remove(Long modelId) throws IOException, DBServiceException {
+    public void remove(Long modelId) throws DBServiceException {
         String query = String.format(SQL_DELETE, modelId);
         dataHelper.executeSQL(query);
     }
 
     @Override
-    public List<String> getTimeFrames(Long productId) throws IOException, DBServiceException {
+    public List<String> getTimeFrames(Long productId) throws DBServiceException {
         String query = String.format(SQL_SELECT_TIME_FRAMES, productId);
         List<Model> models = dataHelper.querySQL(query, Model.class);
         return models == null ? new ArrayList<>() : models.stream().map(model -> model.getTimeFrame()).collect(Collectors.toList());

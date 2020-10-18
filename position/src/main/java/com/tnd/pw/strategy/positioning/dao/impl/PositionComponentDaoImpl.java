@@ -30,21 +30,21 @@ public class PositionComponentDaoImpl implements PositionComponentDao {
             "DELETE FROM position_component WHERE position_id = %d";
 
     @Override
-    public void create(PositionComponent entity) throws IOException, DBServiceException {
+    public void create(PositionComponent entity) throws DBServiceException {
         String query = String.format(SQL_CREATE, entity.getId(), entity.getName(),
                 entity.getPositionId(), entity.getColor(), entity.getDescription(), entity.getFiles());
         dataHelper.executeSQL(query);
     }
 
     @Override
-    public void update(PositionComponent entity) throws IOException, DBServiceException {
+    public void update(PositionComponent entity) throws DBServiceException {
         String query = String.format(SQL_UPDATE, entity.getName(),
                 entity.getColor(), entity.getDescription(), entity.getFiles(), entity.getId());
         dataHelper.executeSQL(query);
     }
 
     @Override
-    public List<PositionComponent> get(PositionComponent entity) throws IOException, DBServiceException, PositionComponentNotFoundException {
+    public List<PositionComponent> get(PositionComponent entity) throws DBServiceException, PositionComponentNotFoundException {
         String query;
         if(entity.getId() != null) {
             query = String.format(SQL_SELECT_BY_ID, entity.getId());
@@ -60,7 +60,7 @@ public class PositionComponentDaoImpl implements PositionComponentDao {
     }
 
     @Override
-    public void remove(PositionComponent entity) throws IOException, DBServiceException {
+    public void remove(PositionComponent entity) throws DBServiceException {
         String query;
         if(entity.getId() != null) {
             query = String.format(SQL_DELETE_BY_ID, entity.getId());

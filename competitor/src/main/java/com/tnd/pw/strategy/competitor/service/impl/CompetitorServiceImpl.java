@@ -18,7 +18,7 @@ public class CompetitorServiceImpl implements CompetitorService {
     private CompetitorDao competitorDao;
 
     @Override
-    public Competitor create(Long productId) throws IOException, DBServiceException {
+    public Competitor create(Long productId) throws DBServiceException {
         Competitor entity = new Competitor();
         entity.setId(GenUID.genIdByProduct(productId));
         entity.setProductId(productId);
@@ -100,17 +100,17 @@ public class CompetitorServiceImpl implements CompetitorService {
     }
 
     @Override
-    public void update(Competitor entity) throws IOException, DBServiceException {
+    public void update(Competitor entity) throws DBServiceException {
         competitorDao.update(entity);
     }
 
     @Override
-    public List<Competitor> get(Competitor entity) throws IOException, DBServiceException, CompetitorNotFoundException {
+    public List<Competitor> get(Competitor entity) throws DBServiceException, CompetitorNotFoundException {
         return competitorDao.get(entity);
     }
 
     @Override
-    public void remove(Long personasId) throws IOException, DBServiceException {
+    public void remove(Long personasId) throws DBServiceException {
         competitorDao.remove(personasId);
     }
 }
