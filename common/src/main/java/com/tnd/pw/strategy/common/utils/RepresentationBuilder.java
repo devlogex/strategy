@@ -2,8 +2,8 @@ package com.tnd.pw.strategy.common.utils;
 
 import com.google.common.reflect.TypeToken;
 import com.tnd.pw.action.common.representations.CsActionRepresentation;
-import com.tnd.pw.strategy.common.enums.GoalState;
-import com.tnd.pw.strategy.common.enums.ModelType;
+import com.tnd.pw.strategy.common.constants.GoalState;
+import com.tnd.pw.strategy.common.constants.ModelType;
 import com.tnd.pw.strategy.common.representations.*;
 import com.tnd.pw.strategy.competitor.entity.Competitor;
 import com.tnd.pw.strategy.goal.entity.Goal;

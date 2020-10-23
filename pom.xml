@@ -33,11 +33,17 @@
         <dbservice.version>1.0-SNAPSHOT</dbservice.version>
         <action.service.version>1.0-SNAPSHOT</action.service.version>
         <lombok.version>1.18.12</lombok.version>
+        <spring.kafka.version>2.6.1</spring.kafka.version>
         <spring.version>5.2.6.RELEASE</spring.version>
     </properties>
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>org.springframework.kafka</groupId>
+                <artifactId>spring-kafka</artifactId>
+                <version>${spring.kafka.version}</version>
+            </dependency>
             <dependency>
                 <groupId>org.projectlombok</groupId>
                 <artifactId>lombok</artifactId>

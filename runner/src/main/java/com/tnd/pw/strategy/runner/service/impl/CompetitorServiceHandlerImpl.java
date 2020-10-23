@@ -3,7 +3,7 @@ package com.tnd.pw.strategy.runner.service.impl;
 import com.google.common.reflect.TypeToken;
 import com.tnd.dbservice.common.exception.DBServiceException;
 import com.tnd.pw.action.common.representations.CsActionRepresentation;
-import com.tnd.pw.strategy.common.enums.LayoutType;
+import com.tnd.pw.strategy.common.constants.LayoutType;
 import com.tnd.pw.strategy.common.representations.CompetitorRepresentation;
 import com.tnd.pw.strategy.common.representations.LayoutRepresentation;
 import com.tnd.pw.strategy.common.representations.ListCompetitorRepresentation;

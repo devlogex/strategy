@@ -3,7 +3,7 @@ package com.tnd.pw.strategy.runner.service.impl;
 import com.google.common.reflect.TypeToken;
 import com.tnd.com.ioc.SpringApplicationContext;
 import com.tnd.dbservice.common.exception.DBServiceException;
-import com.tnd.pw.strategy.common.enums.LayoutType;
+import com.tnd.pw.strategy.common.constants.LayoutType;
 import com.tnd.pw.strategy.common.representations.LayoutRepresentation;
 import com.tnd.pw.strategy.common.requests.StrategyRequest;
 import com.tnd.pw.strategy.common.utils.GsonUtils;
@@ -17,7 +17,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 

@@ -3,7 +3,8 @@ package com.tnd.pw.strategy.runner.service.impl;
 import com.google.common.reflect.TypeToken;
 import com.tnd.dbservice.common.exception.DBServiceException;
 import com.tnd.pw.action.common.representations.CsActionRepresentation;
-import com.tnd.pw.strategy.common.enums.LayoutType;
+import com.tnd.pw.strategy.common.constants.LayoutType;
+import com.tnd.pw.strategy.common.constants.ReportAction;
 import com.tnd.pw.strategy.common.representations.*;
 import com.tnd.pw.strategy.common.requests.StrategyRequest;
 import com.tnd.pw.strategy.common.utils.GsonUtils;
@@ -56,6 +57,7 @@ public class VisionServiceHandlerImpl implements VisionServiceHandler {
 
     public VisionRepresentation updateVision(StrategyRequest request) throws DBServiceException, VisionNotFoundException, ActionServiceFailedException {
         Vision vision = visionService.get(Vision.builder().id(request.getId()).build()).get(0);
+
         if(request.getFiles() != null) {
             vision.setFiles(request.getFiles());
         }
@@ -122,6 +124,7 @@ public class VisionServiceHandlerImpl implements VisionServiceHandler {
             layout.setLayout(GsonUtils.convertToString(layoutRep));
             layoutService.update(layout);
             List<VisionComponent> components = visionComponentService.getByVisionId(vision.getId());
+
             return RepresentationBuilder.buildListVisionComponentRep(components, layout);
         }
         catch (VisionNotFoundException e) {
@@ -239,7 +242,6 @@ public class VisionServiceHandlerImpl implements VisionServiceHandler {
         visionComponents.add(visionComponentService.create(vision_id,"Resources","Summary...","#D5B758", "Description...",""));
         visionComponents.add(visionComponentService.create(vision_id,"Threats","Summary...","#7F7F7F", "Description...",""));
         visionComponents.add(visionComponentService.create(vision_id,"Trends","Summary...","#A95C74", "Description...",""));
-
         return visionComponents;
     }
 

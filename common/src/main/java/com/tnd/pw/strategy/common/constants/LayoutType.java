@@ -1,4 +1,4 @@
-package com.tnd.pw.strategy.common.enums;
+package com.tnd.pw.strategy.common.constants;
 
 public enum LayoutType {
     VISION_COMPONENT, MODEL, MODEL_COMPONENT, POSITION, POSITION_COMPONENT, PERSONAS, COMPETITOR, GOAL, INITIATIVE, INITIATIVE_STATE

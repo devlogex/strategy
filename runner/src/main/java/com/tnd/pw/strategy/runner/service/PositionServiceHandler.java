@@ -8,8 +8,6 @@ import com.tnd.pw.strategy.positioning.exception.PositionComponentNotFoundExcept
 import com.tnd.pw.strategy.positioning.exception.PositionNotFoundException;
 import com.tnd.pw.strategy.runner.exception.ActionServiceFailedException;
 
-import java.io.IOException;
-
 public interface PositionServiceHandler extends ServiceHandler {
     ListPositionRepresentation addPosition(StrategyRequest request) throws DBServiceException, PositionNotFoundException;
     PositionRepresentation updatePosition(StrategyRequest request) throws DBServiceException, PositionNotFoundException, ActionServiceFailedException;
