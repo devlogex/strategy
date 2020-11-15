@@ -5,6 +5,7 @@ import com.tnd.dbservice.common.exception.DBServiceException;
 import com.tnd.pw.action.common.representations.CsActionRepresentation;
 import com.tnd.pw.strategy.common.constants.InitiativeState;
 import com.tnd.pw.strategy.common.constants.LayoutType;
+import com.tnd.pw.strategy.common.constants.ReportAction;
 import com.tnd.pw.strategy.common.representations.FilterInfoRepresentation;
 import com.tnd.pw.strategy.common.representations.InitiativeRepresentation;
 import com.tnd.pw.strategy.common.representations.LayoutRepresentation;
@@ -18,6 +19,7 @@ import com.tnd.pw.strategy.initiative.service.InitiativeService;
 import com.tnd.pw.strategy.layout.entity.Layout;
 import com.tnd.pw.strategy.layout.exception.LayoutNotFoundException;
 import com.tnd.pw.strategy.layout.service.LayoutService;
+import com.tnd.pw.strategy.report.SendReportMes;
 import com.tnd.pw.strategy.runner.exception.ActionServiceFailedException;
 import com.tnd.pw.strategy.runner.exception.InvalidDataRequestException;
 import com.tnd.pw.strategy.runner.service.InitiativeServiceHandler;
@@ -38,6 +40,8 @@ public class InitiativeServiceHandlerImpl implements InitiativeServiceHandler {
     private LayoutService layoutService;
     @Autowired
     private SdkService sdkService;
+    @Autowired
+    private SendReportMes sendReportMes;
 
     @Override
     public ListInitiativeRepresentation addInitiative(StrategyRequest request) throws DBServiceException, InitiativeNotFoundException {
@@ -82,6 +86,8 @@ public class InitiativeServiceHandlerImpl implements InitiativeServiceHandler {
         }
 
         List<Initiative> initiatives = initiativeService.get(Initiative.builder().productId(request.getId()).build());
+
+        sendReportMes.createHistory(request.getPayload().getUserId(), initiative.getId(), ReportAction.CREATE, GsonUtils.convertToString(initiative));
         if(request.getStatus() == null) {
             return RepresentationBuilder.buildListInitiativeRepresentation(initiatives, layout);
         }
@@ -93,6 +99,8 @@ public class InitiativeServiceHandlerImpl implements InitiativeServiceHandler {
     @Override
     public InitiativeRepresentation updateInitiative(StrategyRequest request) throws DBServiceException, InitiativeNotFoundException, LayoutNotFoundException, ActionServiceFailedException {
         Initiative initiative = initiativeService.get(Initiative.builder().id(request.getId()).build()).get(0);
+        String oldInitiative = GsonUtils.convertToString(initiative);
+
         if(request.getName() != null) {
             initiative.setName(request.getName());
         }
@@ -133,6 +141,7 @@ public class InitiativeServiceHandlerImpl implements InitiativeServiceHandler {
         }
         initiativeService.update(initiative);
         CsActionRepresentation actionRep = sdkService.getTodoComment(initiative.getId());
+        sendReportMes.createHistory(request.getPayload().getUserId(), initiative.getId(), ReportAction.UPDATE, oldInitiative + "|" + GsonUtils.convertToString(initiative));
         return RepresentationBuilder.buildInitiativeRepresentation(initiative, actionRep);
     }
 
@@ -171,6 +180,7 @@ public class InitiativeServiceHandlerImpl implements InitiativeServiceHandler {
                         .build()
         ).get(0);
         CsActionRepresentation actionRep = sdkService.getTodoComment(initiative.getId());
+        sendReportMes.createWatcher(request.getPayload().getUserId(), initiative.getId());
         return RepresentationBuilder.buildInitiativeRepresentation(initiative, actionRep);
     }
 

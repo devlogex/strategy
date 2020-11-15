@@ -20,6 +20,7 @@
         <module>competitor</module>
         <module>goal</module>
         <module>initiative</module>
+        <module>report</module>
     </modules>
 
     <properties>

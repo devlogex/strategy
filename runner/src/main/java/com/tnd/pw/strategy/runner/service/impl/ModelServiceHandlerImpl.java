@@ -5,6 +5,7 @@ import com.tnd.dbservice.common.exception.DBServiceException;
 import com.tnd.pw.action.common.representations.CsActionRepresentation;
 import com.tnd.pw.strategy.common.constants.LayoutType;
 import com.tnd.pw.strategy.common.constants.ModelType;
+import com.tnd.pw.strategy.common.constants.ReportAction;
 import com.tnd.pw.strategy.common.representations.*;
 import com.tnd.pw.strategy.common.requests.StrategyRequest;
 import com.tnd.pw.strategy.common.utils.GsonUtils;
@@ -18,6 +19,7 @@ import com.tnd.pw.strategy.model.exception.ModelComponentNotFoundException;
 import com.tnd.pw.strategy.model.exception.ModelNotFoundException;
 import com.tnd.pw.strategy.model.service.ModelComponentService;
 import com.tnd.pw.strategy.model.service.ModelService;
+import com.tnd.pw.strategy.report.SendReportMes;
 import com.tnd.pw.strategy.runner.exception.ActionServiceFailedException;
 import com.tnd.pw.strategy.runner.service.ModelServiceHandler;
 import org.slf4j.Logger;
@@ -37,6 +39,8 @@ public class ModelServiceHandlerImpl implements ModelServiceHandler {
     private LayoutService layoutService;
     @Autowired
     private SdkService sdkService;
+    @Autowired
+    private SendReportMes sendReportMes;
 
     @Override
     public ListModelRepresentation addModel(StrategyRequest request) throws DBServiceException, ModelNotFoundException {
@@ -58,14 +62,18 @@ public class ModelServiceHandlerImpl implements ModelServiceHandler {
             layout = layoutService.create(request.getId(), LayoutType.MODEL.name(), GsonUtils.convertToString(layoutEntity));
 
         }
-        LayoutRepresentation layoutRepresentation = createModelComponentDefaults(model);
+        LayoutRepresentation layoutRepresentation = createModelComponentDefaults(model, request);
         List<Model> models = modelService.get(Model.builder().productId(request.getId()).build());
+
+        sendReportMes.createHistory(request.getPayload().getUserId(), model.getId(), ReportAction.CREATE, GsonUtils.convertToString(model));
         return RepresentationBuilder.buildListModelRepresentation(models, layout, layoutRepresentation.getLayout());
     }
 
     @Override
     public ModelRepresentation updateModel(StrategyRequest request) throws DBServiceException, ModelNotFoundException, ActionServiceFailedException {
         Model model = modelService.get(Model.builder().id(request.getId()).build()).get(0);
+        String oldModel = GsonUtils.convertToString(model);
+
         if(request.getName() != null) {
             model.setName(request.getName());
         }
@@ -83,6 +91,8 @@ public class ModelServiceHandlerImpl implements ModelServiceHandler {
         }
         modelService.update(model);
         CsActionRepresentation actionRep = sdkService.getTodoComment(model.getId());
+
+        sendReportMes.createHistory(request.getPayload().getUserId(), model.getId(), ReportAction.UPDATE, oldModel + "|" + GsonUtils.convertToString(model));
         return RepresentationBuilder.buildModelRepresentation(model, actionRep);
     }
 
@@ -121,6 +131,7 @@ public class ModelServiceHandlerImpl implements ModelServiceHandler {
                         .build()
         ).get(0);
         CsActionRepresentation actionRep = sdkService.getTodoComment(model.getId());
+        sendReportMes.createWatcher(request.getPayload().getUserId(), model.getId());
         return RepresentationBuilder.buildModelRepresentation(model, actionRep);
     }
 
@@ -188,6 +199,8 @@ public class ModelServiceHandlerImpl implements ModelServiceHandler {
             layout.setLayout(GsonUtils.convertToString(layoutEntity));
             layoutService.update(layout);
             List<ModelComponent> components = modelComponentService.get(ModelComponent.builder().modelId(component.getModelId()).build());
+
+            sendReportMes.createHistory(request.getPayload().getUserId(), component.getId(), ReportAction.CREATE, GsonUtils.convertToString(component));
             return RepresentationBuilder.buildListModelComponentRep(layoutEntity, components);
         } catch (ModelComponentNotFoundException e) {
             LOGGER.error("[ModelServiceHandlerImpl] ModelComponentNotFoundException with component_id: {}", request.getId());
@@ -201,6 +214,8 @@ public class ModelServiceHandlerImpl implements ModelServiceHandler {
     @Override
     public ModelComponentRep updateModelComponent(StrategyRequest request) throws DBServiceException, ModelComponentNotFoundException {
         ModelComponent modelComponent = modelComponentService.get(ModelComponent.builder().id(request.getId()).build()).get(0);
+        String oldComponent = GsonUtils.convertToString(modelComponent);
+
         if(request.getColor() != null) {
             modelComponent.setColor(request.getColor());
         }
@@ -214,6 +229,8 @@ public class ModelServiceHandlerImpl implements ModelServiceHandler {
             modelComponent.setFiles(request.getFiles());
         }
         modelComponentService.update(modelComponent);
+
+        sendReportMes.createHistory(request.getPayload().getUserId(), modelComponent.getId(), ReportAction.UPDATE, oldComponent + "|" + GsonUtils.convertToString(modelComponent));
         return RepresentationBuilder.buildModelComponentRep(modelComponent);
     }
 
@@ -267,6 +284,8 @@ public class ModelServiceHandlerImpl implements ModelServiceHandler {
     public LayoutRepresentation getModelComponentById(StrategyRequest request) throws DBServiceException {
         try{
             ModelComponent component = modelComponentService.get(ModelComponent.builder().id(request.getId()).build()).get(0);
+
+            sendReportMes.createWatcher(request.getPayload().getUserId(), component.getId());
             return new LayoutRepresentation(component);
         } catch (ModelComponentNotFoundException e) {
             LOGGER.error("[ModelServiceHandlerImpl] ModelComponentNotFoundException with request: {}", GsonUtils.convertToString(request));
@@ -300,26 +319,26 @@ public class ModelServiceHandlerImpl implements ModelServiceHandler {
         }
     }
 
-    private LayoutRepresentation createModelComponentDefaults(Model model) throws DBServiceException {
+    private LayoutRepresentation createModelComponentDefaults(Model model, StrategyRequest request) throws DBServiceException {
         switch (ModelType.values()[model.getType()]) {
             case MODEL_CANVAS:
-                return createModelCanvasComponent(model);
+                return createModelCanvasComponent(model, request);
             case LEAN_CANVAS:
-                return createLeanCanvasComponent(model);
+                return createLeanCanvasComponent(model, request);
             case SWOT:
-                return createSwotComponent(model);
+                return createSwotComponent(model, request);
             case PORTER:
-                return createPorterComponent(model);
+                return createPorterComponent(model, request);
             case SEGMENT:
-                return createSegmentComponent(model);
+                return createSegmentComponent(model, request);
             case MARKETING_MATRIX:
-                return createMarketingMatrixComponent(model);
+                return createMarketingMatrixComponent(model, request);
             default:
                 throw new IllegalStateException("Unexpected value: " + model.getType());
         }
     }
 
-    private LayoutRepresentation createMarketingMatrixComponent(Model model) throws DBServiceException {
+    private LayoutRepresentation createMarketingMatrixComponent(Model model, StrategyRequest request) throws DBServiceException {
         ArrayList<ArrayList<ArrayList<Long>>> layoutEntity = new ArrayList<>();
         ArrayList<ArrayList<ArrayList<ModelComponentRep>>> layout = new ArrayList<>();
         layout.add(new ArrayList<>());
@@ -363,6 +382,7 @@ public class ModelServiceHandlerImpl implements ModelServiceHandler {
                 layoutEntity.get(i).add(new ArrayList<>());
                 for(int k = 0; k < layout.get(i).get(j).size(); k++) {
                     layoutEntity.get(i).get(j).add(layout.get(i).get(j).get(k).getId());
+                    sendReportMes.createHistory(request.getPayload().getUserId(), layout.get(i).get(j).get(k).getId(), ReportAction.CREATE, GsonUtils.convertToString(layout.get(i).get(j).get(k)));
                 }
             }
         }
@@ -370,7 +390,7 @@ public class ModelServiceHandlerImpl implements ModelServiceHandler {
         return new LayoutRepresentation(layout);
     }
 
-    private LayoutRepresentation createSegmentComponent(Model model) throws DBServiceException {
+    private LayoutRepresentation createSegmentComponent(Model model, StrategyRequest request) throws DBServiceException {
         ArrayList<ArrayList<ArrayList<Long>>> layoutEntity = new ArrayList<>();
         ArrayList<ArrayList<ArrayList<ModelComponentRep>>> layout = new ArrayList<>();
         layout.add(new ArrayList<>());
@@ -411,6 +431,7 @@ public class ModelServiceHandlerImpl implements ModelServiceHandler {
                 layoutEntity.get(i).add(new ArrayList<>());
                 for(int k = 0; k < layout.get(i).get(j).size(); k++) {
                     layoutEntity.get(i).get(j).add(layout.get(i).get(j).get(k).getId());
+                    sendReportMes.createHistory(request.getPayload().getUserId(), layout.get(i).get(j).get(k).getId(), ReportAction.CREATE, GsonUtils.convertToString(layout.get(i).get(j).get(k)));
                 }
             }
         }
@@ -418,7 +439,7 @@ public class ModelServiceHandlerImpl implements ModelServiceHandler {
         return new LayoutRepresentation(layout);
     }
 
-    private LayoutRepresentation createPorterComponent(Model model) throws DBServiceException {
+    private LayoutRepresentation createPorterComponent(Model model, StrategyRequest request) throws DBServiceException {
         ArrayList<ArrayList<ArrayList<Long>>> layoutEntity = new ArrayList<>();
         ArrayList<ArrayList<ArrayList<ModelComponentRep>>> layout = new ArrayList<>();
         layout.add(new ArrayList<>());
@@ -444,6 +465,7 @@ public class ModelServiceHandlerImpl implements ModelServiceHandler {
                 layoutEntity.get(i).add(new ArrayList<>());
                 for(int k = 0; k < layout.get(i).get(j).size(); k++) {
                     layoutEntity.get(i).get(j).add(layout.get(i).get(j).get(k).getId());
+                    sendReportMes.createHistory(request.getPayload().getUserId(), layout.get(i).get(j).get(k).getId(), ReportAction.CREATE, GsonUtils.convertToString(layout.get(i).get(j).get(k)));
                 }
             }
         }
@@ -451,7 +473,7 @@ public class ModelServiceHandlerImpl implements ModelServiceHandler {
         return new LayoutRepresentation(layout);
     }
 
-    private LayoutRepresentation createSwotComponent(Model model) throws DBServiceException {
+    private LayoutRepresentation createSwotComponent(Model model, StrategyRequest request) throws DBServiceException {
         ArrayList<ArrayList<ArrayList<Long>>> layoutEntity = new ArrayList<>();
         ArrayList<ArrayList<ArrayList<ModelComponentRep>>> layout = new ArrayList<>();
         layout.add(new ArrayList<>());
@@ -475,6 +497,7 @@ public class ModelServiceHandlerImpl implements ModelServiceHandler {
                 layoutEntity.get(i).add(new ArrayList<>());
                 for(int k = 0; k < layout.get(i).get(j).size(); k++) {
                     layoutEntity.get(i).get(j).add(layout.get(i).get(j).get(k).getId());
+                    sendReportMes.createHistory(request.getPayload().getUserId(), layout.get(i).get(j).get(k).getId(), ReportAction.CREATE, GsonUtils.convertToString(layout.get(i).get(j).get(k)));
                 }
             }
         }
@@ -482,7 +505,7 @@ public class ModelServiceHandlerImpl implements ModelServiceHandler {
         return new LayoutRepresentation(layout);
     }
 
-    private LayoutRepresentation createLeanCanvasComponent(Model model) throws DBServiceException {
+    private LayoutRepresentation createLeanCanvasComponent(Model model, StrategyRequest request) throws DBServiceException {
         ArrayList<ArrayList<ArrayList<Long>>> layoutEntity = new ArrayList<>();
         ArrayList<ArrayList<ArrayList<ModelComponentRep>>> layout = new ArrayList<>();
         layout.add(new ArrayList<>());
@@ -526,7 +549,7 @@ public class ModelServiceHandlerImpl implements ModelServiceHandler {
         return new LayoutRepresentation(layout);
     }
 
-    private LayoutRepresentation createModelCanvasComponent(Model model) throws DBServiceException {
+    private LayoutRepresentation createModelCanvasComponent(Model model, StrategyRequest request) throws DBServiceException {
         ArrayList<ArrayList<ArrayList<Long>>> layoutEntity = new ArrayList<>();
         ArrayList<ArrayList<ArrayList<ModelComponentRep>>> layout = new ArrayList<>();
         layout.add(new ArrayList<>());
@@ -573,6 +596,7 @@ public class ModelServiceHandlerImpl implements ModelServiceHandler {
                 layoutEntity.get(i).add(new ArrayList<>());
                 for(int k = 0; k < layout.get(i).get(j).size(); k++) {
                     layoutEntity.get(i).get(j).add(layout.get(i).get(j).get(k).getId());
+                    sendReportMes.createHistory(request.getPayload().getUserId(), layout.get(i).get(j).get(k).getId(), ReportAction.CREATE, GsonUtils.convertToString(layout.get(i).get(j).get(k)));
                 }
             }
         }

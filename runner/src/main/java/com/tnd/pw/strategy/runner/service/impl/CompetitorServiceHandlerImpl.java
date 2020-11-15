@@ -4,6 +4,7 @@ import com.google.common.reflect.TypeToken;
 import com.tnd.dbservice.common.exception.DBServiceException;
 import com.tnd.pw.action.common.representations.CsActionRepresentation;
 import com.tnd.pw.strategy.common.constants.LayoutType;
+import com.tnd.pw.strategy.common.constants.ReportAction;
 import com.tnd.pw.strategy.common.representations.CompetitorRepresentation;
 import com.tnd.pw.strategy.common.representations.LayoutRepresentation;
 import com.tnd.pw.strategy.common.representations.ListCompetitorRepresentation;
@@ -16,6 +17,7 @@ import com.tnd.pw.strategy.competitor.service.CompetitorService;
 import com.tnd.pw.strategy.layout.entity.Layout;
 import com.tnd.pw.strategy.layout.exception.LayoutNotFoundException;
 import com.tnd.pw.strategy.layout.service.LayoutService;
+import com.tnd.pw.strategy.report.SendReportMes;
 import com.tnd.pw.strategy.runner.exception.ActionServiceFailedException;
 import com.tnd.pw.strategy.runner.service.CompetitorServiceHandler;
 import org.slf4j.Logger;
@@ -33,6 +35,8 @@ public class CompetitorServiceHandlerImpl implements CompetitorServiceHandler {
     private LayoutService layoutService;
     @Autowired
     private SdkService sdkService;
+    @Autowired
+    private SendReportMes sendReportMes;
 
     @Override
     public ListCompetitorRepresentation addCompetitor(StrategyRequest request) throws DBServiceException, CompetitorNotFoundException {
@@ -55,12 +59,15 @@ public class CompetitorServiceHandlerImpl implements CompetitorServiceHandler {
 
         }
         List<Competitor> competitors = competitorService.get(Competitor.builder().productId(request.getId()).build());
+        sendReportMes.createHistory(request.getPayload().getUserId(), competitor.getId(), ReportAction.CREATE, GsonUtils.convertToString(competitor));
         return RepresentationBuilder.buildListCompetitorRepresentation(competitors, layout);
     }
 
     @Override
     public CompetitorRepresentation updateCompetitor(StrategyRequest request) throws DBServiceException, CompetitorNotFoundException, ActionServiceFailedException {
         Competitor competitor = competitorService.get(Competitor.builder().id(request.getId()).build()).get(0);
+        String oldCompetitor = GsonUtils.convertToString(competitor);
+
         if(request.getName() != null) {
             competitor.setName(request.getName());
         }
@@ -81,6 +88,7 @@ public class CompetitorServiceHandlerImpl implements CompetitorServiceHandler {
         }
         competitorService.update(competitor);
         CsActionRepresentation actionRep = sdkService.getTodoComment(competitor.getId());
+        sendReportMes.createHistory(request.getPayload().getUserId(), competitor.getId(), ReportAction.UPDATE, oldCompetitor + "|" + GsonUtils.convertToString(competitor));
         return RepresentationBuilder.buildCompetitorRepresentation(competitor, actionRep);
     }
 
@@ -112,6 +120,7 @@ public class CompetitorServiceHandlerImpl implements CompetitorServiceHandler {
                         .build()
         ).get(0);
         CsActionRepresentation actionRep = sdkService.getTodoComment(competitor.getId());
+        sendReportMes.createWatcher(request.getPayload().getUserId(), competitor.getId());
         return RepresentationBuilder.buildCompetitorRepresentation(competitor, actionRep);
     }
 

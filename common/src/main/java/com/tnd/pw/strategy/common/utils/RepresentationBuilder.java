@@ -58,6 +58,7 @@ public class RepresentationBuilder {
         visionComponentRep.setId(visionComponent.getId());
         visionComponentRep.setName(visionComponent.getName());
         visionComponentRep.setColor(visionComponent.getColor());
+        visionComponentRep.setFiles(visionComponent.getFiles());
         visionComponentRep.setDescription(visionComponent.getDescription());
         visionComponentRep.setSummary(visionComponent.getSummary());
         visionComponentRep.setVisionId(visionComponent.getVisionId());

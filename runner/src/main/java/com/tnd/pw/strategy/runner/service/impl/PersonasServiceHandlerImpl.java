@@ -4,6 +4,7 @@ import com.google.common.reflect.TypeToken;
 import com.tnd.dbservice.common.exception.DBServiceException;
 import com.tnd.pw.action.common.representations.CsActionRepresentation;
 import com.tnd.pw.strategy.common.constants.LayoutType;
+import com.tnd.pw.strategy.common.constants.ReportAction;
 import com.tnd.pw.strategy.common.representations.LayoutRepresentation;
 import com.tnd.pw.strategy.common.representations.ListPersonasRepresentation;
 import com.tnd.pw.strategy.common.representations.PersonasRepresentation;
@@ -16,6 +17,7 @@ import com.tnd.pw.strategy.layout.service.LayoutService;
 import com.tnd.pw.strategy.personas.entity.Personas;
 import com.tnd.pw.strategy.personas.exception.PersonasNotFoundException;
 import com.tnd.pw.strategy.personas.service.PersonasService;
+import com.tnd.pw.strategy.report.SendReportMes;
 import com.tnd.pw.strategy.runner.exception.ActionServiceFailedException;
 import com.tnd.pw.strategy.runner.service.PersonasServiceHandler;
 import org.slf4j.Logger;
@@ -33,6 +35,8 @@ public class PersonasServiceHandlerImpl implements PersonasServiceHandler {
     private LayoutService layoutService;
     @Autowired
     private SdkService sdkService;
+    @Autowired
+    private SendReportMes sendReportMes;
 
     @Override
     public ListPersonasRepresentation addPersonas(StrategyRequest request) throws DBServiceException, PersonasNotFoundException {
@@ -55,12 +59,14 @@ public class PersonasServiceHandlerImpl implements PersonasServiceHandler {
 
         }
         List<Personas> personases = personasService.get(Personas.builder().productId(request.getId()).build());
+        sendReportMes.createHistory(request.getPayload().getUserId(), personas.getId(), ReportAction.CREATE, GsonUtils.convertToString(personas));
         return RepresentationBuilder.buildListPersonasRepresentation(personases, layout);
     }
 
     @Override
     public PersonasRepresentation updatePersonas(StrategyRequest request) throws DBServiceException, PersonasNotFoundException, ActionServiceFailedException {
         Personas personas = personasService.get(Personas.builder().id(request.getId()).build()).get(0);
+        String oldPersonas = GsonUtils.convertToString(personas);
         if(request.getName() != null) {
             personas.setName(request.getName());
         }
@@ -75,6 +81,7 @@ public class PersonasServiceHandlerImpl implements PersonasServiceHandler {
         }
         personasService.update(personas);
         CsActionRepresentation actionRep = sdkService.getTodoComment(personas.getId());
+        sendReportMes.createHistory(request.getPayload().getUserId(), personas.getId(), ReportAction.UPDATE, oldPersonas + "|" + GsonUtils.convertToString(personas));
         return RepresentationBuilder.buildPersonasRepresentation(personas, actionRep);
     }
 
@@ -106,6 +113,7 @@ public class PersonasServiceHandlerImpl implements PersonasServiceHandler {
                         .build()
         ).get(0);
         CsActionRepresentation actionRep = sdkService.getTodoComment(personas.getId());
+        sendReportMes.createWatcher(request.getPayload().getUserId(), personas.getId());
         return RepresentationBuilder.buildPersonasRepresentation(personas, actionRep);
     }
 

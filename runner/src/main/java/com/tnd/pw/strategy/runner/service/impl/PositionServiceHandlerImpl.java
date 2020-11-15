@@ -1,9 +1,11 @@
 package com.tnd.pw.strategy.runner.service.impl;
 
 import com.google.common.reflect.TypeToken;
+import com.google.gson.Gson;
 import com.tnd.dbservice.common.exception.DBServiceException;
 import com.tnd.pw.action.common.representations.CsActionRepresentation;
 import com.tnd.pw.strategy.common.constants.LayoutType;
+import com.tnd.pw.strategy.common.constants.ReportAction;
 import com.tnd.pw.strategy.common.representations.*;
 import com.tnd.pw.strategy.common.requests.StrategyRequest;
 import com.tnd.pw.strategy.common.utils.GsonUtils;
@@ -17,8 +19,10 @@ import com.tnd.pw.strategy.positioning.exception.PositionComponentNotFoundExcept
 import com.tnd.pw.strategy.positioning.exception.PositionNotFoundException;
 import com.tnd.pw.strategy.positioning.service.PositionComponentService;
 import com.tnd.pw.strategy.positioning.service.PositionService;
+import com.tnd.pw.strategy.report.SendReportMes;
 import com.tnd.pw.strategy.runner.exception.ActionServiceFailedException;
 import com.tnd.pw.strategy.runner.service.PositionServiceHandler;
+import com.tnd.pw.strategy.vision.entity.VisionComponent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +40,8 @@ public class PositionServiceHandlerImpl implements PositionServiceHandler {
     private LayoutService layoutService;
     @Autowired
     private SdkService sdkService;
+    @Autowired
+    private SendReportMes sendReportMes;
 
     @Override
     public ListPositionRepresentation addPosition(StrategyRequest request) throws DBServiceException, PositionNotFoundException {
@@ -56,14 +62,17 @@ public class PositionServiceHandlerImpl implements PositionServiceHandler {
             layoutEntity.get(0).get(0).add(position.getId());
             layout = layoutService.create(request.getId(), LayoutType.POSITION.name(), GsonUtils.convertToString(layoutEntity));
         }
-        LayoutRepresentation layoutRepresentation = createPositionComponentDefaults(position);
+        LayoutRepresentation layoutRepresentation = createPositionComponentDefaults(position, request);
         List<Position> positions = positionService.get(Position.builder().productId(request.getId()).build());
+
+        sendReportMes.createHistory(request.getPayload().getUserId(), position.getId(), ReportAction.CREATE, GsonUtils.convertToString(position));
         return RepresentationBuilder.buildListPositionRepresentation(positions, layout, layoutRepresentation.getLayout());
     }
 
     @Override
     public PositionRepresentation updatePosition(StrategyRequest request) throws DBServiceException, PositionNotFoundException, ActionServiceFailedException {
         Position position = positionService.get(Position.builder().id(request.getId()).build()).get(0);
+        String oldPosition = GsonUtils.convertToString(position);
         if(request.getName() != null) {
             position.setName(request.getName());
         }
@@ -81,6 +90,7 @@ public class PositionServiceHandlerImpl implements PositionServiceHandler {
         }
         positionService.update(position);
         CsActionRepresentation actionRep = sdkService.getTodoComment(position.getId());
+        sendReportMes.createHistory(request.getPayload().getUserId(), position.getId(), ReportAction.UPDATE, oldPosition + "|" + GsonUtils.convertToString(position));
         return RepresentationBuilder.buildPositionRepresentation(position, actionRep);
     }
 
@@ -114,6 +124,7 @@ public class PositionServiceHandlerImpl implements PositionServiceHandler {
                         .build()
         ).get(0);
         CsActionRepresentation actionRep = sdkService.getTodoComment(position.getId());
+        sendReportMes.createWatcher(request.getPayload().getUserId(), position.getId());
         return RepresentationBuilder.buildPositionRepresentation(position, actionRep);
     }
 
@@ -181,6 +192,8 @@ public class PositionServiceHandlerImpl implements PositionServiceHandler {
             layout.setLayout(GsonUtils.convertToString(layoutEntity));
             layoutService.update(layout);
             List<PositionComponent> components = positionComponentService.get(null, component.getPositionId());
+
+            sendReportMes.createHistory(request.getPayload().getUserId(), component.getId(), ReportAction.CREATE, GsonUtils.convertToString(component));
             return RepresentationBuilder.buildListPositionComponentRep(layoutEntity, components);
         } catch (PositionComponentNotFoundException e) {
             LOGGER.error("[PositionServiceHandlerImpl] PositionComponentNotFoundException with component_id: {}", request.getId());
@@ -194,6 +207,8 @@ public class PositionServiceHandlerImpl implements PositionServiceHandler {
     @Override
     public PositionComponentRep updatePositionComponent(StrategyRequest request) throws DBServiceException, PositionComponentNotFoundException {
         PositionComponent positionComponent = positionComponentService.get(request.getId(), null).get(0);
+        String oldComponent = GsonUtils.convertToString(positionComponent);
+
         if(request.getColor() != null) {
             positionComponent.setColor(request.getColor());
         }
@@ -207,6 +222,8 @@ public class PositionServiceHandlerImpl implements PositionServiceHandler {
             positionComponent.setFiles(request.getFiles());
         }
         positionComponentService.update(positionComponent);
+
+        sendReportMes.createHistory(request.getPayload().getUserId(), positionComponent.getId(), ReportAction.UPDATE, oldComponent + "|" + GsonUtils.convertToString(positionComponent));
         return RepresentationBuilder.buildPositionComponentRep(positionComponent);
     }
 
@@ -214,6 +231,8 @@ public class PositionServiceHandlerImpl implements PositionServiceHandler {
     public LayoutRepresentation getPositionComponentById(StrategyRequest request) throws DBServiceException {
         try{
             PositionComponent component = positionComponentService.get(request.getId(), null).get(0);
+
+            sendReportMes.createWatcher(request.getPayload().getUserId(), component.getId());
             return new LayoutRepresentation(component);
         } catch (PositionComponentNotFoundException e) {
             LOGGER.error("[PositionServiceHandlerImpl] PositionComponentNotFoundException with request: {}", GsonUtils.convertToString(request));
@@ -294,7 +313,7 @@ public class PositionServiceHandlerImpl implements PositionServiceHandler {
         }
     }
 
-    private LayoutRepresentation createPositionComponentDefaults(Position position) throws DBServiceException {
+    private LayoutRepresentation createPositionComponentDefaults(Position position, StrategyRequest request) throws DBServiceException {
         ArrayList<ArrayList<ArrayList<Long>>> layoutEntity = new ArrayList<>();
         ArrayList<ArrayList<ArrayList<PositionComponentRep>>> layout = new ArrayList<>();
         layout.add(new ArrayList<>());
@@ -364,10 +383,12 @@ public class PositionServiceHandlerImpl implements PositionServiceHandler {
                 layoutEntity.get(i).add(new ArrayList<>());
                 for(int k = 0; k < layout.get(i).get(j).size(); k++) {
                     layoutEntity.get(i).get(j).add(layout.get(i).get(j).get(k).getId());
+                    sendReportMes.createHistory(request.getPayload().getUserId(), layout.get(i).get(j).get(k).getId(), ReportAction.CREATE, GsonUtils.convertToString(layout.get(i).get(j).get(k)));
                 }
             }
         }
         layoutService.create(position.getId(), LayoutType.POSITION_COMPONENT.name(), GsonUtils.convertToString(layoutEntity));
+
         return new LayoutRepresentation(layout);
     }
 

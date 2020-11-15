@@ -4,6 +4,8 @@ import com.tnd.dbservice.sdk.api.DBServiceSdkClient;
 import com.tnd.dbservice.sdk.api.impl.DBServiceSdkClientImpl;
 import com.tnd.pw.action.sdk.ActionServiceSdkClient;
 import com.tnd.pw.action.sdk.impl.ActionServiceSdkClientImpl;
+import com.tnd.pw.report.sdk.ReportSdkClient;
+import com.tnd.pw.report.sdk.impl.ReportSdkClientImpl;
 import com.tnd.pw.strategy.competitor.dao.CompetitorDao;
 import com.tnd.pw.strategy.competitor.dao.impl.CompetitorDaoImpl;
 import com.tnd.pw.strategy.competitor.service.CompetitorService;
@@ -41,6 +43,7 @@ import com.tnd.pw.strategy.positioning.service.PositionComponentService;
 import com.tnd.pw.strategy.positioning.service.PositionService;
 import com.tnd.pw.strategy.positioning.service.impl.PositionComponentServiceImpl;
 import com.tnd.pw.strategy.positioning.service.impl.PositionServiceImpl;
+import com.tnd.pw.strategy.report.SendReportMes;
 import com.tnd.pw.strategy.runner.handler.*;
 import com.tnd.pw.strategy.runner.service.*;
 import com.tnd.pw.strategy.runner.service.impl.*;
@@ -57,6 +60,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 @Configuration
 @PropertySource("classpath:application.properties")
 public class RunnerConfig {
@@ -68,6 +74,10 @@ public class RunnerConfig {
     private String action_service_host;
     @Value("${action.service.port}")
     private String action_service_port;
+    @Value("${report.service.host}")
+    private String report_service_host;
+    @Value("${report.service.port}")
+    private String report_service_port;
 
     @Bean
     public ActionServiceSdkClient actionServiceSdkClient() {
@@ -285,5 +295,20 @@ public class RunnerConfig {
     @Bean
     public StrategyHandler strategyHandler() {
         return new StrategyHandler();
+    }
+
+    @Bean
+    public ReportSdkClient reportSdkClient() {
+        return new ReportSdkClientImpl(report_service_host, Integer.parseInt(report_service_port), 1);
+    }
+
+    @Bean
+    public ExecutorService executor() {
+        return Executors.newFixedThreadPool(5);
+    }
+
+    @Bean
+    public SendReportMes sendReportMes() {
+        return new SendReportMes();
     }
 }

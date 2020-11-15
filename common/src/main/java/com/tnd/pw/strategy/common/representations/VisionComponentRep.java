@@ -27,5 +27,6 @@ public class VisionComponentRep implements Serializable {
     private String color;
     @SerializedName("description")
     private String description;
-
+    @SerializedName("files")
+    private String files;
 }

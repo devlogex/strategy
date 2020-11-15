@@ -12,6 +12,7 @@ import com.tnd.pw.strategy.common.utils.RepresentationBuilder;
 import com.tnd.pw.strategy.layout.entity.Layout;
 import com.tnd.pw.strategy.layout.exception.LayoutNotFoundException;
 import com.tnd.pw.strategy.layout.service.LayoutService;
+import com.tnd.pw.strategy.report.SendReportMes;
 import com.tnd.pw.strategy.runner.exception.ActionServiceFailedException;
 import com.tnd.pw.strategy.runner.service.VisionServiceHandler;
 import com.tnd.pw.strategy.vision.entity.Vision;
@@ -37,11 +38,17 @@ public class VisionServiceHandlerImpl implements VisionServiceHandler {
     private LayoutService layoutService;
     @Autowired
     private SdkService sdkService;
+    @Autowired
+    private SendReportMes sendReportMes;
 
     public VisionRepresentation addVision(StrategyRequest request) throws DBServiceException {
         Vision vision = visionService.create(request.getId());
         List<VisionComponent> visionComponents = createComponentDefaults(vision.getId());
         Layout layout = createLayout(vision.getId(), visionComponents);
+        sendReportMes.createHistory(request.getPayload().getUserId(), vision.getId(), ReportAction.CREATE, GsonUtils.convertToString(vision));
+        for(VisionComponent visionComponent: visionComponents) {
+            sendReportMes.createHistory(request.getPayload().getUserId(), visionComponent.getId(), ReportAction.CREATE, GsonUtils.convertToString(visionComponent));
+        }
         return RepresentationBuilder.buildVisionRepresentation(vision, visionComponents, layout, null);
     }
 
@@ -65,6 +72,7 @@ public class VisionServiceHandlerImpl implements VisionServiceHandler {
             vision.setDescription(request.getDescription());
         }
         Vision newVision = visionService.update(vision);
+        sendReportMes.createHistory(request.getPayload().getUserId(), vision.getId(), ReportAction.UPDATE, GsonUtils.convertToString(vision) + "|" + GsonUtils.convertToString(newVision));
         CsActionRepresentation actionRep = sdkService.getTodoComment(newVision.getId());
         List<VisionComponent> visionComponents;
         Layout layout;
@@ -94,6 +102,7 @@ public class VisionServiceHandlerImpl implements VisionServiceHandler {
             actionRep = sdkService.getTodoComment(vision.getId());
             List<VisionComponent> visionComponents = visionComponentService.getByVisionId(vision.getId());
             Layout layout = layoutService.get(vision.getId(), LayoutType.VISION_COMPONENT.name());
+            sendReportMes.createWatcher(request.getPayload().getUserId(), vision.getId());
             return RepresentationBuilder.buildVisionRepresentation(vision, visionComponents, layout, actionRep);
         } catch (VisionNotFoundException e) {
             LOGGER.error("[VisionHandlerBuz] VisionNotFoundException with id: {}", request.getId());
@@ -125,6 +134,7 @@ public class VisionServiceHandlerImpl implements VisionServiceHandler {
             layoutService.update(layout);
             List<VisionComponent> components = visionComponentService.getByVisionId(vision.getId());
 
+            sendReportMes.createHistory(request.getPayload().getUserId(), visionComponent.getId(), ReportAction.CREATE, GsonUtils.convertToString(visionComponent));
             return RepresentationBuilder.buildListVisionComponentRep(components, layout);
         }
         catch (VisionNotFoundException e) {
@@ -157,6 +167,7 @@ public class VisionServiceHandlerImpl implements VisionServiceHandler {
             visionComponent.setName(request.getName());
         }
         VisionComponent newComponent = visionComponentService.update(visionComponent);
+        sendReportMes.createHistory(request.getPayload().getUserId(), visionComponent.getId(), ReportAction.UPDATE, GsonUtils.convertToString(visionComponent) + "|" + GsonUtils.convertToString(newComponent));
         return RepresentationBuilder.buildVisionComponentRep(newComponent);
     }
 
@@ -206,7 +217,7 @@ public class VisionServiceHandlerImpl implements VisionServiceHandler {
         try {
             VisionComponent visionComponent = visionComponentService.getById(request.getId());
             visionComponentReps.add(RepresentationBuilder.buildVisionComponentRep(visionComponent));
-
+            sendReportMes.createWatcher(request.getPayload().getUserId(), visionComponent.getId());
         } catch (VisionComponentNotFoundException e) {
             LOGGER.error("[VisionHandlerBuz] VisionComponentNotFoundException with request: {}", GsonUtils.convertToString(request));
         }

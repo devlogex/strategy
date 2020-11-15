@@ -5,6 +5,7 @@ import com.tnd.dbservice.common.exception.DBServiceException;
 import com.tnd.pw.action.common.representations.CsActionRepresentation;
 import com.tnd.pw.strategy.common.constants.GoalState;
 import com.tnd.pw.strategy.common.constants.LayoutType;
+import com.tnd.pw.strategy.common.constants.ReportAction;
 import com.tnd.pw.strategy.common.representations.FilterInfoRepresentation;
 import com.tnd.pw.strategy.common.representations.GoalRepresentation;
 import com.tnd.pw.strategy.common.representations.LayoutRepresentation;
@@ -18,6 +19,7 @@ import com.tnd.pw.strategy.goal.service.GoalService;
 import com.tnd.pw.strategy.layout.entity.Layout;
 import com.tnd.pw.strategy.layout.exception.LayoutNotFoundException;
 import com.tnd.pw.strategy.layout.service.LayoutService;
+import com.tnd.pw.strategy.report.SendReportMes;
 import com.tnd.pw.strategy.runner.exception.ActionServiceFailedException;
 import com.tnd.pw.strategy.runner.service.GoalServiceHandler;
 import org.slf4j.Logger;
@@ -35,6 +37,8 @@ public class GoalServiceHandlerImpl implements GoalServiceHandler {
     private LayoutService layoutService;
     @Autowired
     private SdkService sdkService;
+    @Autowired
+    private SendReportMes sendReportMes;
 
     @Override
     public ListGoalRepresentation addGoal(StrategyRequest request) throws DBServiceException, GoalNotFoundException {
@@ -57,12 +61,15 @@ public class GoalServiceHandlerImpl implements GoalServiceHandler {
 
         }
         List<Goal> goals = goalServiceService.get(Goal.builder().productId(request.getId()).build());
+        sendReportMes.createHistory(request.getPayload().getUserId(), goal.getId(), ReportAction.CREATE, GsonUtils.convertToString(goal));
         return RepresentationBuilder.buildListGoalRepresentation(goals, layout);
     }
 
     @Override
     public GoalRepresentation updateGoal(StrategyRequest request) throws DBServiceException, GoalNotFoundException, ActionServiceFailedException {
         Goal goal = goalServiceService.get(Goal.builder().id(request.getId()).build()).get(0);
+        String oldGoal = GsonUtils.convertToString(goal);
+
         if(request.getName() != null) {
             goal.setName(request.getName());
         }
@@ -95,6 +102,7 @@ public class GoalServiceHandlerImpl implements GoalServiceHandler {
         }
         goalServiceService.update(goal);
         CsActionRepresentation actionRep = sdkService.getTodoComment(goal.getId());
+        sendReportMes.createHistory(request.getPayload().getUserId(), goal.getId(), ReportAction.UPDATE, oldGoal + "|" + GsonUtils.convertToString(goal));
         return RepresentationBuilder.buildGoalRepresentation(goal, actionRep);
     }
 
@@ -132,6 +140,7 @@ public class GoalServiceHandlerImpl implements GoalServiceHandler {
                         .timeFrame(request.getTimeFrame()).build()
         ).get(0);
         CsActionRepresentation actionRep = sdkService.getTodoComment(goal.getId());
+        sendReportMes.createWatcher(request.getPayload().getUserId(), goal.getId());
         return RepresentationBuilder.buildGoalRepresentation(goal, actionRep);
     }
 
