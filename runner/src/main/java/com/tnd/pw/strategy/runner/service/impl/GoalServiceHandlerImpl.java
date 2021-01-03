@@ -7,7 +7,7 @@ import com.tnd.pw.strategy.common.constants.GoalState;
 import com.tnd.pw.strategy.common.constants.LayoutType;
 import com.tnd.pw.strategy.common.constants.ReportAction;
 import com.tnd.pw.strategy.common.representations.FilterInfoRepresentation;
-import com.tnd.pw.strategy.common.representations.GoalRepresentation;
+import com.tnd.pw.strategy.common.representations.GoalRep;
 import com.tnd.pw.strategy.common.representations.LayoutRepresentation;
 import com.tnd.pw.strategy.common.representations.ListGoalRepresentation;
 import com.tnd.pw.strategy.common.requests.StrategyRequest;
@@ -16,6 +16,9 @@ import com.tnd.pw.strategy.common.utils.RepresentationBuilder;
 import com.tnd.pw.strategy.goal.entity.Goal;
 import com.tnd.pw.strategy.goal.exception.GoalNotFoundException;
 import com.tnd.pw.strategy.goal.service.GoalService;
+import com.tnd.pw.strategy.initiative.entity.Initiative;
+import com.tnd.pw.strategy.initiative.exception.InitiativeNotFoundException;
+import com.tnd.pw.strategy.initiative.service.InitiativeService;
 import com.tnd.pw.strategy.layout.entity.Layout;
 import com.tnd.pw.strategy.layout.exception.LayoutNotFoundException;
 import com.tnd.pw.strategy.layout.service.LayoutService;
@@ -25,6 +28,7 @@ import com.tnd.pw.strategy.runner.service.GoalServiceHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +38,8 @@ public class GoalServiceHandlerImpl implements GoalServiceHandler {
     @Autowired
     private GoalService goalServiceService;
     @Autowired
+    private InitiativeService initiativeService;
+    @Autowired
     private LayoutService layoutService;
     @Autowired
     private SdkService sdkService;
@@ -42,10 +48,11 @@ public class GoalServiceHandlerImpl implements GoalServiceHandler {
 
     @Override
     public ListGoalRepresentation addGoal(StrategyRequest request) throws DBServiceException, GoalNotFoundException {
-        Goal goal = goalServiceService.create(request.getId());
+        Long productId = request.getId();
+        Goal goal = goalServiceService.create(productId);
         Layout layout;
         try {
-            layout = layoutService.get(request.getId(), LayoutType.GOAL.name());
+            layout = layoutService.get(productId, LayoutType.GOAL.name());
             ArrayList<ArrayList<ArrayList<Long>>> layoutEntity = GsonUtils.getGson().fromJson(layout.getLayout(), new TypeToken<ArrayList<ArrayList<ArrayList<Long>>>>(){}.getType());
             layoutEntity.add(new ArrayList<>());
             layoutEntity.get(layoutEntity.size() - 1).add(new ArrayList<>());
@@ -57,16 +64,16 @@ public class GoalServiceHandlerImpl implements GoalServiceHandler {
             layoutEntity.add(new ArrayList<>());
             layoutEntity.get(0).add(new ArrayList<>());
             layoutEntity.get(0).get(0).add(goal.getId());
-            layout = layoutService.create(request.getId(), LayoutType.GOAL.name(), GsonUtils.convertToString(layoutEntity));
+            layout = layoutService.create(productId, LayoutType.GOAL.name(), GsonUtils.convertToString(layoutEntity));
 
         }
-        List<Goal> goals = goalServiceService.get(Goal.builder().productId(request.getId()).build());
+        List<Goal> goals = goalServiceService.get(Goal.builder().productId(productId).build());
         sendReportMes.createHistory(request.getPayload().getUserId(), goal.getId(), ReportAction.CREATE, GsonUtils.convertToString(goal));
         return RepresentationBuilder.buildListGoalRepresentation(goals, layout);
     }
 
     @Override
-    public GoalRepresentation updateGoal(StrategyRequest request) throws DBServiceException, GoalNotFoundException, ActionServiceFailedException {
+    public GoalRep updateGoal(StrategyRequest request) throws DBServiceException, GoalNotFoundException, ActionServiceFailedException {
         Goal goal = goalServiceService.get(Goal.builder().id(request.getId()).build()).get(0);
         String oldGoal = GsonUtils.convertToString(goal);
 
@@ -100,10 +107,12 @@ public class GoalServiceHandlerImpl implements GoalServiceHandler {
         if(request.getMetricFile() != null) {
             goal.setMetricFile(request.getMetricFile());
         }
+        if(request.getInitiatives() != null) {
+            goal.setInitiatives(GsonUtils.convertToString(request.getInitiatives()));
+        }
         goalServiceService.update(goal);
-        CsActionRepresentation actionRep = sdkService.getTodoComment(goal.getId());
         sendReportMes.createHistory(request.getPayload().getUserId(), goal.getId(), ReportAction.UPDATE, oldGoal + "|" + GsonUtils.convertToString(goal));
-        return RepresentationBuilder.buildGoalRepresentation(goal, actionRep);
+        return getGoalInfo(goal);
     }
 
     @Override
@@ -133,15 +142,30 @@ public class GoalServiceHandlerImpl implements GoalServiceHandler {
     }
 
     @Override
-    public GoalRepresentation getGoalInfo(StrategyRequest request) throws DBServiceException, GoalNotFoundException, ActionServiceFailedException {
+    public GoalRep getGoalInfo(StrategyRequest request) throws DBServiceException, GoalNotFoundException, ActionServiceFailedException {
         Goal goal = goalServiceService.get(
                 Goal.builder()
                         .id(request.getId())
-                        .timeFrame(request.getTimeFrame()).build()
+                        .build()
         ).get(0);
+        sendReportMes.createWatcher(request.getPayload().getUserId(), request.getId());
+        return getGoalInfo(goal);
+    }
+
+    private GoalRep getGoalInfo(Goal goal) throws DBServiceException, ActionServiceFailedException {
         CsActionRepresentation actionRep = sdkService.getTodoComment(goal.getId());
-        sendReportMes.createWatcher(request.getPayload().getUserId(), goal.getId());
-        return RepresentationBuilder.buildGoalRepresentation(goal, actionRep);
+        List<Initiative> initiatives = new ArrayList<>();
+        try {
+            List<Long> initiativeIds = GsonUtils.getGson().fromJson(
+                    goal.getInitiatives(),
+                    new TypeToken<ArrayList<Long>>(){}.getType()
+            );
+            if(!CollectionUtils.isEmpty(initiativeIds)) {
+                initiatives = initiativeService.get(initiativeIds);
+            }
+        } catch (InitiativeNotFoundException e) {
+        }
+        return RepresentationBuilder.buildGoalRep(goal, initiatives, actionRep);
     }
 
     @Override

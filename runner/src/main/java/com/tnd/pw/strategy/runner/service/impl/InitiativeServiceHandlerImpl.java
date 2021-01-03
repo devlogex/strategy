@@ -7,12 +7,15 @@ import com.tnd.pw.strategy.common.constants.InitiativeState;
 import com.tnd.pw.strategy.common.constants.LayoutType;
 import com.tnd.pw.strategy.common.constants.ReportAction;
 import com.tnd.pw.strategy.common.representations.FilterInfoRepresentation;
-import com.tnd.pw.strategy.common.representations.InitiativeRepresentation;
+import com.tnd.pw.strategy.common.representations.InitiativeRep;
 import com.tnd.pw.strategy.common.representations.LayoutRepresentation;
 import com.tnd.pw.strategy.common.representations.ListInitiativeRepresentation;
 import com.tnd.pw.strategy.common.requests.StrategyRequest;
 import com.tnd.pw.strategy.common.utils.GsonUtils;
 import com.tnd.pw.strategy.common.utils.RepresentationBuilder;
+import com.tnd.pw.strategy.goal.entity.Goal;
+import com.tnd.pw.strategy.goal.exception.GoalNotFoundException;
+import com.tnd.pw.strategy.goal.service.GoalService;
 import com.tnd.pw.strategy.initiative.entity.Initiative;
 import com.tnd.pw.strategy.initiative.exception.InitiativeNotFoundException;
 import com.tnd.pw.strategy.initiative.service.InitiativeService;
@@ -26,6 +29,7 @@ import com.tnd.pw.strategy.runner.service.InitiativeServiceHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -36,6 +40,8 @@ public class InitiativeServiceHandlerImpl implements InitiativeServiceHandler {
     private static final Logger LOGGER = LoggerFactory.getLogger(InitiativeServiceHandlerImpl.class);
     @Autowired
     private InitiativeService initiativeService;
+    @Autowired
+    private GoalService goalServiceService;
     @Autowired
     private LayoutService layoutService;
     @Autowired
@@ -97,7 +103,7 @@ public class InitiativeServiceHandlerImpl implements InitiativeServiceHandler {
     }
 
     @Override
-    public InitiativeRepresentation updateInitiative(StrategyRequest request) throws DBServiceException, InitiativeNotFoundException, LayoutNotFoundException, ActionServiceFailedException {
+    public InitiativeRep updateInitiative(StrategyRequest request) throws DBServiceException, InitiativeNotFoundException, LayoutNotFoundException, ActionServiceFailedException {
         Initiative initiative = initiativeService.get(Initiative.builder().id(request.getId()).build()).get(0);
         String oldInitiative = GsonUtils.convertToString(initiative);
 
@@ -129,6 +135,10 @@ public class InitiativeServiceHandlerImpl implements InitiativeServiceHandler {
             initiative.setVisible(request.getVisiable());
         }
 
+        if(request.getGoals() != null) {
+            initiative.setGoals(GsonUtils.convertToString(request.getGoals()));
+        }
+
         if(request.getStatus() != null) {
             Layout layout = layoutService.get(initiative.getProductId(), LayoutType.INITIATIVE_STATE.name());
             HashMap<String, ArrayList<Long>> layoutEntity = GsonUtils.getGson().fromJson(layout.getLayout(), new TypeToken<HashMap<String, ArrayList<Long>>>(){}.getType());
@@ -140,9 +150,8 @@ public class InitiativeServiceHandlerImpl implements InitiativeServiceHandler {
             initiative.setStatus(InitiativeState.valueOf(request.getStatus()).ordinal());
         }
         initiativeService.update(initiative);
-        CsActionRepresentation actionRep = sdkService.getTodoComment(initiative.getId());
         sendReportMes.createHistory(request.getPayload().getUserId(), initiative.getId(), ReportAction.UPDATE, oldInitiative + "|" + GsonUtils.convertToString(initiative));
-        return RepresentationBuilder.buildInitiativeRepresentation(initiative, actionRep);
+        return getInitiativeInfo(initiative);
     }
 
     @Override
@@ -173,15 +182,30 @@ public class InitiativeServiceHandlerImpl implements InitiativeServiceHandler {
     }
 
     @Override
-    public InitiativeRepresentation getInitiativeInfo(StrategyRequest request) throws DBServiceException, InitiativeNotFoundException, ActionServiceFailedException {
+    public InitiativeRep getInitiativeInfo(StrategyRequest request) throws DBServiceException, InitiativeNotFoundException, ActionServiceFailedException {
         Initiative initiative = initiativeService.get(
                 Initiative.builder()
                         .id(request.getId())
                         .build()
         ).get(0);
-        CsActionRepresentation actionRep = sdkService.getTodoComment(initiative.getId());
         sendReportMes.createWatcher(request.getPayload().getUserId(), initiative.getId());
-        return RepresentationBuilder.buildInitiativeRepresentation(initiative, actionRep);
+        return getInitiativeInfo(initiative);
+    }
+
+    private InitiativeRep getInitiativeInfo(Initiative initiative) throws ActionServiceFailedException, DBServiceException {
+        CsActionRepresentation actionRep = sdkService.getTodoComment(initiative.getId());
+        List<Goal> goals = new ArrayList<>();
+        try {
+            List<Long> goalIds = GsonUtils.getGson().fromJson(
+                    initiative.getGoals(),
+                    new TypeToken<ArrayList<Long>>(){}.getType()
+            );
+            if(!CollectionUtils.isEmpty(goalIds)) {
+                goals = goalServiceService.get(goalIds);
+            }
+        } catch (GoalNotFoundException e) {
+        }
+        return RepresentationBuilder.buildInitiativeRep(initiative, goals, actionRep);
     }
 
     @Override

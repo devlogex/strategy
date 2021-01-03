@@ -3,6 +3,7 @@ package com.tnd.pw.strategy.common.utils;
 import com.google.common.reflect.TypeToken;
 import com.tnd.pw.action.common.representations.CsActionRepresentation;
 import com.tnd.pw.strategy.common.constants.GoalState;
+import com.tnd.pw.strategy.common.constants.InitiativeState;
 import com.tnd.pw.strategy.common.constants.ModelType;
 import com.tnd.pw.strategy.common.representations.*;
 import com.tnd.pw.strategy.competitor.entity.Competitor;
@@ -357,7 +358,7 @@ public class RepresentationBuilder {
                 for(int k = 0; k < layoutEntity.get(i).get(j).size(); k++) {
                     for(int x = 0; x < goals.size(); x++) {
                         if(goals.get(x).getId().compareTo(layoutEntity.get(i).get(j).get(k)) == 0) {
-                            list.add(buildGoalRepresentation(goals.get(x)));
+                            list.add(buildGoalRep(goals.get(x)));
                             break;
                         }
                     }
@@ -367,42 +368,39 @@ public class RepresentationBuilder {
         return list;
     }
 
-    public static GoalRepresentation buildGoalRepresentation(Goal goal) {
-        GoalRepresentation goalRepresentation = new GoalRepresentation();
-        goalRepresentation.setId(goal.getId());
-        goalRepresentation.setProductId(goal.getProductId());
-        goalRepresentation.setName(goal.getName());
-        goalRepresentation.setDescription(goal.getDescription());
-        goalRepresentation.setFiles(goal.getFiles());
-        goalRepresentation.setParentGoal(goal.getParentGoal());
-        goalRepresentation.setStatus(GoalState.values()[goal.getStatus()].name());
-        goalRepresentation.setTimeFrame(goal.getTimeFrame());
-        goalRepresentation.setColor(goal.getColor());
-        goalRepresentation.setMetric(goal.getMetric());
-        goalRepresentation.setMetricDescription(goal.getMetricDescription());
-        goalRepresentation.setMetricFile(goal.getMetricFile());
-        return goalRepresentation;
+    public static GoalRep buildGoalRep(Goal goal) {
+        GoalRep goalRep = new GoalRep();
+        goalRep.setId(goal.getId());
+        goalRep.setProductId(goal.getProductId());
+        goalRep.setName(goal.getName());
+        goalRep.setDescription(goal.getDescription());
+        goalRep.setFiles(goal.getFiles());
+        goalRep.setParentGoal(goal.getParentGoal());
+        goalRep.setStatus(GoalState.values()[goal.getStatus()].name());
+        goalRep.setTimeFrame(goal.getTimeFrame());
+        goalRep.setColor(goal.getColor());
+        goalRep.setMetric(goal.getMetric());
+        goalRep.setMetricDescription(goal.getMetricDescription());
+        goalRep.setMetricFile(goal.getMetricFile());
+        return goalRep;
     }
 
-    public static GoalRepresentation buildGoalRepresentation(Goal goal, CsActionRepresentation actionRep) {
-        GoalRepresentation goalRepresentation = new GoalRepresentation();
-        goalRepresentation.setId(goal.getId());
-        goalRepresentation.setProductId(goal.getProductId());
-        goalRepresentation.setName(goal.getName());
-        goalRepresentation.setDescription(goal.getDescription());
-        goalRepresentation.setFiles(goal.getFiles());
-        goalRepresentation.setParentGoal(goal.getParentGoal());
-        goalRepresentation.setStatus(GoalState.values()[goal.getStatus()].name());
-        goalRepresentation.setTimeFrame(goal.getTimeFrame());
-        goalRepresentation.setColor(goal.getColor());
-        goalRepresentation.setMetric(goal.getMetric());
-        goalRepresentation.setMetricDescription(goal.getMetricDescription());
-        goalRepresentation.setMetricFile(goal.getMetricFile());
-        if(actionRep != null) {
-            goalRepresentation.setTodoReps(actionRep.getTodoReps());
-            goalRepresentation.setCommentReps(actionRep.getCommentReps());
+    public static GoalRep buildGoalRep(Goal goal, List<Initiative> initiatives, CsActionRepresentation actionRep) {
+        GoalRep goalRep = buildGoalRep(goal);
+        List<InitiativeRep> initiativeReps = new ArrayList<>();
+        for(Initiative initiative: initiatives) {
+            InitiativeRep initiativeRep = new InitiativeRep();
+            initiativeRep.setId(initiative.getId());
+            initiativeRep.setName(initiative.getName());
+            initiativeRep.setStatus(InitiativeState.values()[initiative.getStatus()].name());
+            initiativeReps.add(initiativeRep);
         }
-        return goalRepresentation;
+        goalRep.setInitiativeReps(initiativeReps);
+        if(actionRep != null) {
+            goalRep.setTodoReps(actionRep.getTodoReps());
+            goalRep.setCommentReps(actionRep.getCommentReps());
+        }
+        return goalRep;
     }
 
     public static ListInitiativeRepresentation buildListInitiativeRepresentation(List<Initiative> initiatives, Layout layout) {
@@ -413,7 +411,7 @@ public class RepresentationBuilder {
                 for(int k = 0; k < layoutEntity.get(i).get(j).size(); k++) {
                     for(int x = 0; x < initiatives.size(); x++) {
                         if(initiatives.get(x).getId().compareTo(layoutEntity.get(i).get(j).get(k)) == 0) {
-                            list.getInitiatives().add(buildInitiativeRepresentation(initiatives.get(x)));
+                            list.getInitiatives().add(buildInitiativeRep(initiatives.get(x)));
                             break;
                         }
                     }
@@ -431,7 +429,7 @@ public class RepresentationBuilder {
             for(int i = 0; i < layoutEntity.get(key).size(); i++) {
                 for(int j = 0; j < initiatives.size(); j++) {
                     if(initiatives.get(j).getId().compareTo(layoutEntity.get(key).get(i)) == 0) {
-                        list.getInitiativeStatus().get(key).add(buildInitiativeRepresentation(initiatives.get(j)));
+                        list.getInitiativeStatus().get(key).add(buildInitiativeRep(initiatives.get(j)));
                         break;
                     }
                 }
@@ -440,41 +438,38 @@ public class RepresentationBuilder {
         return list;
     }
 
-    public static InitiativeRepresentation buildInitiativeRepresentation(Initiative initiative) {
-        InitiativeRepresentation initiativeRepresentation = new InitiativeRepresentation();
-        initiativeRepresentation.setId(initiative.getId());
-        initiativeRepresentation.setProductId(initiative.getProductId());
-        initiativeRepresentation.setName(initiative.getName());
-        initiativeRepresentation.setDescription(initiative.getDescription());
-        initiativeRepresentation.setFiles(initiative.getFiles());
-        initiativeRepresentation.setParentInitiative(initiative.getParentInitiative());
-        initiativeRepresentation.setStatus(GoalState.values()[initiative.getStatus()].name());
-        initiativeRepresentation.setTimeFrame(initiative.getTimeFrame());
-        initiativeRepresentation.setColor(initiative.getColor());
-        initiativeRepresentation.setStartAt(initiative.getStartAt());
-        initiativeRepresentation.setEndAt(initiative.getEndAt());
-        initiativeRepresentation.setVisible(initiative.getVisible());
-        return initiativeRepresentation;
+    public static InitiativeRep buildInitiativeRep(Initiative initiative) {
+        InitiativeRep initiativeRep = new InitiativeRep();
+        initiativeRep.setId(initiative.getId());
+        initiativeRep.setProductId(initiative.getProductId());
+        initiativeRep.setName(initiative.getName());
+        initiativeRep.setDescription(initiative.getDescription());
+        initiativeRep.setFiles(initiative.getFiles());
+        initiativeRep.setParentInitiative(initiative.getParentInitiative());
+        initiativeRep.setStatus(GoalState.values()[initiative.getStatus()].name());
+        initiativeRep.setTimeFrame(initiative.getTimeFrame());
+        initiativeRep.setColor(initiative.getColor());
+        initiativeRep.setStartAt(initiative.getStartAt());
+        initiativeRep.setEndAt(initiative.getEndAt());
+        initiativeRep.setVisible(initiative.getVisible());
+        return initiativeRep;
     }
 
-    public static InitiativeRepresentation buildInitiativeRepresentation(Initiative initiative, CsActionRepresentation actionRep) {
-        InitiativeRepresentation initiativeRepresentation = new InitiativeRepresentation();
-        initiativeRepresentation.setId(initiative.getId());
-        initiativeRepresentation.setProductId(initiative.getProductId());
-        initiativeRepresentation.setName(initiative.getName());
-        initiativeRepresentation.setDescription(initiative.getDescription());
-        initiativeRepresentation.setFiles(initiative.getFiles());
-        initiativeRepresentation.setParentInitiative(initiative.getParentInitiative());
-        initiativeRepresentation.setStatus(GoalState.values()[initiative.getStatus()].name());
-        initiativeRepresentation.setTimeFrame(initiative.getTimeFrame());
-        initiativeRepresentation.setColor(initiative.getColor());
-        initiativeRepresentation.setStartAt(initiative.getStartAt());
-        initiativeRepresentation.setEndAt(initiative.getEndAt());
-        initiativeRepresentation.setVisible(initiative.getVisible());
-        if(actionRep != null) {
-            initiativeRepresentation.setTodoReps(actionRep.getTodoReps());
-            initiativeRepresentation.setCommentReps(actionRep.getCommentReps());
+    public static InitiativeRep buildInitiativeRep(Initiative initiative, List<Goal> goals, CsActionRepresentation actionRep) {
+        InitiativeRep initiativeRep = buildInitiativeRep(initiative);
+        List<GoalRep> goalReps = new ArrayList<>();
+        for(Goal goal: goals) {
+            GoalRep goalRep = new GoalRep();
+            goalRep.setId(goal.getId());
+            goalRep.setName(goal.getName());
+            goalRep.setStatus(GoalState.values()[goal.getStatus()].name());
+            goalReps.add(goalRep);
         }
-        return initiativeRepresentation;
+        initiativeRep.setGoalReps(goalReps);
+        if(actionRep != null) {
+            initiativeRep.setTodoReps(actionRep.getTodoReps());
+            initiativeRep.setCommentReps(actionRep.getCommentReps());
+        }
+        return initiativeRep;
     }
 }

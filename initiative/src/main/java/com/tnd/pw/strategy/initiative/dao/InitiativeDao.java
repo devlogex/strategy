@@ -11,6 +11,7 @@ public interface InitiativeDao {
     void create(Initiative entity) throws DBServiceException;
     void update(Initiative entity) throws DBServiceException;
     List<Initiative> get(Initiative entity) throws DBServiceException, InitiativeNotFoundException;
+    List<Initiative> get(List<Long> ids) throws DBServiceException, InitiativeNotFoundException;
     void remove(Long initiativeId) throws DBServiceException;
 
     List<String> getTimeFrames(Long productId) throws DBServiceException;

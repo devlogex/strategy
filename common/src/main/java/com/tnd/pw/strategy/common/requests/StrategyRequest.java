@@ -5,6 +5,8 @@ import com.tnd.common.api.common.base.authens.ProductTokenRequest;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 @Setter
 @Getter
 public class StrategyRequest extends ProductTokenRequest {
@@ -57,4 +59,9 @@ public class StrategyRequest extends ProductTokenRequest {
     private String layout;
     @SerializedName("layout_type")
     private String layoutType;
+
+    @SerializedName("initiatives")
+    private List<Long> initiatives;
+    @SerializedName("goals")
+    private List<Long> goals;
 }

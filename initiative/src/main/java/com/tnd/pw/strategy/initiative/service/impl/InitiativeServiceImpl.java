@@ -41,6 +41,11 @@ public class InitiativeServiceImpl implements InitiativeService {
     }
 
     @Override
+    public List<Initiative> get(List<Long> ids) throws DBServiceException, InitiativeNotFoundException {
+        return initiativeDao.get(ids);
+    }
+
+    @Override
     public void remove(Long initiativeId) throws DBServiceException {
         initiativeDao.remove(initiativeId);
     }

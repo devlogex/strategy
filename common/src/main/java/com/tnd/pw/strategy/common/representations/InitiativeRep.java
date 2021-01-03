@@ -15,7 +15,7 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class GoalRepresentation implements Serializable {
+public class InitiativeRep implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @SerializedName("id")
@@ -28,22 +28,25 @@ public class GoalRepresentation implements Serializable {
     private String description;
     @SerializedName("files")
     private String files;
-    @SerializedName("parent_goal")
-    private String parentGoal;
+    @SerializedName("parent_initiative")
+    private String parentInitiative;
     @SerializedName("status")
     private String status;
     @SerializedName("time_frame")
     private String timeFrame;
     @SerializedName("color")
     private String color;
-    @SerializedName("metric")
-    private String metric;
-    @SerializedName("metric_description")
-    private String metricDescription;
-    @SerializedName("metric_file")
-    private String metricFile;
+    @SerializedName("start_at")
+    private Long startAt;
+    @SerializedName("end_at")
+    private Long endAt;
+    @SerializedName("visible")
+    private Integer visible;
     @SerializedName("list_todo")
     private List<TodoRepresentation> todoReps;
     @SerializedName("list_comment")
     private List<CommentRepresentation> commentReps;
+
+    @SerializedName("goals")
+    private List<GoalRep> goalReps;
 }

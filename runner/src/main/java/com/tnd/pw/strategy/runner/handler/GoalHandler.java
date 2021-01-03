@@ -6,7 +6,7 @@ import com.tnd.common.api.server.service.annotation.HandlerService;
 import com.tnd.common.api.server.service.annotation.HandlerServiceClass;
 import com.tnd.dbservice.common.exception.DBServiceException;
 import com.tnd.pw.strategy.common.representations.FilterInfoRepresentation;
-import com.tnd.pw.strategy.common.representations.GoalRepresentation;
+import com.tnd.pw.strategy.common.representations.GoalRep;
 import com.tnd.pw.strategy.common.representations.ListGoalRepresentation;
 import com.tnd.pw.strategy.common.requests.StrategyRequest;
 import com.tnd.pw.strategy.common.utils.GsonUtils;
@@ -17,8 +17,6 @@ import com.tnd.pw.strategy.runner.service.GoalServiceHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import java.io.IOException;
 
 @HandlerServiceClass
 public class GoalHandler implements BaseHandler {
@@ -35,9 +33,9 @@ public class GoalHandler implements BaseHandler {
     }
 
     @HandlerService(path = "/strategy/goal/update", protocol = "POST")
-    public BaseResponse<GoalRepresentation> updateGoal(StrategyRequest request) throws DBServiceException, GoalNotFoundException, ActionServiceFailedException {
+    public BaseResponse<GoalRep> updateGoal(StrategyRequest request) throws DBServiceException, GoalNotFoundException, ActionServiceFailedException {
         LOGGER.info("[GoalHandler] updateGoal() - request: {}", GsonUtils.convertToString(request));
-        GoalRepresentation response = goalServiceHandler.updateGoal(request);
+        GoalRep response = goalServiceHandler.updateGoal(request);
         LOGGER.info("[GoalHandler] updateGoal() - response: {}", GsonUtils.convertToString(response));
         return new BaseResponse<>(response);
     }
@@ -51,9 +49,9 @@ public class GoalHandler implements BaseHandler {
     }
 
     @HandlerService(path = "/strategy/goal/info", protocol = "GET")
-    public BaseResponse<GoalRepresentation> getGoalInfo(StrategyRequest request) throws DBServiceException, LayoutNotFoundException, GoalNotFoundException, ActionServiceFailedException {
+    public BaseResponse<GoalRep> getGoalInfo(StrategyRequest request) throws DBServiceException, LayoutNotFoundException, GoalNotFoundException, ActionServiceFailedException {
         LOGGER.info("[GoalHandler] getGoalInfo() - request: {}", GsonUtils.convertToString(request));
-        GoalRepresentation response = goalServiceHandler.getGoalInfo(request);
+        GoalRep response = goalServiceHandler.getGoalInfo(request);
         LOGGER.info("[GoalHandler] getGoalInfo() - response: {}", GsonUtils.convertToString(response));
         return new BaseResponse<>(response);
     }

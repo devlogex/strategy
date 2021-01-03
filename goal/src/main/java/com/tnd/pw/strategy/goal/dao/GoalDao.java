@@ -11,6 +11,7 @@ public interface GoalDao {
     void create(Goal entity) throws DBServiceException;
     void update(Goal entity) throws DBServiceException;
     List<Goal> get(Goal entity) throws DBServiceException, GoalNotFoundException;
+    List<Goal> get(List<Long> ids) throws DBServiceException, GoalNotFoundException;
     void remove(Long goalId) throws DBServiceException;
 
     List<String> getTimeFrames(Long productId) throws DBServiceException;

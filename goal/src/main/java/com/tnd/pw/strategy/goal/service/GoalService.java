@@ -11,6 +11,7 @@ public interface GoalService {
     Goal create(Long productId) throws DBServiceException;
     void update(Goal entity) throws DBServiceException;
     List<Goal> get(Goal entity) throws DBServiceException, GoalNotFoundException;
+    List<Goal> get(List<Long> goalIds) throws DBServiceException, GoalNotFoundException;
     void remove(Long goalId) throws DBServiceException;
 
     List<String> getTimeFrames(Long productId) throws DBServiceException;

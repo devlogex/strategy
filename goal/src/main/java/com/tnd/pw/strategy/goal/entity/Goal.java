@@ -25,6 +25,10 @@ public class Goal implements Serializable {
     private String files;
     @SerializedName("parent_goal")
     private String parentGoal;
+    @SerializedName("initiatives")
+    private String initiatives;
+    @SerializedName("process")
+    private Integer process;
     @SerializedName("status")
     private Integer status;
     @SerializedName("time_frame")

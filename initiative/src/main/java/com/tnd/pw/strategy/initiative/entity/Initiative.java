@@ -25,6 +25,10 @@ public class Initiative implements Serializable {
     private String files;
     @SerializedName("parent_initiative")
     private String parentInitiative;
+    @SerializedName("goals")
+    private String goals;
+    @SerializedName("process")
+    private Integer process;
     @SerializedName("status")
     private Integer status;
     @SerializedName("time_frame")

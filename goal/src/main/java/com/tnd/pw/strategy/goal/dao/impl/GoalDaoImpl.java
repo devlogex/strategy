@@ -24,10 +24,12 @@ public class GoalDaoImpl implements GoalDao {
     private static final String SQL_UPDATE =
             "UPDATE goal SET name = '%s', description = '%s', files = '%s', parent_goal = '%s'" +
                     ", status = '%s', time_frame = '%s', color = '%s', metric = '%s'" +
-                    ", metric_description = '%s', metric_file = '%s'" +
+                    ", metric_description = '%s', metric_file = '%s', initiatives = '%s', process = %d" +
                     " WHERE id = %d";
     private static final String SQL_SELECT_BY_ID =
             "SELECT * FROM goal WHERE id = %d";
+    private static final String SQL_SELECT_BY_LIST_ID =
+            "SELECT * FROM goal WHERE id IN (%s)";
     private static final String SQL_SELECT_BY_PRODUCT_ID =
             "SELECT * FROM goal WHERE product_id = %d";
     private static final String SQL_SELECT_BY_PRODUCT_ID_STATUS =
@@ -36,6 +38,8 @@ public class GoalDaoImpl implements GoalDao {
             "SELECT * FROM goal WHERE product_id = %d AND time_frame = '%s'";
     private static final String SQL_SELECT_BY_PRODUCT_ID_STATUS_TIME_FRAME =
             "SELECT * FROM goal WHERE product_id = %d AND status = %d AND time_frame = '%s'";
+    private static final String SQL_SELECT_BY_INITIATIVES =
+            "SELECT * FROM goal WHERE initiatives LIKE '%%%s%%'";
     private static final String SQL_DELETE =
             "DELETE FROM goal WHERE id = %d";
 
@@ -56,7 +60,8 @@ public class GoalDaoImpl implements GoalDao {
         String query = String.format(SQL_UPDATE, entity.getName(),entity.getDescription(),
                 entity.getFiles(), entity.getParentGoal(), entity.getStatus(),
                 entity.getTimeFrame(), entity.getColor(), entity.getMetric(),
-                entity.getMetricDescription(), entity.getMetricFile(), entity.getId());
+                entity.getMetricDescription(), entity.getMetricFile(),
+                entity.getInitiatives(), entity.getProcess(), entity.getId());
         dataHelper.executeSQL(query);
     }
 
@@ -78,9 +83,27 @@ public class GoalDaoImpl implements GoalDao {
             query = String.format(SQL_SELECT_BY_PRODUCT_ID_TIME_FRAME,
                     entity.getProductId(), entity.getTimeFrame());
         }
+        else if(entity.getInitiatives() != null) {
+            query = String.format(SQL_SELECT_BY_INITIATIVES, entity.getInitiatives());
+        }
         else {
             query = String.format(SQL_SELECT_BY_PRODUCT_ID, entity.getProductId());
         }
+        List<Goal> entities = dataHelper.querySQL(query, Goal.class);
+        if(CollectionUtils.isEmpty(entities)) {
+            throw new GoalNotFoundException();
+        }
+        return entities;
+    }
+
+    @Override
+    public List<Goal> get(List<Long> ids) throws DBServiceException, GoalNotFoundException {
+        String listId = "";
+        for (int i=0;i<ids.size() - 1; i++) {
+            listId += ids.get(i) + ",";
+        }
+        listId += ids.get(ids.size()-1);
+        String query = String.format(SQL_SELECT_BY_LIST_ID, listId);
         List<Goal> entities = dataHelper.querySQL(query, Goal.class);
         if(CollectionUtils.isEmpty(entities)) {
             throw new GoalNotFoundException();

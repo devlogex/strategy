@@ -45,6 +45,11 @@ public class GoalServiceImpl implements GoalService {
     }
 
     @Override
+    public List<Goal> get(List<Long> goalIds) throws DBServiceException, GoalNotFoundException {
+        return goalDao.get(goalIds);
+    }
+
+    @Override
     public void remove(Long goalId) throws DBServiceException {
         goalDao.remove(goalId);
     }

@@ -24,10 +24,12 @@ public class InitiativeDaoImpl  implements InitiativeDao {
     private static final String SQL_UPDATE =
             "UPDATE initiative SET name = '%s', description = '%s', files = '%s', parent_initiative = '%s'" +
                     ", status = '%s', time_frame = '%s', color = '%s', start_at = %d" +
-                    ", end_at = %d, visible = %d" +
+                    ", end_at = %d, visible = %d, goals = '%s', process = %d " +
                     " WHERE id = %d";
     private static final String SQL_SELECT_BY_ID =
             "SELECT * FROM initiative WHERE id = %d";
+    private static final String SQL_SELECT_BY_LIST_ID =
+            "SELECT * FROM initiative WHERE id IN (%s)";
     private static final String SQL_SELECT_BY_PRODUCT_ID =
             "SELECT * FROM initiative WHERE product_id = %d";
     private static final String SQL_SELECT_BY_PRODUCT_ID_STATUS =
@@ -36,6 +38,8 @@ public class InitiativeDaoImpl  implements InitiativeDao {
             "SELECT * FROM initiative WHERE product_id = %d AND time_frame = '%s'";
     private static final String SQL_SELECT_BY_PRODUCT_ID_STATUS_TIME_FRAME =
             "SELECT * FROM initiative WHERE product_id = %d AND status = %d AND time_frame = '%s'";
+    private static final String SQL_SELECT_BY_GOALS =
+            "SELECT * FROM initiative WHERE goals LIKE '%%%s%%'";
     private static final String SQL_DELETE =
             "DELETE FROM initiative WHERE id = %d";
 
@@ -55,7 +59,8 @@ public class InitiativeDaoImpl  implements InitiativeDao {
         String query = String.format(SQL_UPDATE, entity.getName(),entity.getDescription(),
                 entity.getFiles(), entity.getParentInitiative(), entity.getStatus(),
                 entity.getTimeFrame(), entity.getColor(), entity.getStartAt(),
-                entity.getEndAt(), entity.getVisible(), entity.getId());
+                entity.getEndAt(), entity.getVisible(), entity.getGoals(), entity.getProcess(),
+                entity.getId());
         dataHelper.executeSQL(query);
     }
 
@@ -77,9 +82,27 @@ public class InitiativeDaoImpl  implements InitiativeDao {
             query = String.format(SQL_SELECT_BY_PRODUCT_ID_TIME_FRAME,
                     entity.getProductId(), entity.getTimeFrame());
         }
+        else if(entity.getGoals() != null) {
+            query = String.format(SQL_SELECT_BY_GOALS, entity.getGoals());
+        }
         else {
             query = String.format(SQL_SELECT_BY_PRODUCT_ID, entity.getProductId());
         }
+        List<Initiative> entities = dataHelper.querySQL(query, Initiative.class);
+        if(CollectionUtils.isEmpty(entities)) {
+            throw new InitiativeNotFoundException();
+        }
+        return entities;
+    }
+
+    @Override
+    public List<Initiative> get(List<Long> ids) throws DBServiceException, InitiativeNotFoundException {
+        String listId = "";
+        for (int i=0;i<ids.size() - 1; i++) {
+            listId += ids.get(i) + ",";
+        }
+        listId += ids.get(ids.size()-1);
+        String query = String.format(SQL_SELECT_BY_LIST_ID, listId);
         List<Initiative> entities = dataHelper.querySQL(query, Initiative.class);
         if(CollectionUtils.isEmpty(entities)) {
             throw new InitiativeNotFoundException();
