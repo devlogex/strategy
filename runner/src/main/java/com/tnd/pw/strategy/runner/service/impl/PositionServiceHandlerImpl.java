@@ -337,13 +337,13 @@ public class PositionServiceHandlerImpl implements PositionServiceHandler {
         layout.add(new ArrayList<>());
         layout.get(3).add(new ArrayList<>());
         layout.get(3).get(0).add(RepresentationBuilder.buildPositionComponentRep(
-                positionComponentService.create(position.getId(), "Customer challenge #1", "#8C443E", null, null)));
+                positionComponentService.create(position.getId(), "Customer challenge #1", "#8C443E", null, null)));
         layout.get(3).add(new ArrayList<>());
         layout.get(3).get(1).add(RepresentationBuilder.buildPositionComponentRep(
-                positionComponentService.create(position.getId(), "Customer challenge #2", "#BB5A53", null, null)));
+                positionComponentService.create(position.getId(), "Customer challenge #2", "#BB5A53", null, null)));
         layout.get(3).add(new ArrayList<>());
         layout.get(3).get(2).add(RepresentationBuilder.buildPositionComponentRep(
-                positionComponentService.create(position.getId(), "Customer challenge #3", "#EA7168", null, null)));
+                positionComponentService.create(position.getId(), "Customer challenge #3", "#EA7168", null, null)));
 
         layout.add(new ArrayList<>());
         layout.get(4).add(new ArrayList<>());
@@ -359,13 +359,13 @@ public class PositionServiceHandlerImpl implements PositionServiceHandler {
         layout.add(new ArrayList<>());
         layout.get(5).add(new ArrayList<>());
         layout.get(5).get(0).add(RepresentationBuilder.buildPositionComponentRep(
-                positionComponentService.create(position.getId(), "Product differentiator #1", "#436A78", null, null)));
+                positionComponentService.create(position.getId(), "Product differentiator #1", "#436A78", null, null)));
         layout.get(5).add(new ArrayList<>());
         layout.get(5).get(1).add(RepresentationBuilder.buildPositionComponentRep(
-                positionComponentService.create(position.getId(), "Product differentiator #2", "#598DA0", null, null)));
+                positionComponentService.create(position.getId(), "Product differentiator #2", "#598DA0", null, null)));
         layout.get(5).add(new ArrayList<>());
         layout.get(5).get(2).add(RepresentationBuilder.buildPositionComponentRep(
-                positionComponentService.create(position.getId(), "Product differentiator #3", "#6FB0C8", null, null)));
+                positionComponentService.create(position.getId(), "Product differentiator #3", "#6FB0C8", null, null)));
 
         layout.add(new ArrayList<>());
         layout.get(6).add(new ArrayList<>());
