@@ -3,6 +3,7 @@ package com.tnd.pw.strategy.common.representations;
 import com.google.gson.annotations.SerializedName;
 import com.tnd.pw.action.common.representations.CommentRepresentation;
 import com.tnd.pw.action.common.representations.TodoRepresentation;
+import com.tnd.pw.development.common.representations.FeatureRep;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -49,4 +50,7 @@ public class InitiativeRep implements Serializable {
 
     @SerializedName("goals")
     private List<GoalRep> goalReps;
+
+    @SerializedName("features")
+    private List<FeatureRep> featureReps;
 }

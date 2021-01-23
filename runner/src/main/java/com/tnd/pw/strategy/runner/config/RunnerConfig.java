@@ -4,6 +4,8 @@ import com.tnd.dbservice.sdk.api.DBServiceSdkClient;
 import com.tnd.dbservice.sdk.api.impl.DBServiceSdkClientImpl;
 import com.tnd.pw.action.sdk.ActionServiceSdkClient;
 import com.tnd.pw.action.sdk.impl.ActionServiceSdkClientImpl;
+import com.tnd.pw.development.sdk.DevServiceSdkClient;
+import com.tnd.pw.development.sdk.impl.DevServiceSdkClientImpl;
 import com.tnd.pw.report.sdk.ReportSdkClient;
 import com.tnd.pw.report.sdk.impl.ReportSdkClientImpl;
 import com.tnd.pw.strategy.competitor.dao.CompetitorDao;
@@ -78,6 +80,15 @@ public class RunnerConfig {
     private String report_service_host;
     @Value("${report.service.port}")
     private String report_service_port;
+    @Value("${dev.service.host}")
+    private String dev_service_host;
+    @Value("${dev.service.port}")
+    private String dev_service_port;
+
+    @Bean
+    public DevServiceSdkClient devServiceSdkClient() {
+        return new DevServiceSdkClientImpl(dev_service_host, Integer.parseInt(dev_service_port), 2);
+    }
 
     @Bean
     public ActionServiceSdkClient actionServiceSdkClient() {

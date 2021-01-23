@@ -3,13 +3,12 @@ package com.tnd.pw.strategy.runner.service.impl;
 import com.google.common.reflect.TypeToken;
 import com.tnd.dbservice.common.exception.DBServiceException;
 import com.tnd.pw.action.common.representations.CsActionRepresentation;
+import com.tnd.pw.development.common.representations.FeatureRep;
+import com.tnd.pw.development.common.representations.ReleaseRep;
 import com.tnd.pw.strategy.common.constants.InitiativeState;
 import com.tnd.pw.strategy.common.constants.LayoutType;
 import com.tnd.pw.strategy.common.constants.ReportAction;
-import com.tnd.pw.strategy.common.representations.FilterInfoRepresentation;
-import com.tnd.pw.strategy.common.representations.InitiativeRep;
-import com.tnd.pw.strategy.common.representations.LayoutRepresentation;
-import com.tnd.pw.strategy.common.representations.ListInitiativeRepresentation;
+import com.tnd.pw.strategy.common.representations.*;
 import com.tnd.pw.strategy.common.requests.StrategyRequest;
 import com.tnd.pw.strategy.common.utils.GsonUtils;
 import com.tnd.pw.strategy.common.utils.RepresentationBuilder;
@@ -24,6 +23,7 @@ import com.tnd.pw.strategy.layout.exception.LayoutNotFoundException;
 import com.tnd.pw.strategy.layout.service.LayoutService;
 import com.tnd.pw.strategy.report.SendReportMes;
 import com.tnd.pw.strategy.runner.exception.ActionServiceFailedException;
+import com.tnd.pw.strategy.runner.exception.DevServiceFailedException;
 import com.tnd.pw.strategy.runner.exception.InvalidDataRequestException;
 import com.tnd.pw.strategy.runner.service.InitiativeServiceHandler;
 import org.slf4j.Logger;
@@ -35,6 +35,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class InitiativeServiceHandlerImpl implements InitiativeServiceHandler {
     private static final Logger LOGGER = LoggerFactory.getLogger(InitiativeServiceHandlerImpl.class);
@@ -328,6 +329,26 @@ public class InitiativeServiceHandlerImpl implements InitiativeServiceHandler {
     public FilterInfoRepresentation getFilterInfos(StrategyRequest request) throws DBServiceException {
         List<String> timeFrames = initiativeService.getTimeFrames(request.getId());
         return new FilterInfoRepresentation(timeFrames, null);
+    }
+
+    @Override
+    public CsStrategyRep getInitiativeRoadmap(StrategyRequest request) throws DBServiceException, DevServiceFailedException {
+        Long productId = request.getProductId();
+        try {
+            List<Initiative> initiatives = initiativeService.get(
+                    Initiative.builder()
+                            .productId(productId)
+                            .build()
+            );
+            List<Long> initiativeIds = initiatives.stream()
+                    .map(initiative -> initiative.getId())
+                    .collect(Collectors.toList());
+            List<ReleaseRep> releaseReps = sdkService.getReleases(productId).getReleaseReps();
+            List<FeatureRep> featureReps = sdkService.getFeatures(initiativeIds).getFeatureReps();
+            return RepresentationBuilder.buildInitiativeRoadmap(initiatives, releaseReps, featureReps);
+        } catch (InitiativeNotFoundException e) {
+            return new CsStrategyRep();
+        }
     }
 
     @Override

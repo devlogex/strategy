@@ -5,6 +5,7 @@ import com.tnd.common.api.server.BaseHandler;
 import com.tnd.common.api.server.service.annotation.HandlerService;
 import com.tnd.common.api.server.service.annotation.HandlerServiceClass;
 import com.tnd.dbservice.common.exception.DBServiceException;
+import com.tnd.pw.strategy.common.representations.CsStrategyRep;
 import com.tnd.pw.strategy.common.representations.FilterInfoRepresentation;
 import com.tnd.pw.strategy.common.representations.InitiativeRep;
 import com.tnd.pw.strategy.common.representations.ListInitiativeRepresentation;
@@ -13,6 +14,7 @@ import com.tnd.pw.strategy.common.utils.GsonUtils;
 import com.tnd.pw.strategy.initiative.exception.InitiativeNotFoundException;
 import com.tnd.pw.strategy.layout.exception.LayoutNotFoundException;
 import com.tnd.pw.strategy.runner.exception.ActionServiceFailedException;
+import com.tnd.pw.strategy.runner.exception.DevServiceFailedException;
 import com.tnd.pw.strategy.runner.exception.InvalidDataRequestException;
 import com.tnd.pw.strategy.runner.service.InitiativeServiceHandler;
 import org.slf4j.Logger;
@@ -87,6 +89,14 @@ public class InitiativeHandler implements BaseHandler {
         LOGGER.info("[InitiativeHandler] getFilterInfos() - request: {}", GsonUtils.convertToString(request));
         FilterInfoRepresentation response = initiativeServiceHandler.getFilterInfos(request);
         LOGGER.info("[InitiativeHandler] getFilterInfos() - response: {}", GsonUtils.convertToString(response));
+        return new BaseResponse<>(response);
+    }
+
+    @HandlerService(path = "/strategy/initiative/roadmap", protocol = "GET")
+    public BaseResponse<CsStrategyRep> getInitiativeRoadmap(StrategyRequest request) throws DBServiceException, DevServiceFailedException, InitiativeNotFoundException {
+        LOGGER.info("[InitiativeHandler] getInitiativeRoadmap() - request: {}", GsonUtils.convertToString(request));
+        CsStrategyRep response = initiativeServiceHandler.getInitiativeRoadmap(request);
+        LOGGER.info("[InitiativeHandler] getInitiativeRoadmap() - response: {}", GsonUtils.convertToString(response));
         return new BaseResponse<>(response);
     }
 }

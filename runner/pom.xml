@@ -82,7 +82,10 @@
             <groupId>com.tnd.pw</groupId>
             <artifactId>report</artifactId>
             <version>1.0-SNAPSHOT</version>
-            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.tnd.pw.development</groupId>
+            <artifactId>sdk</artifactId>
         </dependency>
 
     </dependencies>

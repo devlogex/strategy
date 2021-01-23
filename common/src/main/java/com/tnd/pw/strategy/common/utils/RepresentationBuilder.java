@@ -2,6 +2,8 @@ package com.tnd.pw.strategy.common.utils;
 
 import com.google.common.reflect.TypeToken;
 import com.tnd.pw.action.common.representations.CsActionRepresentation;
+import com.tnd.pw.development.common.representations.FeatureRep;
+import com.tnd.pw.development.common.representations.ReleaseRep;
 import com.tnd.pw.strategy.common.constants.GoalState;
 import com.tnd.pw.strategy.common.constants.InitiativeState;
 import com.tnd.pw.strategy.common.constants.ModelType;
@@ -21,6 +23,7 @@ import com.tnd.pw.strategy.vision.entity.VisionComponent;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class RepresentationBuilder {
 
@@ -471,5 +474,22 @@ public class RepresentationBuilder {
             initiativeRep.setCommentReps(actionRep.getCommentReps());
         }
         return initiativeRep;
+    }
+
+
+    public static CsStrategyRep buildInitiativeRoadmap(List<Initiative> initiatives, List<ReleaseRep> releaseReps, List<FeatureRep> featureReps) {
+        List<InitiativeRep> initiativeReps = new ArrayList<>();
+        for(Initiative initiative: initiatives) {
+            InitiativeRep initiativeRep = buildInitiativeRep(initiative);
+            List<FeatureRep> collect = featureReps.stream()
+                    .filter(featureRep -> featureRep.getInitiativeId().compareTo(initiative.getId()) == 0)
+                    .collect(Collectors.toList());
+            initiativeRep.setFeatureReps(collect);
+            initiativeReps.add(initiativeRep);
+        }
+        CsStrategyRep csStrategyRep = new CsStrategyRep();
+        csStrategyRep.setInitiativeReps(initiativeReps);
+        csStrategyRep.setReleaseReps(releaseReps);
+        return csStrategyRep;
     }
 }
