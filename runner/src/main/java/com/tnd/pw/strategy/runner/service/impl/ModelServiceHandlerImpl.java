@@ -173,7 +173,7 @@ public class ModelServiceHandlerImpl implements ModelServiceHandler {
         modelService.remove(model.getId());
 
         modelComponentService.remove(null , model.getId());
-        layoutService.remove(model.getId(), LayoutType.MODEL_COMPONENT.name());
+//        layoutService.remove(model.getId(), LayoutType.MODEL_COMPONENT.name());
         List<Model> models = null;
         try {
             models = modelService.get(Model.builder().productId(model.getProductId()).build());

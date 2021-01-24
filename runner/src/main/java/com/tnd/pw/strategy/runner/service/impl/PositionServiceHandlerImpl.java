@@ -164,7 +164,7 @@ public class PositionServiceHandlerImpl implements PositionServiceHandler {
         positionService.remove(position.getId());
 
         positionComponentService.remove(null , position.getId());
-        layoutService.remove(position.getId(), LayoutType.POSITION_COMPONENT.name());
+//        layoutService.remove(position.getId(), LayoutType.POSITION_COMPONENT.name());
         List<Position> positions = null;
         try {
             positions = positionService.get(Position.builder().productId(position.getProductId()).build());

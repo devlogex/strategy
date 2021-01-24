@@ -334,6 +334,7 @@ public class InitiativeServiceHandlerImpl implements InitiativeServiceHandler {
     @Override
     public CsStrategyRep getInitiativeRoadmap(StrategyRequest request) throws DBServiceException, DevServiceFailedException {
         Long productId = request.getProductId();
+        List<ReleaseRep> releaseReps = sdkService.getReleases(productId).getReleaseReps();
         try {
             List<Initiative> initiatives = initiativeService.get(
                     Initiative.builder()
@@ -343,11 +344,10 @@ public class InitiativeServiceHandlerImpl implements InitiativeServiceHandler {
             List<Long> initiativeIds = initiatives.stream()
                     .map(initiative -> initiative.getId())
                     .collect(Collectors.toList());
-            List<ReleaseRep> releaseReps = sdkService.getReleases(productId).getReleaseReps();
             List<FeatureRep> featureReps = sdkService.getFeatures(initiativeIds).getFeatureReps();
             return RepresentationBuilder.buildInitiativeRoadmap(initiatives, releaseReps, featureReps);
         } catch (InitiativeNotFoundException e) {
-            return new CsStrategyRep();
+            return new CsStrategyRep(new ArrayList<>(), releaseReps);
         }
     }
 
