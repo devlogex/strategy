@@ -3,9 +3,9 @@ package com.tnd.pw.strategy.runner.service.impl;
 import com.google.common.reflect.TypeToken;
 import com.tnd.dbservice.common.exception.DBServiceException;
 import com.tnd.pw.action.common.representations.CsActionRepresentation;
+import com.tnd.pw.report.common.constants.ReportAction;
 import com.tnd.pw.strategy.common.constants.GoalState;
 import com.tnd.pw.strategy.common.constants.LayoutType;
-import com.tnd.pw.strategy.common.constants.ReportAction;
 import com.tnd.pw.strategy.common.representations.FilterInfoRepresentation;
 import com.tnd.pw.strategy.common.representations.GoalRep;
 import com.tnd.pw.strategy.common.representations.LayoutRepresentation;
@@ -68,7 +68,7 @@ public class GoalServiceHandlerImpl implements GoalServiceHandler {
 
         }
         List<Goal> goals = goalServiceService.get(Goal.builder().productId(productId).build());
-        sendReportMes.createHistory(request.getPayload().getUserId(), goal.getId(), ReportAction.CREATE, GsonUtils.convertToString(goal));
+        sendReportMes.createHistory(request.getPayload().getUserId(), goal.getId(), ReportAction.CREATED, GsonUtils.convertToString(goal));
         return RepresentationBuilder.buildListGoalRepresentation(goals, layout);
     }
 
@@ -111,7 +111,7 @@ public class GoalServiceHandlerImpl implements GoalServiceHandler {
             goal.setInitiatives(GsonUtils.convertToString(request.getInitiatives()));
         }
         goalServiceService.update(goal);
-        sendReportMes.createHistory(request.getPayload().getUserId(), goal.getId(), ReportAction.UPDATE, oldGoal + "|" + GsonUtils.convertToString(goal));
+        sendReportMes.createHistory(request.getPayload().getUserId(), goal.getId(), ReportAction.UPDATED, oldGoal + "|" + GsonUtils.convertToString(goal));
         return getGoalInfo(goal);
     }
 

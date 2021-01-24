@@ -5,9 +5,9 @@ import com.tnd.dbservice.common.exception.DBServiceException;
 import com.tnd.pw.action.common.representations.CsActionRepresentation;
 import com.tnd.pw.development.common.representations.FeatureRep;
 import com.tnd.pw.development.common.representations.ReleaseRep;
+import com.tnd.pw.report.common.constants.ReportAction;
 import com.tnd.pw.strategy.common.constants.InitiativeState;
 import com.tnd.pw.strategy.common.constants.LayoutType;
-import com.tnd.pw.strategy.common.constants.ReportAction;
 import com.tnd.pw.strategy.common.representations.*;
 import com.tnd.pw.strategy.common.requests.StrategyRequest;
 import com.tnd.pw.strategy.common.utils.GsonUtils;
@@ -94,7 +94,7 @@ public class InitiativeServiceHandlerImpl implements InitiativeServiceHandler {
 
         List<Initiative> initiatives = initiativeService.get(Initiative.builder().productId(request.getId()).build());
 
-        sendReportMes.createHistory(request.getPayload().getUserId(), initiative.getId(), ReportAction.CREATE, GsonUtils.convertToString(initiative));
+        sendReportMes.createHistory(request.getPayload().getUserId(), initiative.getId(), ReportAction.CREATED, GsonUtils.convertToString(initiative));
         if(request.getStatus() == null) {
             return RepresentationBuilder.buildListInitiativeRepresentation(initiatives, layout);
         }
@@ -151,7 +151,7 @@ public class InitiativeServiceHandlerImpl implements InitiativeServiceHandler {
             initiative.setStatus(InitiativeState.valueOf(request.getStatus()).ordinal());
         }
         initiativeService.update(initiative);
-        sendReportMes.createHistory(request.getPayload().getUserId(), initiative.getId(), ReportAction.UPDATE, oldInitiative + "|" + GsonUtils.convertToString(initiative));
+        sendReportMes.createHistory(request.getPayload().getUserId(), initiative.getId(), ReportAction.UPDATED, oldInitiative + "|" + GsonUtils.convertToString(initiative));
         return getInitiativeInfo(initiative);
     }
 

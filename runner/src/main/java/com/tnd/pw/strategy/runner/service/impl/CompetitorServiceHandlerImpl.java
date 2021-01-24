@@ -3,8 +3,8 @@ package com.tnd.pw.strategy.runner.service.impl;
 import com.google.common.reflect.TypeToken;
 import com.tnd.dbservice.common.exception.DBServiceException;
 import com.tnd.pw.action.common.representations.CsActionRepresentation;
+import com.tnd.pw.report.common.constants.ReportAction;
 import com.tnd.pw.strategy.common.constants.LayoutType;
-import com.tnd.pw.strategy.common.constants.ReportAction;
 import com.tnd.pw.strategy.common.representations.CompetitorRepresentation;
 import com.tnd.pw.strategy.common.representations.LayoutRepresentation;
 import com.tnd.pw.strategy.common.representations.ListCompetitorRepresentation;
@@ -59,7 +59,7 @@ public class CompetitorServiceHandlerImpl implements CompetitorServiceHandler {
 
         }
         List<Competitor> competitors = competitorService.get(Competitor.builder().productId(request.getId()).build());
-        sendReportMes.createHistory(request.getPayload().getUserId(), competitor.getId(), ReportAction.CREATE, GsonUtils.convertToString(competitor));
+        sendReportMes.createHistory(request.getPayload().getUserId(), competitor.getId(), ReportAction.CREATED, GsonUtils.convertToString(competitor));
         return RepresentationBuilder.buildListCompetitorRepresentation(competitors, layout);
     }
 
@@ -88,7 +88,7 @@ public class CompetitorServiceHandlerImpl implements CompetitorServiceHandler {
         }
         competitorService.update(competitor);
         CsActionRepresentation actionRep = sdkService.getTodoComment(competitor.getId());
-        sendReportMes.createHistory(request.getPayload().getUserId(), competitor.getId(), ReportAction.UPDATE, oldCompetitor + "|" + GsonUtils.convertToString(competitor));
+        sendReportMes.createHistory(request.getPayload().getUserId(), competitor.getId(), ReportAction.UPDATED, oldCompetitor + "|" + GsonUtils.convertToString(competitor));
         return RepresentationBuilder.buildCompetitorRepresentation(competitor, actionRep);
     }
 

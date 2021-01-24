@@ -1,11 +1,10 @@
 package com.tnd.pw.strategy.runner.service.impl;
 
 import com.google.common.reflect.TypeToken;
-import com.google.gson.Gson;
 import com.tnd.dbservice.common.exception.DBServiceException;
 import com.tnd.pw.action.common.representations.CsActionRepresentation;
+import com.tnd.pw.report.common.constants.ReportAction;
 import com.tnd.pw.strategy.common.constants.LayoutType;
-import com.tnd.pw.strategy.common.constants.ReportAction;
 import com.tnd.pw.strategy.common.representations.*;
 import com.tnd.pw.strategy.common.requests.StrategyRequest;
 import com.tnd.pw.strategy.common.utils.GsonUtils;
@@ -22,7 +21,6 @@ import com.tnd.pw.strategy.positioning.service.PositionService;
 import com.tnd.pw.strategy.report.SendReportMes;
 import com.tnd.pw.strategy.runner.exception.ActionServiceFailedException;
 import com.tnd.pw.strategy.runner.service.PositionServiceHandler;
-import com.tnd.pw.strategy.vision.entity.VisionComponent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,7 +63,7 @@ public class PositionServiceHandlerImpl implements PositionServiceHandler {
         LayoutRepresentation layoutRepresentation = createPositionComponentDefaults(position, request);
         List<Position> positions = positionService.get(Position.builder().productId(request.getId()).build());
 
-        sendReportMes.createHistory(request.getPayload().getUserId(), position.getId(), ReportAction.CREATE, GsonUtils.convertToString(position));
+        sendReportMes.createHistory(request.getPayload().getUserId(), position.getId(), ReportAction.CREATED, GsonUtils.convertToString(position));
         return RepresentationBuilder.buildListPositionRepresentation(positions, layout, layoutRepresentation.getLayout());
     }
 
@@ -90,7 +88,7 @@ public class PositionServiceHandlerImpl implements PositionServiceHandler {
         }
         positionService.update(position);
         CsActionRepresentation actionRep = sdkService.getTodoComment(position.getId());
-        sendReportMes.createHistory(request.getPayload().getUserId(), position.getId(), ReportAction.UPDATE, oldPosition + "|" + GsonUtils.convertToString(position));
+        sendReportMes.createHistory(request.getPayload().getUserId(), position.getId(), ReportAction.UPDATED, oldPosition + "|" + GsonUtils.convertToString(position));
         return RepresentationBuilder.buildPositionRepresentation(position, actionRep);
     }
 
@@ -193,7 +191,7 @@ public class PositionServiceHandlerImpl implements PositionServiceHandler {
             layoutService.update(layout);
             List<PositionComponent> components = positionComponentService.get(null, component.getPositionId());
 
-            sendReportMes.createHistory(request.getPayload().getUserId(), component.getId(), ReportAction.CREATE, GsonUtils.convertToString(component));
+            sendReportMes.createHistory(request.getPayload().getUserId(), component.getId(), ReportAction.CREATED, GsonUtils.convertToString(component));
             return RepresentationBuilder.buildListPositionComponentRep(layoutEntity, components);
         } catch (PositionComponentNotFoundException e) {
             LOGGER.error("[PositionServiceHandlerImpl] PositionComponentNotFoundException with component_id: {}", request.getId());
@@ -223,7 +221,7 @@ public class PositionServiceHandlerImpl implements PositionServiceHandler {
         }
         positionComponentService.update(positionComponent);
 
-        sendReportMes.createHistory(request.getPayload().getUserId(), positionComponent.getId(), ReportAction.UPDATE, oldComponent + "|" + GsonUtils.convertToString(positionComponent));
+        sendReportMes.createHistory(request.getPayload().getUserId(), positionComponent.getId(), ReportAction.UPDATED, oldComponent + "|" + GsonUtils.convertToString(positionComponent));
         return RepresentationBuilder.buildPositionComponentRep(positionComponent);
     }
 
@@ -383,7 +381,7 @@ public class PositionServiceHandlerImpl implements PositionServiceHandler {
                 layoutEntity.get(i).add(new ArrayList<>());
                 for(int k = 0; k < layout.get(i).get(j).size(); k++) {
                     layoutEntity.get(i).get(j).add(layout.get(i).get(j).get(k).getId());
-                    sendReportMes.createHistory(request.getPayload().getUserId(), layout.get(i).get(j).get(k).getId(), ReportAction.CREATE, GsonUtils.convertToString(layout.get(i).get(j).get(k)));
+                    sendReportMes.createHistory(request.getPayload().getUserId(), layout.get(i).get(j).get(k).getId(), ReportAction.CREATED, GsonUtils.convertToString(layout.get(i).get(j).get(k)));
                 }
             }
         }
