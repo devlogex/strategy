@@ -3,8 +3,8 @@ package com.tnd.pw.strategy.runner.service.impl;
 import com.google.common.reflect.TypeToken;
 import com.tnd.dbservice.common.exception.DBServiceException;
 import com.tnd.pw.action.common.representations.CsActionRepresentation;
+import com.tnd.pw.report.common.constants.ReportAction;
 import com.tnd.pw.strategy.common.constants.LayoutType;
-import com.tnd.pw.strategy.common.constants.ReportAction;
 import com.tnd.pw.strategy.common.representations.*;
 import com.tnd.pw.strategy.common.requests.StrategyRequest;
 import com.tnd.pw.strategy.common.utils.GsonUtils;
@@ -45,9 +45,9 @@ public class VisionServiceHandlerImpl implements VisionServiceHandler {
         Vision vision = visionService.create(request.getId());
         List<VisionComponent> visionComponents = createComponentDefaults(vision.getId());
         Layout layout = createLayout(vision.getId(), visionComponents);
-        sendReportMes.createHistory(request.getPayload().getUserId(), vision.getId(), ReportAction.CREATE, GsonUtils.convertToString(vision));
+        sendReportMes.createHistory(request.getPayload().getUserId(), vision.getId(), ReportAction.CREATED, GsonUtils.convertToString(vision));
         for(VisionComponent visionComponent: visionComponents) {
-            sendReportMes.createHistory(request.getPayload().getUserId(), visionComponent.getId(), ReportAction.CREATE, GsonUtils.convertToString(visionComponent));
+            sendReportMes.createHistory(request.getPayload().getUserId(), visionComponent.getId(), ReportAction.CREATED, GsonUtils.convertToString(visionComponent));
         }
         return RepresentationBuilder.buildVisionRepresentation(vision, visionComponents, layout, null);
     }
@@ -72,7 +72,7 @@ public class VisionServiceHandlerImpl implements VisionServiceHandler {
             vision.setDescription(request.getDescription());
         }
         Vision newVision = visionService.update(vision);
-        sendReportMes.createHistory(request.getPayload().getUserId(), vision.getId(), ReportAction.UPDATE, GsonUtils.convertToString(vision) + "|" + GsonUtils.convertToString(newVision));
+        sendReportMes.createHistory(request.getPayload().getUserId(), vision.getId(), ReportAction.UPDATED, GsonUtils.convertToString(vision) + "|" + GsonUtils.convertToString(newVision));
         CsActionRepresentation actionRep = sdkService.getTodoComment(newVision.getId());
         List<VisionComponent> visionComponents;
         Layout layout;
@@ -134,7 +134,7 @@ public class VisionServiceHandlerImpl implements VisionServiceHandler {
             layoutService.update(layout);
             List<VisionComponent> components = visionComponentService.getByVisionId(vision.getId());
 
-            sendReportMes.createHistory(request.getPayload().getUserId(), visionComponent.getId(), ReportAction.CREATE, GsonUtils.convertToString(visionComponent));
+            sendReportMes.createHistory(request.getPayload().getUserId(), visionComponent.getId(), ReportAction.CREATED, GsonUtils.convertToString(visionComponent));
             return RepresentationBuilder.buildListVisionComponentRep(components, layout);
         }
         catch (VisionNotFoundException e) {
@@ -151,6 +151,8 @@ public class VisionServiceHandlerImpl implements VisionServiceHandler {
 
     public VisionComponentRep updateVisionComponent(StrategyRequest request) throws DBServiceException, VisionComponentNotFoundException {
         VisionComponent visionComponent = visionComponentService.getById(request.getId());
+        VisionComponent oldComponent = visionComponent;
+
         if(request.getFiles() != null) {
             visionComponent.setFiles(request.getFiles());
         }
@@ -166,9 +168,9 @@ public class VisionServiceHandlerImpl implements VisionServiceHandler {
         if(request.getName() != null) {
             visionComponent.setName(request.getName());
         }
-        VisionComponent newComponent = visionComponentService.update(visionComponent);
-        sendReportMes.createHistory(request.getPayload().getUserId(), visionComponent.getId(), ReportAction.UPDATE, GsonUtils.convertToString(visionComponent) + "|" + GsonUtils.convertToString(newComponent));
-        return RepresentationBuilder.buildVisionComponentRep(newComponent);
+        visionComponentService.update(visionComponent);
+        sendReportMes.createHistory(request.getPayload().getUserId(), visionComponent.getId(), ReportAction.UPDATED, GsonUtils.convertToString(oldComponent) + "|" + GsonUtils.convertToString(visionComponent));
+        return RepresentationBuilder.buildVisionComponentRep(visionComponent);
     }
 
     @Override

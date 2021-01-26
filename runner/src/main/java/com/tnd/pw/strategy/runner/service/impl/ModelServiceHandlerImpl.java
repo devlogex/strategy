@@ -3,9 +3,9 @@ package com.tnd.pw.strategy.runner.service.impl;
 import com.google.common.reflect.TypeToken;
 import com.tnd.dbservice.common.exception.DBServiceException;
 import com.tnd.pw.action.common.representations.CsActionRepresentation;
+import com.tnd.pw.report.common.constants.ReportAction;
 import com.tnd.pw.strategy.common.constants.LayoutType;
 import com.tnd.pw.strategy.common.constants.ModelType;
-import com.tnd.pw.strategy.common.constants.ReportAction;
 import com.tnd.pw.strategy.common.representations.*;
 import com.tnd.pw.strategy.common.requests.StrategyRequest;
 import com.tnd.pw.strategy.common.utils.GsonUtils;
@@ -65,7 +65,7 @@ public class ModelServiceHandlerImpl implements ModelServiceHandler {
         LayoutRepresentation layoutRepresentation = createModelComponentDefaults(model, request);
         List<Model> models = modelService.get(Model.builder().productId(request.getId()).build());
 
-        sendReportMes.createHistory(request.getPayload().getUserId(), model.getId(), ReportAction.CREATE, GsonUtils.convertToString(model));
+        sendReportMes.createHistory(request.getPayload().getUserId(), model.getId(), ReportAction.CREATED, GsonUtils.convertToString(model));
         return RepresentationBuilder.buildListModelRepresentation(models, layout, layoutRepresentation.getLayout());
     }
 
@@ -92,7 +92,7 @@ public class ModelServiceHandlerImpl implements ModelServiceHandler {
         modelService.update(model);
         CsActionRepresentation actionRep = sdkService.getTodoComment(model.getId());
 
-        sendReportMes.createHistory(request.getPayload().getUserId(), model.getId(), ReportAction.UPDATE, oldModel + "|" + GsonUtils.convertToString(model));
+        sendReportMes.createHistory(request.getPayload().getUserId(), model.getId(), ReportAction.UPDATED, oldModel + "|" + GsonUtils.convertToString(model));
         return RepresentationBuilder.buildModelRepresentation(model, actionRep);
     }
 
@@ -173,7 +173,7 @@ public class ModelServiceHandlerImpl implements ModelServiceHandler {
         modelService.remove(model.getId());
 
         modelComponentService.remove(null , model.getId());
-        layoutService.remove(model.getId(), LayoutType.MODEL_COMPONENT.name());
+//        layoutService.remove(model.getId(), LayoutType.MODEL_COMPONENT.name());
         List<Model> models = null;
         try {
             models = modelService.get(Model.builder().productId(model.getProductId()).build());
@@ -200,7 +200,7 @@ public class ModelServiceHandlerImpl implements ModelServiceHandler {
             layoutService.update(layout);
             List<ModelComponent> components = modelComponentService.get(ModelComponent.builder().modelId(component.getModelId()).build());
 
-            sendReportMes.createHistory(request.getPayload().getUserId(), component.getId(), ReportAction.CREATE, GsonUtils.convertToString(component));
+            sendReportMes.createHistory(request.getPayload().getUserId(), component.getId(), ReportAction.CREATED, GsonUtils.convertToString(component));
             return RepresentationBuilder.buildListModelComponentRep(layoutEntity, components);
         } catch (ModelComponentNotFoundException e) {
             LOGGER.error("[ModelServiceHandlerImpl] ModelComponentNotFoundException with component_id: {}", request.getId());
@@ -230,7 +230,7 @@ public class ModelServiceHandlerImpl implements ModelServiceHandler {
         }
         modelComponentService.update(modelComponent);
 
-        sendReportMes.createHistory(request.getPayload().getUserId(), modelComponent.getId(), ReportAction.UPDATE, oldComponent + "|" + GsonUtils.convertToString(modelComponent));
+        sendReportMes.createHistory(request.getPayload().getUserId(), modelComponent.getId(), ReportAction.UPDATED, oldComponent + "|" + GsonUtils.convertToString(modelComponent));
         return RepresentationBuilder.buildModelComponentRep(modelComponent);
     }
 
@@ -382,7 +382,7 @@ public class ModelServiceHandlerImpl implements ModelServiceHandler {
                 layoutEntity.get(i).add(new ArrayList<>());
                 for(int k = 0; k < layout.get(i).get(j).size(); k++) {
                     layoutEntity.get(i).get(j).add(layout.get(i).get(j).get(k).getId());
-                    sendReportMes.createHistory(request.getPayload().getUserId(), layout.get(i).get(j).get(k).getId(), ReportAction.CREATE, GsonUtils.convertToString(layout.get(i).get(j).get(k)));
+                    sendReportMes.createHistory(request.getPayload().getUserId(), layout.get(i).get(j).get(k).getId(), ReportAction.CREATED, GsonUtils.convertToString(layout.get(i).get(j).get(k)));
                 }
             }
         }
@@ -431,7 +431,7 @@ public class ModelServiceHandlerImpl implements ModelServiceHandler {
                 layoutEntity.get(i).add(new ArrayList<>());
                 for(int k = 0; k < layout.get(i).get(j).size(); k++) {
                     layoutEntity.get(i).get(j).add(layout.get(i).get(j).get(k).getId());
-                    sendReportMes.createHistory(request.getPayload().getUserId(), layout.get(i).get(j).get(k).getId(), ReportAction.CREATE, GsonUtils.convertToString(layout.get(i).get(j).get(k)));
+                    sendReportMes.createHistory(request.getPayload().getUserId(), layout.get(i).get(j).get(k).getId(), ReportAction.CREATED, GsonUtils.convertToString(layout.get(i).get(j).get(k)));
                 }
             }
         }
@@ -465,7 +465,7 @@ public class ModelServiceHandlerImpl implements ModelServiceHandler {
                 layoutEntity.get(i).add(new ArrayList<>());
                 for(int k = 0; k < layout.get(i).get(j).size(); k++) {
                     layoutEntity.get(i).get(j).add(layout.get(i).get(j).get(k).getId());
-                    sendReportMes.createHistory(request.getPayload().getUserId(), layout.get(i).get(j).get(k).getId(), ReportAction.CREATE, GsonUtils.convertToString(layout.get(i).get(j).get(k)));
+                    sendReportMes.createHistory(request.getPayload().getUserId(), layout.get(i).get(j).get(k).getId(), ReportAction.CREATED, GsonUtils.convertToString(layout.get(i).get(j).get(k)));
                 }
             }
         }
@@ -497,7 +497,7 @@ public class ModelServiceHandlerImpl implements ModelServiceHandler {
                 layoutEntity.get(i).add(new ArrayList<>());
                 for(int k = 0; k < layout.get(i).get(j).size(); k++) {
                     layoutEntity.get(i).get(j).add(layout.get(i).get(j).get(k).getId());
-                    sendReportMes.createHistory(request.getPayload().getUserId(), layout.get(i).get(j).get(k).getId(), ReportAction.CREATE, GsonUtils.convertToString(layout.get(i).get(j).get(k)));
+                    sendReportMes.createHistory(request.getPayload().getUserId(), layout.get(i).get(j).get(k).getId(), ReportAction.CREATED, GsonUtils.convertToString(layout.get(i).get(j).get(k)));
                 }
             }
         }
@@ -596,7 +596,7 @@ public class ModelServiceHandlerImpl implements ModelServiceHandler {
                 layoutEntity.get(i).add(new ArrayList<>());
                 for(int k = 0; k < layout.get(i).get(j).size(); k++) {
                     layoutEntity.get(i).get(j).add(layout.get(i).get(j).get(k).getId());
-                    sendReportMes.createHistory(request.getPayload().getUserId(), layout.get(i).get(j).get(k).getId(), ReportAction.CREATE, GsonUtils.convertToString(layout.get(i).get(j).get(k)));
+                    sendReportMes.createHistory(request.getPayload().getUserId(), layout.get(i).get(j).get(k).getId(), ReportAction.CREATED, GsonUtils.convertToString(layout.get(i).get(j).get(k)));
                 }
             }
         }

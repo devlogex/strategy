@@ -3,8 +3,8 @@ package com.tnd.pw.strategy.runner.service.impl;
 import com.google.common.reflect.TypeToken;
 import com.tnd.dbservice.common.exception.DBServiceException;
 import com.tnd.pw.action.common.representations.CsActionRepresentation;
+import com.tnd.pw.report.common.constants.ReportAction;
 import com.tnd.pw.strategy.common.constants.LayoutType;
-import com.tnd.pw.strategy.common.constants.ReportAction;
 import com.tnd.pw.strategy.common.representations.LayoutRepresentation;
 import com.tnd.pw.strategy.common.representations.ListPersonasRepresentation;
 import com.tnd.pw.strategy.common.representations.PersonasRepresentation;
@@ -59,7 +59,7 @@ public class PersonasServiceHandlerImpl implements PersonasServiceHandler {
 
         }
         List<Personas> personases = personasService.get(Personas.builder().productId(request.getId()).build());
-        sendReportMes.createHistory(request.getPayload().getUserId(), personas.getId(), ReportAction.CREATE, GsonUtils.convertToString(personas));
+        sendReportMes.createHistory(request.getPayload().getUserId(), personas.getId(), ReportAction.CREATED, GsonUtils.convertToString(personas));
         return RepresentationBuilder.buildListPersonasRepresentation(personases, layout);
     }
 
@@ -81,7 +81,7 @@ public class PersonasServiceHandlerImpl implements PersonasServiceHandler {
         }
         personasService.update(personas);
         CsActionRepresentation actionRep = sdkService.getTodoComment(personas.getId());
-        sendReportMes.createHistory(request.getPayload().getUserId(), personas.getId(), ReportAction.UPDATE, oldPersonas + "|" + GsonUtils.convertToString(personas));
+        sendReportMes.createHistory(request.getPayload().getUserId(), personas.getId(), ReportAction.UPDATED, oldPersonas + "|" + GsonUtils.convertToString(personas));
         return RepresentationBuilder.buildPersonasRepresentation(personas, actionRep);
     }
 
